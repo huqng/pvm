@@ -12,3 +12,11 @@ PString::PString(const char* x, const int length) {
     _value = new char[_length];
     memcpy(_value, x, _length);
 }
+
+const char* PString::value() {
+    return _value;
+}
+
+const int PString::length() {
+    return _length;
+}

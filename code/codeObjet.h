@@ -19,7 +19,7 @@ class CodeObject: public PObject {
     PString*                _co_name;
     int                     _lineno;
     PString*                _notable;
-private:
+public:
     CodeObject(
         int argcount,
         int nlocals,
@@ -36,6 +36,8 @@ private:
         int lineno,
         PString* notable
     );
+    ~CodeObject();
+    void print_info();
 };
 
 #endif
