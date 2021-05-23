@@ -10,4 +10,5 @@ add_executable(
     object/pObject.cpp
     object/pString.cpp
     utils/bufferedInputStream.cpp
+    runtime/interpreter.cpp
 )

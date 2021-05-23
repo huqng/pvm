@@ -3,8 +3,10 @@
 
 #include "../object/pString.h"
 #include "../utils/arrayList.h"
+#include "../runtime/interpreter.h"
 
 class CodeObject: public PObject {
+protected:
     int                     _argcount;
     int                     _nlocals;
     int                     _stacksize;
@@ -37,7 +39,11 @@ public:
         PString* notable
     );
     ~CodeObject();
-    void print_info();
+
+    virtual void print();
+    virtual PObject* add(PObject* x);
+
+    friend class Interpreter;
 };
 
 #endif

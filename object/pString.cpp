@@ -1,5 +1,7 @@
 #include "pString.h"
 #include <cstring>
+#include <iostream>
+using namespace std;
 
 PString::PString(const char* x) {
     _length = strlen(x);
@@ -19,4 +21,13 @@ const char* PString::value() {
 
 const int PString::length() {
     return _length;
+}
+
+void PString::print() {
+    cout << this->value();
+}
+
+PObject* PString::add(PObject* x) {
+    // TODO - strcat
+    return this;
 }

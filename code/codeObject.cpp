@@ -38,24 +38,30 @@ CodeObject::CodeObject(
 
 CodeObject::~CodeObject() {}
 
-void CodeObject::print_info() {
-    cout << setw(24) << "argcount: " << dec << _argcount << endl;
-    cout << setw(24) << "nlocals: " << _nlocals << endl;
-    cout << setw(24) << "stacksize: " << _stacksize << endl;
-    cout << setw(24) << "flag: " << "0x" << hex << _flag << endl;
+void CodeObject::print() {
+    cout << "Code Object at " << this << ":" << endl;
+    cout << "\t" << setw(16) << "argcount: " << dec << _argcount << endl;
+    cout << "\t" << setw(16) << "nlocals: " << _nlocals << endl;
+    cout << "\t" << setw(16) << "stacksize: " << _stacksize << endl;
+    cout << "\t" << setw(16) << "flag: " << "0x" << hex << _flag << endl;
 
-    cout << setw(24) << "bytecode: " << dec << _bytecodes->length() << endl;
+    cout << "\t" << setw(16) << "bytecode: " << dec << _bytecodes->length() << endl;
 
-    cout << setw(24) << "consts: " << _consts->size() << endl;
-    cout << setw(24) << "names: " << _names->size() << endl;
-    cout << setw(24) << "varnames: " << _varnames->size() << endl;
-    cout << setw(24) << "freevars: " << _freevars->size() << endl;
-    cout << setw(24) << "cellvars: " << _cellvars->size() << endl;
+    cout << "\t" << setw(16) << "consts: " << _consts->size() << endl;
+    cout << "\t" << setw(16) << "names: " << _names->size() << endl;
+    cout << "\t" << setw(16) << "varnames: " << _varnames->size() << endl;
+    cout << "\t" << setw(16) << "freevars: " << _freevars->size() << endl;
+    cout << "\t" << setw(16) << "cellvars: " << _cellvars->size() << endl;
 
-    cout << setw(24) << "filename: " << _file_name->value() << endl;
-    cout << setw(24) << "co_name: " << _co_name->value() << endl;
+    cout << "\t" << setw(16) << "filename: " << _file_name->value() << endl;
+    cout << "\t" << setw(16) << "co_name: " << _co_name->value() << endl;
 
-    cout << setw(24) << "lineno: " << _lineno << endl;
+    cout << "\t" << setw(16) << "lineno: " << _lineno << endl;
 
-    cout << setw(24) << "notable: " << _notable->value() << endl;
+    cout << "\t" << setw(16) << "notable: " << _notable->value() << endl;
+}
+
+PObject* CodeObject::add(PObject* x) {
+    cout << "error add: Code Object at " << this << endl;
+    exit(-1);
 }

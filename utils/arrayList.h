@@ -99,7 +99,7 @@ void ArrayList<T>::set(int index, T t) {
 
 template<typename T>
 T ArrayList<T>::pop() {
-    return array[--size];
+    return array[--_size];
 }
 
 

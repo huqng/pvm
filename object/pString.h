@@ -13,6 +13,9 @@ public:
 
     const char* value();
     const int length();
+
+    virtual void print();
+    virtual PObject* add(PObject* x);
 };
 
 #endif
