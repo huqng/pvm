@@ -1,6 +1,8 @@
-#include "../opcode.h"
+#include "opcode.h"
 #include "../object/pInteger.h"
 #include "interpreter.h"
+#include "universe.h"
+
 #include <iostream>
 using namespace std;
 
@@ -75,7 +77,7 @@ void Interpreter::run(CodeObject* co) {
             break;
         case POP_JUMP_IF_FALSE: // 114
             v = pop();
-            if(((PInteger*)v)->value() == 0)
+            if(v == Universe::PFalse)
                 pc = op_arg;
             break;
 

@@ -1,5 +1,6 @@
 #include "pInteger.h"
 #include <iostream>
+#include "../runtime/universe.h"
 using namespace std;
 
 PInteger::PInteger(int x) {
@@ -20,42 +21,42 @@ PObject* PInteger::add(PObject* x) {
 
 PObject* PInteger::greater(PObject* x) {
     if(_value > ((PInteger*)x)->value())
-        return new PInteger(1);
+        return Universe::PTrue;
     else
-        return new PInteger(0);
+        return Universe::PFalse;
 }
 
 PObject* PInteger::less(PObject* x) {
     if(_value < ((PInteger*)x)->value())
-        return new PInteger(1);
+        return Universe::PTrue;
     else
-        return new PInteger(0);
+        return Universe::PFalse;
 }
 
 PObject* PInteger::eq(PObject* x) {
     if(_value == ((PInteger*)x)->value())
-        return new PInteger(1);
+        return Universe::PTrue;
     else
-        return new PInteger(0);
+        return Universe::PFalse;
 }
 
 PObject* PInteger::ne(PObject* x) {
     if(_value != ((PInteger*)x)->value())
-        return new PInteger(1);
+        return Universe::PTrue;
     else
-        return new PInteger(0);
+        return Universe::PFalse;
 }
 
 PObject* PInteger::ge(PObject* x) {
     if(_value >= ((PInteger*)x)->value())
-        return new PInteger(1);
+        return Universe::PTrue;
     else
-        return new PInteger(0);
+        return Universe::PFalse;
 }
 
 PObject* PInteger::le(PObject* x) {
     if(_value <= ((PInteger*)x)->value())
-        return new PInteger(1);
+        return Universe::PTrue;
     else
-        return new PInteger(0);
+        return Universe::PFalse;
 }

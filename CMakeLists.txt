@@ -11,4 +11,5 @@ add_executable(
     object/pString.cpp
     utils/bufferedInputStream.cpp
     runtime/interpreter.cpp
+    runtime/universe.cpp
 )

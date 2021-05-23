@@ -1,5 +1,6 @@
 #include "pObject.h"
 #include <iostream>
+#include "../runtime/universe.h"
 using namespace std;
 
 PObject::PObject() {
@@ -19,14 +20,14 @@ PObject* PObject::add(PObject* x) {
     exit(-1);
 }
 
-PObject* PObject::greater(PObject* x) { return NULL; }
+PObject* PObject::greater(PObject* x) { return Universe::PNone; }
 
-PObject* PObject::less(PObject* x) { return NULL; }
+PObject* PObject::less(PObject* x) { return Universe::PNone; }
 
-PObject* PObject::eq(PObject* x) { return NULL; }
+PObject* PObject::eq(PObject* x) { return Universe::PNone; }
 
-PObject* PObject::ne(PObject* x) { return NULL; }
+PObject* PObject::ne(PObject* x) { return Universe::PNone; }
 
-PObject* PObject::ge(PObject* x) { return NULL; }
+PObject* PObject::ge(PObject* x) { return Universe::PNone; }
 
-PObject* PObject::le(PObject* x) { return NULL; }
+PObject* PObject::le(PObject* x) { return Universe::PNone; }

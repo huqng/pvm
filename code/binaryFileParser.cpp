@@ -1,5 +1,6 @@
 #include "binaryFileParser.h"
 #include "../object/pInteger.h"
+#include "../runtime/universe.h"
 
 #include <iomanip>
 
@@ -139,7 +140,7 @@ ArrayList<PObject*>* BinaryFileParser::get_tuple() {
             tuple->add(new PInteger(fs->read_int()));
             break;
         case 'N':
-            tuple->add(nullptr);
+            tuple->add(Universe::PNone);
             break;
         case 't':
             str = get_string();
