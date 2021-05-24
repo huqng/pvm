@@ -1,4 +1,4 @@
-#include "opcode.h"
+#include "../code/opcode.h"
 #include "../object/pInteger.h"
 #include "interpreter.h"
 #include "universe.h"
@@ -12,6 +12,8 @@ void Interpreter::run(CodeObject* co) {
 
     _stack = new ArrayList<PObject*>(co->_stacksize);
     _consts = co->_consts;
+    _names = co->_names;
+    _vars = new Map<PString*, PObject*>();
 
     while(pc < code_length) {
         unsigned char op_code = co->_bytecodes->value()[pc++];
@@ -28,23 +30,35 @@ void Interpreter::run(CodeObject* co) {
         PObject *u, *v, *w, *attr;
         
         switch (op_code) {
-        case LOAD_CONST:
-            push(_consts->get(op_arg));
-            break;
-        case PRINT_ITEM:
-            v = pop();
-            v->print();
-            break;
-        case PRINT_NEWLINE:
-            cout << endl;
-            break;
-        case BINARY_ADD:
+        case BINARY_ADD: // 23
             v = pop();
             w = pop();
             push(w->add(v));
             break;
-        case RETURN_VALUE:
+        case PRINT_ITEM: // 71
+            v = pop();
+            v->print();
+            break;
+        case PRINT_NEWLINE: // 72
+            cout << endl;
+            break;
+        case RETURN_VALUE: // 83
             pop();
+            break;
+        case STORE_NAME: // 90
+            /* add a variable named _names[oparg] 
+             * whose value is on the top of stack
+             * get value by pop
+             * add to vars table
+             */
+            _vars->put((PString*)_names->get(op_arg), pop());
+            break;
+        case LOAD_CONST: // 100
+            push(_consts->get(op_arg));
+            break;
+        case LOAD_NAME: // 101
+            push(_vars->get((PString*)_names->get(op_arg)));
+
             break;
         case COMPARE_OP: // 107
             w = pop();

@@ -14,14 +14,14 @@ CodeObject* BinaryFileParser::parse() {
     char obj_type = fs->read();
 
     cout << setiosflags(ios::left) << hex;
-    cout << setw(16) << "Magic number: " << "0x" << magic_number << endl;
-    cout << setw(16) << "Moddate: " << "0x" << moddate << endl;
+    cout << setw(20) << "Magic number: " << "0x" << magic_number << endl;
+    cout << setw(20) << "Moddate: " << "0x" << moddate << endl;
 
     if(obj_type == 'c') {
-        cout << setw(16) << "Obj-type:" << "[c]" << endl;
+        cout << setw(20) << "Obj-type:" << "\'c\'" << endl;
         CodeObject* result = get_code_object();
 
-        result->print();
+        result->print_details();
 
         return result;
     }

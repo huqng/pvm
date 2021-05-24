@@ -4,13 +4,19 @@
 #include "runtime/universe.h"
 
 int main() {
+    /* a file-read-util */
     BufferedInputStream* bis = new BufferedInputStream("../.py/hello.pyc");
+
+    /* .pyc file parser */
     BinaryFileParser* bfp = new BinaryFileParser(bis);
 
+    /* get codeobject */
     CodeObject* co = bfp->parse();
 
+    /* init environment */
     Universe::genesis();
 
+    /* run interpreter */
     Interpreter interpreter;
     interpreter.run(co);
 

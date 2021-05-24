@@ -40,7 +40,8 @@ public:
     );
     ~CodeObject();
 
-    virtual void print();
+    void print_details();
+    
     virtual PObject* add(PObject* x);
 
     friend class Interpreter;

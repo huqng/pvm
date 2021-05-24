@@ -22,18 +22,16 @@ BufferedInputStream::~BufferedInputStream() {
 }
 
 unsigned char BufferedInputStream::read() {
-    if(index < index_lim && index < BUFFER_LEN) {
-        return buffer[index++];
+    if(index >= BUFFER_LEN) {
+        index = 0;
+        index_lim = fread(buffer, 1,BUFFER_LEN, fp);
     }
-    else if(index_lim < BUFFER_LEN) {
+    else if(index >= index_lim) {
         cerr << "unexpected eof" << endl;
+        cerr << "lim = " << index_lim << ", index = " << index << endl;
         exit(-1);
     }
-    else {
-        index = 0;
-        index_lim = fread(buffer, BUFFER_LEN, 1, fp);
-        return buffer[index++];
-    }
+    return buffer[index++];
 }
 
 int BufferedInputStream::read_int() {
