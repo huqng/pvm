@@ -1,5 +1,5 @@
-#ifndef _P_STRING_H
-#define _P_STRING_H
+#ifndef _STRING_OBJECT_H
+#define _STRING_OBJECT_H
 
 #include "pObject.h"
 

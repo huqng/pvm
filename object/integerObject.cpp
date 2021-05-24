@@ -1,5 +1,5 @@
 #include "../runtime/universe.h"
-#include "pInteger.h"
+#include "integerObject.h"
 
 #include <iostream>
 #include <cassert>

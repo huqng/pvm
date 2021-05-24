@@ -3,7 +3,7 @@
 
 int main() {
     /* a file-read-util */
-    BufferedInputStream* bis = new BufferedInputStream("../.py/hello.pyc");
+    BufferedInputStream* bis = new BufferedInputStream("../.pytest/hello.pyc");
 
     /* .pyc file parser */
     BinaryFileParser* bfp = new BinaryFileParser(bis);

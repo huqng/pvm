@@ -1,5 +1,5 @@
 #include "../runtime/universe.h"
-#include "pString.h"
+#include "stringObject.h"
 
 #include <cstring>
 #include <iostream>

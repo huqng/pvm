@@ -3,6 +3,7 @@
 
 #include "../code/codeObjet.h"
 #include "../utils/map.h"
+#include "frameObject.h"
 
 class CodeObject;
 
@@ -24,13 +25,7 @@ public:
 
 class Interpreter {
 private:
-    /* initialized in run() */
-    ArrayList<PObject*>* _stack;
-    ArrayList<LoopBlock*>* _loop_stack;
-    ArrayList<PObject*>* _consts;
-    ArrayList<PObject*>* _names;
-
-    Map<PString*, PObject*>* _vars;
+    FrameObject* _frame;
 
     /* stack op */
     void        push(PObject* p);

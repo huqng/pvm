@@ -1,7 +1,7 @@
 #ifndef _CODE_OBJECT_H
 #define _CODE_OBJECT_H
 
-#include "../object/pString.h"
+#include "../object/stringObject.h"
 #include "../utils/arrayList.h"
 
 class CodeObject: public PObject {
@@ -43,7 +43,7 @@ public:
     
     virtual PObject* add(PObject* x);
 
-    friend class Interpreter;
+    friend class FrameObject;
 };
 
 #endif

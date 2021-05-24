@@ -6,11 +6,12 @@ add_executable(
     pyvm main.cpp
     code/binaryFileParser.cpp
     code/codeObject.cpp
-    object/pInteger.cpp
+    object/integerObject.cpp
     object/pObject.cpp
-    object/pString.cpp
+    object/stringObject.cpp
     object/klass.cpp
     utils/bufferedInputStream.cpp
+    runtime/frameObject.cpp
     runtime/interpreter.cpp
     runtime/universe.cpp
 )

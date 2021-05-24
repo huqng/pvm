@@ -1,7 +1,7 @@
 #ifndef _UNIVERSE_H
 #define _UNIVERSE_H
 
-#include "../object/pInteger.h"
+#include "../object/integerObject.h"
 
 class Universe {
 public:

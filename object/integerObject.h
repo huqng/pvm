@@ -1,5 +1,5 @@
-#ifndef _P_INTEGER_H
-#define _P_INTEGER_H
+#ifndef _INTEGER_OBJECT_H
+#define _INTEGER_OBJECT_H
 
 #include "pObject.h"
 
