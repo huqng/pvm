@@ -1,5 +1,4 @@
 #include "binaryFileParser.h"
-#include "../object/pInteger.h"
 #include "../runtime/universe.h"
 
 #include <iomanip>

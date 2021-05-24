@@ -9,6 +9,7 @@ add_executable(
     object/pInteger.cpp
     object/pObject.cpp
     object/pString.cpp
+    object/klass.cpp
     utils/bufferedInputStream.cpp
     runtime/interpreter.cpp
     runtime/universe.cpp

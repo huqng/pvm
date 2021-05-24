@@ -1,20 +1,32 @@
 #ifndef _OBJECT_H
 #define _OBJECT_H
 
+#include "klass.h"
+
 class PObject {
+private:
+    Klass* _klass;
+
 public:
     PObject();
     virtual ~PObject();
-    
-    virtual void print();
-    virtual PObject* add(PObject* x);
 
-    virtual PObject* greater(PObject* x);
-    virtual PObject* less(PObject* x);
-    virtual PObject* eq(PObject* x);
-    virtual PObject* ne(PObject* x);
-    virtual PObject* ge(PObject* x);
-    virtual PObject* le(PObject* x);
+    Klass*  klass();
+    void    set_klass(Klass* x);
+    
+    void print();
+    PObject* add(PObject* x);
+    PObject* sub(PObject* x);
+    PObject* mul(PObject* x);
+    PObject* div(PObject* x);
+    PObject* mod(PObject* x);
+
+    PObject* greater(PObject* x);
+    PObject* less(PObject* x);
+    PObject* eq(PObject* x);
+    PObject* ne(PObject* x);
+    PObject* ge(PObject* x);
+    PObject* le(PObject* x);
 };
 
 #endif

@@ -3,7 +3,6 @@
 
 #include "../object/pString.h"
 #include "../utils/arrayList.h"
-#include "../runtime/interpreter.h"
 
 class CodeObject: public PObject {
 protected:

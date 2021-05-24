@@ -1,6 +1,5 @@
 
 #include "../code/opcode.h"
-#include "../object/pInteger.h"
 #include "interpreter.h"
 #include "universe.h"
 
@@ -21,7 +20,9 @@ void Interpreter::run(CodeObject* co) {
     while(pc < code_length) {
         unsigned char op_code = co->_bytecodes->value()[pc++];
         bool has_arg = op_code >= HAVE_ARGUMENT;
-        
+
+        //cout << "opcode = " << (int)op_code << endl;
+
         int op_arg = -1;
         if(has_arg) {
             int byte1 = co->_bytecodes->value()[pc++] & 0xFF;

@@ -11,23 +11,66 @@ PObject::~PObject() {
     
 }
 
+Klass* PObject::klass() {
+    if(_klass == nullptr) {
+        cerr << "error get klass: null _klass" << endl;
+        exit(-1);
+    }
+    return _klass;
+}
+
+void PObject::set_klass(Klass* x) {
+    _klass = x;
+    if(_klass == nullptr) {
+        cerr << "error set klass: null _klass" << endl;
+        exit(-1);
+    }
+}
+
 void PObject::print() {
-    cout << "Object at " << this;
+    _klass->print(this);
 }
 
 PObject* PObject::add(PObject* x) {
-    cout << "error add: Object at " << this << endl;
-    exit(-1);
+    return _klass->add(this, x);
 }
 
-PObject* PObject::greater(PObject* x) { return Universe::PNone; }
+PObject* PObject::sub(PObject* x) {
+    return _klass->sub(this, x);
+}
 
-PObject* PObject::less(PObject* x) { return Universe::PNone; }
+PObject* PObject::mul(PObject* x) {
+    return _klass->mul(this, x);
+}
 
-PObject* PObject::eq(PObject* x) { return Universe::PNone; }
+PObject* PObject::div(PObject* x) {
+    return _klass->div(this, x);
+}
 
-PObject* PObject::ne(PObject* x) { return Universe::PNone; }
+PObject* PObject::mod(PObject* x) {
+    return _klass->mod(this, x);
+}
 
-PObject* PObject::ge(PObject* x) { return Universe::PNone; }
+PObject* PObject::greater(PObject* x) {
+    return _klass->greater(this, x);
+}
 
-PObject* PObject::le(PObject* x) { return Universe::PNone; }
+PObject* PObject::less(PObject* x) {
+    return _klass->less(this, x);
+}
+
+PObject* PObject::eq(PObject* x) {
+    return _klass->eq(this, x);
+}
+
+PObject* PObject::ne(PObject* x) {
+    return _klass->ne(this, x);
+}
+
+PObject* PObject::ge(PObject* x) {
+    return _klass->ge(this, x);
+}
+
+PObject* PObject::le(PObject* x) {
+    return _klass->le(this, x);
+}
