@@ -1,7 +1,7 @@
 #ifndef _FRAME_OBJECT_H
 #define _FRAME_OBJECT_H
 
-#include "../code/codeObjet.h"
+#include "../object/functionObject.h"
 #include "../utils/map.h"
 
 class LoopBlock;
@@ -19,7 +19,10 @@ private:
 
     CodeObject*             _co;
     int                     _pc;
+
+    FrameObject*            _sender;
 public:
+    FrameObject(FunctionObject* fo);
     FrameObject(CodeObject* co);
     FrameObject();
     
@@ -46,6 +49,18 @@ public:
     bool            has_more_codes();
     unsigned char   get_op_code();
     int             get_op_arg();
+
+    void set_sender(FrameObject* x) {
+        _sender = x;
+    }
+    
+    FrameObject* sender() {
+        return _sender;
+    }
+
+    bool is_first_frame() {
+        return _sender == nullptr;
+    }
 };
 
 #endif

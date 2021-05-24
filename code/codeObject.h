@@ -4,38 +4,46 @@
 #include "../object/stringObject.h"
 #include "../utils/arrayList.h"
 
+class CodeObjectKlass: public Klass {
+private:
+    CodeObjectKlass();
+    static CodeObjectKlass* instance;
+public:
+    static CodeObjectKlass* get_instance();
+};
+
 class CodeObject: public PObject {
 protected:
     int                     _argcount;
     int                     _nlocals;
     int                     _stacksize;
     int                     _flag;
-    PString*                _bytecodes;
+    StringObject*                _bytecodes;
     ArrayList<PObject*>*    _consts;
     ArrayList<PObject*>*    _names;
     ArrayList<PObject*>*    _varnames;
     ArrayList<PObject*>*    _freevars;
     ArrayList<PObject*>*    _cellvars;
-    PString*                _file_name;
-    PString*                _co_name;
+    StringObject*                _file_name;
+    StringObject*                _co_name;
     int                     _lineno;
-    PString*                _notable;
+    StringObject*                _notable;
 public:
     CodeObject(
         int argcount,
         int nlocals,
         int stacksize,
         int flag,
-        PString* bytecodes,
+        StringObject* bytecodes,
         ArrayList<PObject*>* consts,
         ArrayList<PObject*>* names,
         ArrayList<PObject*>* varnames,
         ArrayList<PObject*>* freevars,
         ArrayList<PObject*>* cellvars,
-        PString* file_name,
-        PString* co_name,
+        StringObject* file_name,
+        StringObject* co_name,
         int lineno,
-        PString* notable
+        StringObject* notable
     );
     ~CodeObject();
 
@@ -44,6 +52,7 @@ public:
     virtual PObject* add(PObject* x);
 
     friend class FrameObject;
+    friend class FunctionObject;
 };
 
 #endif

@@ -1,7 +1,6 @@
 #ifndef _INTERPRETER_H
 #define _INTERPRETER_H
 
-#include "../code/codeObjet.h"
 #include "../utils/map.h"
 #include "frameObject.h"
 
@@ -32,6 +31,10 @@ private:
     PObject*    pop();
     int         stack_level();
     
+    void        build_frame(PObject* callable);
+    void        eval_frame();
+    void        leave_frame(PObject* retv);
+    void        destroy_frame();
 public:
     void run(CodeObject* co);
 };

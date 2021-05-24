@@ -35,17 +35,17 @@ CodeObject* BinaryFileParser::get_code_object() {
     int stacksize = fs->read_int();
     int flags = fs->read_int();
 
-    PString* bytecode = get_byte_code();
+    StringObject* bytecode = get_byte_code();
     ArrayList<PObject*>*consts = get_consts();
     ArrayList<PObject*>*names = get_names();
     ArrayList<PObject*>*var_names = get_var_names();
     ArrayList<PObject*>*free_vars = get_free_vars();
     ArrayList<PObject*>*cell_vars = get_cell_vars();
 
-    PString* file_name = get_file_name();
-    PString* module_name = get_module_name();
+    StringObject* file_name = get_file_name();
+    StringObject* module_name = get_module_name();
     int lineno = fs->read_int();
-    PString* notable = get_no_table();
+    StringObject* notable = get_no_table();
     return new CodeObject(
         argcount,
         nlocals,
@@ -64,13 +64,13 @@ CodeObject* BinaryFileParser::get_code_object() {
     );
 }
 
-PString* BinaryFileParser::get_byte_code() {
+StringObject* BinaryFileParser::get_byte_code() {
     char obj_type = fs->read();
     if(obj_type == 's') {
         return get_string();
     }
     else if(obj_type == 't') {
-        PString* s = get_string();
+        StringObject* s = get_string();
         _string_table->add(s);
         return s;
     }
@@ -103,31 +103,31 @@ ArrayList<PObject*>* BinaryFileParser::get_cell_vars() {
     return get_consts();
 }
 
-PString* BinaryFileParser::get_file_name() {
+StringObject* BinaryFileParser::get_file_name() {
     return get_byte_code();
 }
 
-PString* BinaryFileParser::get_module_name() {
+StringObject* BinaryFileParser::get_module_name() {
     return get_byte_code();
 }
 
-PString* BinaryFileParser::get_no_table() {
+StringObject* BinaryFileParser::get_no_table() {
     return get_byte_code();
 }
 
-PString* BinaryFileParser::get_string() {
+StringObject* BinaryFileParser::get_string() {
     int len = fs->read_int();
     char* buf = new char[len];
     for(int i = 0; i < len; i++)
         buf[i] = fs->read();
-    PString* s =  new PString(buf, len);
+    StringObject* s =  new StringObject(buf, len);
     delete[] buf;
     return s;
 }
 
 ArrayList<PObject*>* BinaryFileParser::get_tuple() {
     int length = fs->read_int();
-    PString* str;
+    StringObject* str;
     ArrayList<PObject*>* tuple = new ArrayList<PObject*>(length);
     for(int i = 0; i < length; i++) {
         char obj_type = fs->read();
@@ -136,7 +136,7 @@ ArrayList<PObject*>* BinaryFileParser::get_tuple() {
             tuple->add(get_code_object());
             break;
         case 'i':
-            tuple->add(new PInteger(fs->read_int()));
+            tuple->add(new integerObject(fs->read_int()));
             break;
         case 'N':
             tuple->add(Universe::PNone);

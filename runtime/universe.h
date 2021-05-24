@@ -5,8 +5,8 @@
 
 class Universe {
 public:
-    static PInteger* PTrue;
-    static PInteger* PFalse;
+    static integerObject* PTrue;
+    static integerObject* PFalse;
     static PObject* PNone;
 
     static void genesis();

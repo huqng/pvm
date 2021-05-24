@@ -81,7 +81,7 @@ V Map<K, V>::get(K k) {
         if(_entries[i].key() == k)
             return _entries[i].value();
     }
-    cerr << "error Map::get: invalid key [" << ((PString*)k)->value() << "]" << endl;
+    cerr << "error Map::get: invalid key [" << ((StringObject*)k)->value() << "]" << endl;
     exit(-1);
 }
 

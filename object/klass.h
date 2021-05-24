@@ -1,16 +1,16 @@
 #ifndef _CLASS_H
 #define _CLASS_H
 
-class PString;
+class StringObject;
 class PObject;
 
 class Klass {
 private:
-    PString* _name;
+    StringObject* _name;
 public:
     Klass() {}
-    void        set_name(PString* x) { _name = x; }
-    PString*    name() { return _name; }
+    void            set_name(StringObject* x) { _name = x; }
+    StringObject*    name() { return _name; }
 
     virtual void print(PObject* obj) {}
 

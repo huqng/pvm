@@ -27,11 +27,11 @@ public:
     virtual PObject* mod(PObject* x, PObject* y); 
 };
 
-class PInteger: public PObject {
+class integerObject: public PObject {
 private:
     int _value;
 public:
-    PInteger(int x);
+    integerObject(int x);
     int value();
 };
 

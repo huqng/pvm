@@ -1,23 +1,35 @@
-#include "codeObjet.h"
+#include "codeObject.h"
 #include <iostream>
 #include <iomanip>
 using namespace std;
+
+CodeObjectKlass* CodeObjectKlass::instance = nullptr;
+
+CodeObjectKlass::CodeObjectKlass() {
+
+}
+
+CodeObjectKlass* CodeObjectKlass::get_instance() {
+    if(instance == nullptr)
+        instance = new CodeObjectKlass();
+    return instance;
+}
 
 CodeObject::CodeObject(
         int argcount,
         int nlocals,
         int stacksize,
         int flag,
-        PString* bytecodes,
+        StringObject* bytecodes,
         ArrayList<PObject*>* consts,
         ArrayList<PObject*>* names,
         ArrayList<PObject*>* varnames,
         ArrayList<PObject*>* freevars,
         ArrayList<PObject*>* cellvars,
-        PString* file_name,
-        PString* co_name,
+        StringObject* file_name,
+        StringObject* co_name,
         int lineno,
-        PString* notable
+        StringObject* notable
     ):
         _argcount(argcount),
         _nlocals(nlocals),
@@ -32,8 +44,9 @@ CodeObject::CodeObject(
         _file_name(file_name),
         _co_name(co_name),
         _lineno(lineno),
-        _notable(notable) 
-{}
+        _notable(notable) {
+    set_klass(CodeObjectKlass::get_instance());
+}
 
 
 CodeObject::~CodeObject() {}

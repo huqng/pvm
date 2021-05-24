@@ -26,13 +26,13 @@ public:
     // virtual PObject* mod(PObject* x, PObject* y); 
 };
 
-class PString: public PObject {
+class StringObject: public PObject {
 private:
     char* _value;
     int _length;
 public:
-    PString(const char* x);
-    PString(const char* x, const int length);
+    StringObject(const char* x);
+    StringObject(const char* x, const int length);
 
     const char* value();
     const int length();

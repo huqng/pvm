@@ -1,6 +1,7 @@
 
 #include "../code/opcode.h"
 #include "interpreter.h"
+#include "../object/functionObject.h"
 #include "universe.h"
 
 #include <iostream>
@@ -8,6 +9,29 @@ using namespace std;
 
 void Interpreter::run(CodeObject* co) {
     _frame = new FrameObject(co);
+    eval_frame();
+    destroy_frame();
+}
+
+void Interpreter::push(PObject* p) {
+    _frame->stack()->add(p);
+}
+
+PObject* Interpreter::pop() {
+    return _frame->stack()->pop();
+}
+
+int Interpreter::stack_level() {
+    return _frame->stack()->size();
+}
+
+void Interpreter::build_frame(PObject* callable) {
+    FrameObject* frame = new FrameObject((FunctionObject*)callable);
+    frame->set_sender(_frame);
+    _frame = frame;
+}
+
+void Interpreter::eval_frame() {    
     while(_frame->has_more_codes()) {
         unsigned char op_code = _frame->get_op_code();
         bool has_arg = op_code >= HAVE_ARGUMENT;
@@ -22,8 +46,12 @@ void Interpreter::run(CodeObject* co) {
         //PInteger *lhs, *rhs;
         /* oprands */
         PObject *u, *v;
+        PObject* retv;
         
         switch (op_code) {
+        case POP_TOP: // 1
+            pop();
+            break;
         case BINARY_ADD: { // 23
             u = pop();
             v = pop();
@@ -47,7 +75,10 @@ void Interpreter::run(CodeObject* co) {
             break;
         }
         case RETURN_VALUE: // 83
-            pop();
+            retv = pop();
+            if(_frame->is_first_frame())
+                return;
+            leave_frame(retv);
             break;
         case POP_BLOCK: { // 87
                 /* on normal end of loop */
@@ -119,10 +150,11 @@ void Interpreter::run(CodeObject* co) {
             );
             break;
         case CALL_FUNCTION: // 131
-        
+            build_frame(pop());
             break;
         case MAKE_FUNCTION: // 132
-
+            v = pop();
+            push(new FunctionObject(v));
             break;
 
         default:
@@ -132,14 +164,13 @@ void Interpreter::run(CodeObject* co) {
     }
 }
 
-void Interpreter::push(PObject* p) {
-    _frame->stack()->add(p);
+void Interpreter::leave_frame(PObject* retv) {
+    destroy_frame();
+    push(retv);
 }
 
-PObject* Interpreter::pop() {
-    return _frame->stack()->pop();
-}
-
-int Interpreter::stack_level() {
-    return _frame->stack()->size();
+void Interpreter::destroy_frame() {
+    FrameObject* tmp = _frame;
+    _frame = _frame->sender();
+    delete tmp;
 }

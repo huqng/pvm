@@ -20,8 +20,8 @@ StringKlass* StringKlass::get_instance() {
 
 void StringKlass::print(PObject* x) {
     assert(x->klass() == (Klass*)this);
-    for(int i = 0; i < ((PString*)x)->length(); i++) {
-        cout << ((PString*)x)->value()[i];
+    for(int i = 0; i < ((StringObject*)x)->length(); i++) {
+        cout << ((StringObject*)x)->value()[i];
     }
 }
 
@@ -36,8 +36,8 @@ PObject* StringKlass::less(PObject* x, PObject* y) {
 PObject* StringKlass::eq(PObject* x, PObject* y) {
     if(x->klass() != y->klass())
         return Universe::PFalse;
-    PString* sx = (PString*)x;
-    PString* sy = (PString*)y;
+    StringObject* sx = (StringObject*)x;
+    StringObject* sy = (StringObject*)y;
 
     if(sx->length() != sy->length()) {
         return Universe::PFalse;
@@ -74,24 +74,24 @@ PObject* StringKlass::mul(PObject* x, PObject* y) {
 }
 
 
-PString::PString(const char* x) {
+StringObject::StringObject(const char* x) {
     _length = strlen(x);
     _value = new char[_length];
     strcpy(_value, x);
     this->set_klass(StringKlass::get_instance());
 }
 
-PString::PString(const char* x, const int length) {
+StringObject::StringObject(const char* x, const int length) {
     _length = length;
     _value = new char[_length];
     memcpy(_value, x, _length);
     this->set_klass(StringKlass::get_instance());
 }
 
-const char* PString::value() {
+const char* StringObject::value() {
     return _value;
 }
 
-const int PString::length() {
+const int StringObject::length() {
     return _length;
 }

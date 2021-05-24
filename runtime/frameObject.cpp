@@ -10,6 +10,21 @@ FrameObject::FrameObject(CodeObject* co) {
 
     _co = co;
     _pc = 0;
+    _sender = nullptr;
+}
+
+FrameObject::FrameObject(FunctionObject* fo) {
+    _stack = new ArrayList<PObject*>();
+    _loop_stack = new ArrayList<LoopBlock*>();
+
+    _co = fo->_func_code;
+
+    _consts = _co->_consts;
+    _names = _co->_names;
+    _locals = new Map<PObject*, PObject*>();
+
+    _pc = 0;
+    _sender = nullptr;
 }
 
 FrameObject::FrameObject() {

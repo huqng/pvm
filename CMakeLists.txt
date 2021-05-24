@@ -3,13 +3,15 @@
 project(pyvm)
 
 add_executable(
-    pyvm main.cpp
+    pyvm 
+    main.cpp
     code/binaryFileParser.cpp
     code/codeObject.cpp
     object/integerObject.cpp
     object/pObject.cpp
     object/stringObject.cpp
     object/klass.cpp
+    object/functionObject.cpp
     utils/bufferedInputStream.cpp
     runtime/frameObject.cpp
     runtime/interpreter.cpp
