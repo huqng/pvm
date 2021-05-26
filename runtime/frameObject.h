@@ -16,6 +16,7 @@ private:
     ArrayList<PObject*>*    _names;
 
     Map<PObject*, PObject*>* _locals;
+    Map<PObject*, PObject*>* _globals;
 
     CodeObject*             _co;
     int                     _pc;
@@ -44,6 +45,9 @@ public:
     }
     Map<PObject*, PObject*>* locals() {
         return _locals;
+    }
+    Map<PObject*, PObject*>* globals() {
+        return _globals;
     }
 
     bool            has_more_codes();

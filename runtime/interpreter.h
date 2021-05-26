@@ -9,7 +9,7 @@ class CodeObject;
 class LoopBlock;
 class Interpreter;
 
-typedef void(Interpreter::*op_t)(int, int);
+typedef void(Interpreter::*op_t)(int);
 
 class LoopBlock {
 public:
@@ -29,6 +29,7 @@ public:
 
 class Interpreter {
 private:
+    Map<PObject*, PObject*>* _builtins;
     FrameObject* _frame;
     bool        debug;
 
@@ -45,24 +46,26 @@ private:
     /* instructions */
     op_t*   op;
 
-    void    unimplemented(int, int);     // ?
-    void    pop_top (int, int);          // 1
-    void    binary_add(int, int);        // 23
-    void    print_item(int, int);        // 71
-    void    print_newline(int, int);     // 72
-    void    break_loop(int, int);        // 80
-    void    return_value(int, int);      // 83
-    void    pop_block(int, int);         // 87
-    void    store_name(int, int);        // 90
-    void    load_const(int, int);        // 100
-    void    load_name(int, int);         // 101
-    void    compare_op(int, int);        // 107
-    void    jump_forward(int, int);      // 110
-    void    jump_absolute(int, int);     // 113
-    void    pop_jump_if_false(int, int); // 114
-    void    setup_loop(int, int);        // 120
-    void    call_function(int, int);     // 131
-    void    make_function(int, int);     // 132
+    void    unimplemented(int);        // ?
+    void    pop_top (int);             // 1
+    void    binary_add(int);           // 23
+    void    print_item(int);           // 71
+    void    print_newline(int);        // 72
+    void    break_loop(int);           // 80
+    void    return_value(int);         // 83
+    void    pop_block(int);            // 87
+    void    store_name(int);           // 90
+    void    store_global(int);         // 97
+    void    load_const(int);           // 100
+    void    load_name(int);            // 101
+    void    compare_op(int);           // 107
+    void    jump_forward(int);         // 110
+    void    jump_absolute(int);        // 113
+    void    pop_jump_if_false(int);    // 114
+    void    load_global(int);          // 116 
+    void    setup_loop(int);           // 120
+    void    call_function(int);        // 131
+    void    make_function(int);        // 132
 
 public:
     Interpreter();

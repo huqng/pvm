@@ -153,7 +153,9 @@ enum {
     EQUAL,
     NOT_EQUAL,
     GREATER,
-    GREATER_EQUAL
+    GREATER_EQUAL,
+    IS = 8,
+    IS_NOT
 };
 
 #endif /* !_OPCODE_H */

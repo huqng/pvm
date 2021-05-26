@@ -7,6 +7,7 @@ FrameObject::FrameObject(CodeObject* co) {
     _consts = co->_consts;
     _names = co->_names;
     _locals = new Map<PObject*, PObject*>();
+    _globals = _locals;
 
     _co = co;
     _pc = 0;
@@ -22,6 +23,7 @@ FrameObject::FrameObject(FunctionObject* fo) {
     _consts = _co->_consts;
     _names = _co->_names;
     _locals = new Map<PObject*, PObject*>();
+    _globals = fo->globals();
 
     _pc = 0;
     _sender = nullptr;

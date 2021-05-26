@@ -81,8 +81,7 @@ V Map<K, V>::get(K k) {
         if(_entries[i].key() == k)
             return _entries[i].value();
     }
-    cerr << "error Map::get: invalid key [" << ((StringObject*)k)->value() << "]" << endl;
-    exit(-1);
+    return Universe::PNone;
 }
 
 template<typename K, typename V>
