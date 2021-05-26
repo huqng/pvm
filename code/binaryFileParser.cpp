@@ -131,7 +131,7 @@ StringObject* BinaryFileParser::get_string() {
 ArrayList<PObject*>* BinaryFileParser::get_tuple() {
     int length = fs->read_int();
     StringObject* str;
-    ArrayList<PObject*>* tuple = new ArrayList<PObject*>(length);
+    ArrayList<PObject*>* tuple = new ArrayList<PObject*>();
     for(int i = 0; i < length; i++) {
         char obj_type = fs->read();
         switch (obj_type) {

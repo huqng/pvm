@@ -30,3 +30,14 @@ FunctionObject::FunctionObject(PObject* x) {
     _flags = co->_flag;
     set_klass(FunctionKlass::get_instance());
 }
+
+void FunctionObject::set_defaults(ArrayList<PObject*>* x) {
+    if(x == nullptr) {
+        _defaults = nullptr;
+        return;
+    }
+    _defaults = new ArrayList<PObject*>(x->length());
+    for(int i = 0; i < x->length(); i++) {
+        _defaults->set(i, x->get(i));
+    }
+}

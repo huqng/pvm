@@ -25,7 +25,25 @@ FrameObject::FrameObject(FunctionObject* fo, ArrayList<PObject*>* args) {
     _names = _co->_names;
     _locals = new Map<PObject*, PObject*>();
     _globals = fo->globals();
-    _fast_locals = args;
+
+    if(_co->_argcount > 0) {
+        if(args->size() + fo->_defaults->size() < _co->_argcount) {
+            cerr << "FrameObject: too few arguments" << endl;
+            exit(-1);
+        }
+        _fast_locals = new ArrayList<PObject*>(_co->_argcount);
+        int dft_cnt = fo->_defaults->length();
+        int argc_nt = _co->_argcount;
+        while(dft_cnt--) {
+            _fast_locals->set(--argc_nt, fo->_defaults->get(dft_cnt));
+        }
+
+        for(int i = 0; i < args->length(); i++) {
+            _fast_locals->set(i, args->get(i));
+        }
+    }
+    else
+        _fast_locals = nullptr;
 
     _pc = 0;
     _sender = nullptr;

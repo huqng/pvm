@@ -20,6 +20,7 @@ private:
     CodeObject*     _func_code;
     StringObject*   _func_name;
     unsigned int    _flags;
+    ArrayList<PObject*>* _defaults;
 
     Map<PObject*, PObject*>* _globals;
 public: 
@@ -30,6 +31,7 @@ public:
     int             flags();
     Map<PObject*, PObject*>* globals() { return _globals; }
     void set_globals(Map<PObject*, PObject*>* x) { _globals = x; }
+    void set_defaults(ArrayList<PObject*>* x);
 
     friend class FrameObject;
 };

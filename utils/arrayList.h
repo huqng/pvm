@@ -14,7 +14,8 @@ private:
     int _size;
     void expand();
 public:
-    ArrayList(int n = 8);
+    ArrayList(int n);
+    ArrayList();
     ~ArrayList();
 
     void add(T t);
@@ -31,8 +32,15 @@ public:
 template<typename T>
 ArrayList<T>::ArrayList(int n) {
     _length = n;
-    _size = 0;
+    _size = n;
     array = new T[n];
+}
+
+template<typename T>
+ArrayList<T>::ArrayList() {
+    _length = 8;
+    _size = 0;
+    array = new T[8];
 }
 
 template<typename T>

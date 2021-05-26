@@ -198,7 +198,8 @@ void Interpreter::load_const(int arg) {
     if(debug) {
         cerr << "LOAD_CONST" << endl;
     }
-    push(_frame->consts()->get(arg));
+    PObject* v = _frame->consts()->get(arg);
+    push(v);
 }
 
 void Interpreter::load_name(int arg) {
@@ -339,8 +340,10 @@ void Interpreter::call_function(int op_arg) {
             args->set(op_arg, pop());
         }
     }
-
     build_frame(pop(), args);
+    if(args != nullptr) {
+        delete args;
+    }
 }
 
 void Interpreter::make_function(int arg) {
@@ -349,6 +352,20 @@ void Interpreter::make_function(int arg) {
     }
     PObject* v = pop();
     FunctionObject* fo = new FunctionObject(v);
+
     fo->set_globals(_frame->globals());
+
+    if(arg > 0) {
+        /* default args */
+        ArrayList<PObject*>* defaults = new ArrayList<PObject*>(arg);
+        while(arg--) {
+            defaults->set(arg, pop());
+        }
+        fo->set_defaults(defaults);
+        delete defaults;
+    }
+    else
+        fo->set_defaults(nullptr);
+
     push(fo);
 }
