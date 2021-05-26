@@ -29,6 +29,7 @@ Interpreter::Interpreter() {
     op[114] = &Interpreter::pop_jump_if_false;
     op[116] = &Interpreter::load_global;
     op[120] = &Interpreter::setup_loop;
+    op[124] = &Interpreter::load_fast;
     op[131] = &Interpreter::call_function;
     op[132] = &Interpreter::make_function;
 
@@ -59,8 +60,8 @@ int Interpreter::stack_level() {
     return _frame->stack()->size();
 }
 
-void Interpreter::build_frame(PObject* callable) {
-    FrameObject* frame = new FrameObject((FunctionObject*)callable);
+void Interpreter::build_frame(PObject* callable, ArrayList<PObject*>* args) {
+    FrameObject* frame = new FrameObject((FunctionObject*)callable, args);
     frame->set_sender(_frame);
     _frame = frame;
 }
@@ -78,7 +79,7 @@ void Interpreter::eval_frame() {
         }
 
         if(op[op_code] == &Interpreter::unimplemented) {
-            cout << "Unimplemented opcode [" << op_code << "]" << endl;
+            cout << "Unimplemented opcode [" << (int)op_code << "]" << endl;
         }
         (this->*op[op_code])(op_arg);
     }
@@ -102,89 +103,108 @@ void Interpreter::unimplemented(int arg) {
     exit(-1);
 }
 
+/* 0 */
+
 void Interpreter::pop_top(int arg) {
-    pop();
     if(debug) {
         cerr << "POP_TOP" << endl;
     }
+    pop();
 }
 
+/* 10 */
+
+/* 20 */
+
 void Interpreter::binary_add(int arg) {
+    if(debug) {
+        cerr << "BINARY_ADD" << endl;
+    }
     PObject *u, *v;
     u = pop();
     v = pop();
     push(v->add(u));
-    if(debug) {
-        cerr << "BINARY_ADD" << endl;
-    }
 }
 
+/* 30 */
+
+/* 70 */
+
 void Interpreter::print_item(int arg) {
-    PObject* u = pop();
-    u->print();
     if(debug) {
         cerr << "PRINT_ITEM" << endl;
     }
+    PObject* u = pop();
+    u->print();
 }
 
 void Interpreter::print_newline(int arg) {
-    cout << endl;
     if(debug) {
         cerr << "PRINT_NEWLINE" << endl;
     }
+    cout << endl;
 }
 
+/* 80 */
+
 void Interpreter::break_loop(int arg) {
+    if(debug) {
+        cerr << "BREAK_LOOP" << endl;
+    }
     LoopBlock* lb = _frame->loop_stack()->pop();
     while(stack_level() > lb->_level)
         pop();
     _frame->set_pc(lb->_target);
-    if(debug) {
-        cerr << "BREAK_LOOP" << endl;
-    }
 }
 
 void Interpreter::return_value(int arg) {
+    if(debug) {
+        cerr << "RETURN_VALUE" << endl;
+    }
     PObject* retv = pop();
     if(_frame->is_first_frame())
         return;
     leave_frame(retv);
-    if(debug) {
-        cerr << "RETURN_VALUE" << endl;
-    }
 }
 
 void Interpreter::pop_block(int arg) {
-    LoopBlock* lb = _frame->loop_stack()->pop();
-    while(stack_level() > lb->_level)
-        pop();
     if(debug) {
         cerr << "POP_BLOCK" << endl;
     }
+    LoopBlock* lb = _frame->loop_stack()->pop();
+    while(stack_level() > lb->_level)
+        pop();
 }
 
+/* 90 */
+
 void Interpreter::store_name(int arg) {
-    _frame->locals()->put(_frame->names()->get(arg), pop());
     if(debug) {
         cerr << "STORE_NAME" << endl;
     }
+    _frame->locals()->put(_frame->names()->get(arg), pop());
 }
 
 void Interpreter::store_global(int arg) {
-    _frame->globals()->put(_frame->names()->get(arg), pop());
     if(debug) {
         cerr << "STORE_GLOBAL" << endl;
     }
+    _frame->globals()->put(_frame->names()->get(arg), pop());
 }
 
+/* 100 */
+
 void Interpreter::load_const(int arg) {
-    push(_frame->consts()->get(arg));
     if(debug) {
         cerr << "LOAD_CONST" << endl;
     }
+    push(_frame->consts()->get(arg));
 }
 
 void Interpreter::load_name(int arg) {
+    if(debug) {
+        cerr << "LOAD_NAME" << endl;
+    }
     PObject* name = _frame->names()->get(arg);
     PObject* obj = _frame->locals()->get(name);
     if(obj != Universe::PNone) {
@@ -203,12 +223,12 @@ void Interpreter::load_name(int arg) {
     }
     push(Universe::PNone);
 
-    if(debug) {
-        cerr << "LOAD_NAME" << endl;
-    }
 }
 
 void Interpreter::compare_op(int arg) {
+    if(debug) {
+        cerr << "COMPARE_OP" << endl;
+    }   
     PObject *u, *v;
     u = pop();
     v = pop();
@@ -247,35 +267,37 @@ void Interpreter::compare_op(int arg) {
         cout << "error: unrecognized compare op [" << arg << "]" << endl;
         exit(-1);
     }
-    if(debug) {
-        cerr << "COMPARE_OP" << endl;
-    }   
 }
 
+/* 110 */
+
 void Interpreter::jump_forward(int arg) {
-    _frame->set_pc(_frame->get_pc() + arg);
     if(debug) {
         cerr << "JUMP_FORWARD" << endl;
     }
+    _frame->set_pc(_frame->get_pc() + arg);
 }
 
 void Interpreter::jump_absolute(int arg) {
-    _frame->set_pc(arg);
     if(debug) {
         cerr << "JUMP_ABSOLUTE" << endl;
     }
+    _frame->set_pc(arg);
 }
 
 void Interpreter::pop_jump_if_false(int arg) {
-    PObject* v = pop();
-    if(v == Universe::PFalse)
-        _frame->set_pc(arg);
     if(debug) {
         cerr << "POP_JUMP_IF_FALSE" << endl;
     }
+    PObject* v = pop();
+    if(v == Universe::PFalse)
+        _frame->set_pc(arg);
 }
 
 void Interpreter::load_global(int arg) {
+    if(debug) {
+        cerr << "LOAD_GLOBAL" << endl;
+    }
     PObject* name = _frame->names()->get(arg);
     PObject* obj = _frame->globals()->get(name);
     if(obj != Universe::PNone) {
@@ -284,33 +306,49 @@ void Interpreter::load_global(int arg) {
     }
     push(Universe::PNone);
 
-    if(debug) {
-        cerr << "LOAD_GLOBAL" << endl;
-    }
 }
 
+/* 120 */
+
 void Interpreter::setup_loop(int arg) {
-    _frame->loop_stack()->add(
-        new LoopBlock(SETUP_LOOP, _frame->get_pc() + arg, stack_level())
-    );
     if(debug) {
         cerr << "SETUP_LOOP" << endl;
     }
+    _frame->loop_stack()->add(
+        new LoopBlock(SETUP_LOOP, _frame->get_pc() + arg, stack_level())
+    );
 }
 
-void Interpreter::call_function(int arg) {
-    build_frame(pop());
+void Interpreter::load_fast(int arg) {
+    if(debug) {
+        cerr << "LOAD_FAST" << endl;
+    }
+    push(_frame->fast_locals()->get(arg));
+}
+
+/* 130 */
+
+void Interpreter::call_function(int op_arg) {
     if(debug) {
         cerr << "CALL_FUNCTION" << endl;
     }
+    ArrayList<PObject*>* args = nullptr;
+    if(op_arg > 0) {
+        args = new ArrayList<PObject*>(op_arg);
+        while(op_arg--) {
+            args->set(op_arg, pop());
+        }
+    }
+
+    build_frame(pop(), args);
 }
 
 void Interpreter::make_function(int arg) {
+    if(debug) {
+        cerr << "MAKE_FUNCTION" << endl;
+    }
     PObject* v = pop();
     FunctionObject* fo = new FunctionObject(v);
     fo->set_globals(_frame->globals());
     push(fo);
-    if(debug) {
-        cerr << "MAKE_FUNCTION" << endl;
-    }
 }

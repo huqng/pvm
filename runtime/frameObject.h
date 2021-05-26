@@ -15,15 +15,16 @@ private:
     ArrayList<PObject*>*    _consts;
     ArrayList<PObject*>*    _names;
 
-    Map<PObject*, PObject*>* _locals;
-    Map<PObject*, PObject*>* _globals;
+    Map<PObject*, PObject*>*    _locals;
+    Map<PObject*, PObject*>*    _globals;
+    ArrayList<PObject*>*        _fast_locals;
 
     CodeObject*             _co;
     int                     _pc;
 
     FrameObject*            _sender;
 public:
-    FrameObject(FunctionObject* fo);
+    FrameObject(FunctionObject* fo, ArrayList<PObject*>* args);
     FrameObject(CodeObject* co);
     FrameObject();
     
@@ -43,11 +44,14 @@ public:
     ArrayList<PObject*>*    names() {
         return _names;
     }
-    Map<PObject*, PObject*>* locals() {
+    Map<PObject*, PObject*>*    locals() {
         return _locals;
     }
-    Map<PObject*, PObject*>* globals() {
+    Map<PObject*, PObject*>*    globals() {
         return _globals;
+    }
+    ArrayList<PObject*>*    fast_locals() {
+        return _fast_locals;
     }
 
     bool            has_more_codes();

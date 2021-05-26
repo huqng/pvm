@@ -74,6 +74,9 @@ StringObject* BinaryFileParser::get_byte_code() {
         _string_table->add(s);
         return s;
     }
+    else if(obj_type == 'R') {
+        return (StringObject*)_string_table->get(fs->read_int());
+    }
     else {
         cerr << "parse error: " << obj_type << endl;
         exit(-1);

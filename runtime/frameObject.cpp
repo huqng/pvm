@@ -8,13 +8,14 @@ FrameObject::FrameObject(CodeObject* co) {
     _names = co->_names;
     _locals = new Map<PObject*, PObject*>();
     _globals = _locals;
+    _fast_locals = nullptr;
 
     _co = co;
     _pc = 0;
     _sender = nullptr;
 }
 
-FrameObject::FrameObject(FunctionObject* fo) {
+FrameObject::FrameObject(FunctionObject* fo, ArrayList<PObject*>* args) {
     _stack = new ArrayList<PObject*>();
     _loop_stack = new ArrayList<LoopBlock*>();
 
@@ -24,6 +25,7 @@ FrameObject::FrameObject(FunctionObject* fo) {
     _names = _co->_names;
     _locals = new Map<PObject*, PObject*>();
     _globals = fo->globals();
+    _fast_locals = args;
 
     _pc = 0;
     _sender = nullptr;
