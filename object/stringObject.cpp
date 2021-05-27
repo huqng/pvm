@@ -73,6 +73,10 @@ PObject* StringKlass::mul(PObject* x, PObject* y) {
     return 0;
 }
 
+PObject* StringKlass::len(PObject* x) {
+    assert(x->klass() == this);
+    return new integerObject(((StringObject*)x)->length());
+}
 
 StringObject::StringObject(const char* x) {
     _length = strlen(x);

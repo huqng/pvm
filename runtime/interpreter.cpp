@@ -5,6 +5,7 @@
 #include "universe.h"
 
 #include <iostream>
+#include <iomanip>
 using namespace std;
 
 Interpreter::Interpreter() {
@@ -34,12 +35,13 @@ Interpreter::Interpreter() {
     op[132] = &Interpreter::make_function;
 
     _frame = nullptr;
-    _builtins = new Map<PObject*, PObject*>();
+    _builtins = new Map<PObject*, PObject*>(obj_eq);
     _builtins->put(new StringObject("True"), Universe::PTrue);
     _builtins->put(new StringObject("False"), Universe::PFalse);
     _builtins->put(new StringObject("None"), Universe::PNone);
+    _builtins->put(new StringObject("len"), new FunctionObject(len));
 
-    debug = 0;
+    debug = 1;
 }
 
 void Interpreter::run(CodeObject* co) {
@@ -60,10 +62,27 @@ int Interpreter::stack_level() {
     return _frame->stack()->size();
 }
 
-void Interpreter::build_frame(PObject* callable, ArrayList<PObject*>* args) {
-    FrameObject* frame = new FrameObject((FunctionObject*)callable, args);
-    frame->set_sender(_frame);
-    _frame = frame;
+void Interpreter::build_frame(PObject* callable, ObjList* args) {
+    if(callable->klass() == NativeFunctionKlass::get_instance()) {
+        if(debug) {
+            cerr << "\t<Native Function>" << endl;
+        }
+        push(((FunctionObject*)callable)->call(args));
+    }
+    else if(callable->klass() == FunctionKlass::get_instance()) {
+        if(debug) {
+            cerr << "\t<Non-Native Function>" << endl;
+        }
+        FrameObject* frame = new FrameObject((FunctionObject*)callable, args);
+        frame->set_sender(_frame);
+        _frame = frame;
+    }
+    else {
+        cerr << "error build_frame, klass = " << callable->klass() << endl;
+        cerr << "\tinteger klass = " << IntegerKlass::get_instance() << endl;
+        cerr << "\tstring klass = " << StringKlass::get_instance() << endl;
+        cerr << "\tstring klass = " << StringKlass::get_instance() << endl;
+    }
 }
 
 void Interpreter::eval_frame() {    
@@ -81,6 +100,8 @@ void Interpreter::eval_frame() {
         if(op[op_code] == &Interpreter::unimplemented) {
             cout << "Unimplemented opcode [" << (int)op_code << "]" << endl;
         }
+
+        cout << setw(8) << _frame->get_pc();
         (this->*op[op_code])(op_arg);
     }
 }
@@ -132,10 +153,13 @@ void Interpreter::binary_add(int arg) {
 
 void Interpreter::print_item(int arg) {
     if(debug) {
-        cerr << "PRINT_ITEM" << endl;
+        cerr << "PRINT_ITEM | ";
     }
     PObject* u = pop();
     u->print();
+    if(debug) {
+        cerr << endl;
+    }
 }
 
 void Interpreter::print_newline(int arg) {
@@ -180,7 +204,7 @@ void Interpreter::pop_block(int arg) {
 
 void Interpreter::store_name(int arg) {
     if(debug) {
-        cerr << "STORE_NAME" << endl;
+        cerr << "STORE_NAME | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
     }
     _frame->locals()->put(_frame->names()->get(arg), pop());
 }
@@ -204,7 +228,7 @@ void Interpreter::load_const(int arg) {
 
 void Interpreter::load_name(int arg) {
     if(debug) {
-        cerr << "LOAD_NAME" << endl;
+        cerr << "LOAD_NAME | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
     }
     PObject* name = _frame->names()->get(arg);
     PObject* obj = _frame->locals()->get(name);
@@ -305,6 +329,11 @@ void Interpreter::load_global(int arg) {
         push(obj);
         return;
     }
+    obj = _builtins->get(name);
+    if(obj != Universe::PNone) {
+        push(obj);
+        return;
+    }
     push(Universe::PNone);
 
 }
@@ -331,7 +360,7 @@ void Interpreter::load_fast(int arg) {
 
 void Interpreter::call_function(int op_arg) {
     if(debug) {
-        cerr << "CALL_FUNCTION" << endl;
+        cerr << "CALL_FUNCTION | given args = " << op_arg << endl;
     }
     ArrayList<PObject*>* args = nullptr;
     if(op_arg > 0) {
@@ -348,7 +377,7 @@ void Interpreter::call_function(int op_arg) {
 
 void Interpreter::make_function(int arg) {
     if(debug) {
-        cerr << "MAKE_FUNCTION" << endl;
+        cerr << "MAKE_FUNCTION | default args = " << arg << endl;
     }
     PObject* v = pop();
     FunctionObject* fo = new FunctionObject(v);
@@ -365,7 +394,7 @@ void Interpreter::make_function(int arg) {
         delete defaults;
     }
     else
-        fo->set_defaults(nullptr);
+        fo->set_defaults(new ArrayList<PObject*>(arg));
 
     push(fo);
 }

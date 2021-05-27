@@ -6,7 +6,7 @@ FrameObject::FrameObject(CodeObject* co) {
 
     _consts = co->_consts;
     _names = co->_names;
-    _locals = new Map<PObject*, PObject*>();
+    _locals = new Map<PObject*, PObject*>(obj_eq);
     _globals = _locals;
     _fast_locals = nullptr;
 
@@ -15,15 +15,15 @@ FrameObject::FrameObject(CodeObject* co) {
     _sender = nullptr;
 }
 
-FrameObject::FrameObject(FunctionObject* fo, ArrayList<PObject*>* args) {
-    _stack = new ArrayList<PObject*>();
+FrameObject::FrameObject(FunctionObject* fo, ObjList* args) {
+    _stack = new ObjList();
     _loop_stack = new ArrayList<LoopBlock*>();
 
     _co = fo->_func_code;
 
     _consts = _co->_consts;
     _names = _co->_names;
-    _locals = new Map<PObject*, PObject*>();
+    _locals = new Map<PObject*, PObject*>(obj_eq);
     _globals = fo->globals();
 
     if(_co->_argcount > 0) {
@@ -31,7 +31,7 @@ FrameObject::FrameObject(FunctionObject* fo, ArrayList<PObject*>* args) {
             cerr << "FrameObject: too few arguments" << endl;
             exit(-1);
         }
-        _fast_locals = new ArrayList<PObject*>(_co->_argcount);
+        _fast_locals = new ObjList(_co->_argcount);
         int dft_cnt = fo->_defaults->length();
         int argc_nt = _co->_argcount;
         while(dft_cnt--) {

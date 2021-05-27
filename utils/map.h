@@ -5,6 +5,7 @@
 #include <iostream>
 using namespace std;
 
+
 template<typename K, typename V>
 class MapEntry {
 private:
@@ -22,15 +23,17 @@ public:
 
 template<typename K, typename V>
 class Map {
+    typedef bool(*eq_func_t)(K k1, K k2);
 private:
     MapEntry<K, V>* _entries;
-    int _size;
-    int _length;
+    int             _size;
+    int             _length;
 
+    eq_func_t      _eq;
     /* tmp for array-based implementation */
     void    expand();
 public:
-    Map();
+    Map(eq_func_t eq);
     ~Map();
 
     int     size() { return _size; }
@@ -47,10 +50,11 @@ public:
 };
 
 template<typename K, typename V>
-Map<K, V>::Map() {
+Map<K, V>::Map(eq_func_t eq) {
     _size = 0;
     _length = 2;
     _entries = new MapEntry<K, V>[8];
+    _eq = eq;
 }
 
 template<typename K, typename V>
@@ -65,7 +69,7 @@ void Map<K, V>::put(K k, V v) {
     }
     int i;
     for(i = 0; i < _size; i++) {
-        if(_entries[i].key() == k) {
+        if(_eq(_entries[i].key(), k)) {
             _entries[i].set(k, v);
             break;
         }
@@ -78,7 +82,7 @@ void Map<K, V>::put(K k, V v) {
 template<typename K, typename V>
 V Map<K, V>::get(K k) {
     for(int i = 0; i < _size; i++) {
-        if(_entries[i].key() == k)
+        if(_eq(_entries[i].key(), k))
             return _entries[i].value();
     }
     return Universe::PNone;
@@ -95,6 +99,16 @@ K Map<K, V>::get_key(int index) {
 }
 
 template<typename K, typename V>
+int Map<K, V>::index(K k) {
+    for(int i = 0; i < _size; i++) {
+        if(_eq(_entries[i].key(), k))
+            return i;
+    }
+    return -1;
+}
+
+
+template<typename K, typename V>
 void Map<K, V>::expand() {
     MapEntry<K, V>* p = new MapEntry<K, V>[_length * 2];
     memcpy(p, _entries, sizeof(MapEntry<K, V>) * _length);
@@ -106,7 +120,7 @@ void Map<K, V>::expand() {
 template<typename K, typename V>
 bool Map<K, V>::has_key(K k) {
     for(int i = 0; i < _size; i++) {
-        if(_entries[i].key() == k)
+        if(eq(_entries[i].key(), k))
             return true;
     }
     return false;

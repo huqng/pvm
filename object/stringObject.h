@@ -3,6 +3,7 @@
 
 #include "pObject.h"
 
+/* klass */
 class StringKlass: public Klass {
 private:
     StringKlass();
@@ -24,8 +25,10 @@ public:
     virtual PObject* mul(PObject* x, PObject* y);
     // virtual PObject* div(PObject* x, PObject* y);
     // virtual PObject* mod(PObject* x, PObject* y); 
+    virtual PObject* len(PObject* x);
 };
 
+/* string object */
 class StringObject: public PObject {
 private:
     char* _value;

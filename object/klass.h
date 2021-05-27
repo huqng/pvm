@@ -26,6 +26,8 @@ public:
     virtual PObject* mul(PObject* x, PObject* y) { return nullptr; }
     virtual PObject* div(PObject* x, PObject* y) { return nullptr; }
     virtual PObject* mod(PObject* x, PObject* y) { return nullptr; }
+
+    virtual PObject* len(PObject* x) { return nullptr; }
 };
 
 #endif

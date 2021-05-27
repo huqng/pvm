@@ -6,6 +6,7 @@
 #include <cstring>
 using namespace std;
 
+
 template<typename T>
 class ArrayList {
 private:
@@ -110,5 +111,6 @@ T ArrayList<T>::pop() {
     return array[--_size];
 }
 
+typedef ArrayList<PObject*> ObjList;
 
 #endif

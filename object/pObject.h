@@ -27,6 +27,10 @@ public:
     PObject* ne(PObject* x);
     PObject* ge(PObject* x);
     PObject* le(PObject* x);
+
+    PObject* len();
 };
+
+bool obj_eq(PObject* a, PObject* b);
 
 #endif
