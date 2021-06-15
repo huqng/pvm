@@ -5,6 +5,7 @@
 
 #define BUFFER_LEN 256
 
+/* a utility to read input file */
 class BufferedInputStream {
 private:
     FILE* fp;

@@ -8,15 +8,15 @@ int main() {
     /* .pyc file parser */
     BinaryFileParser* bfp = new BinaryFileParser(bis);
 
-    /* get codeobject */
+    /* parse and get codeobject */
     CodeObject* co = bfp->parse();
 
     /* init environment */
     Universe::genesis();
 
     /* run interpreter */
-    Interpreter interpreter;
-    interpreter.run(co);
+    Interpreter* interpreter = new Interpreter();
+    interpreter->run(co);
 
 
     return 0;

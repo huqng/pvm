@@ -23,17 +23,15 @@ public:
 
 template<typename K, typename V>
 class Map {
-    typedef bool(*eq_func_t)(K k1, K k2);
 private:
     MapEntry<K, V>* _entries;
     int             _size;
-    int             _length;
+    int             _max_size;
 
-    eq_func_t      _eq;
     /* tmp for array-based implementation */
-    void    expand();
+    void            expand();
 public:
-    Map(eq_func_t eq);
+    Map();
     ~Map();
 
     int     size() { return _size; }
@@ -50,11 +48,10 @@ public:
 };
 
 template<typename K, typename V>
-Map<K, V>::Map(eq_func_t eq) {
+Map<K, V>::Map() {
     _size = 0;
-    _length = 2;
+    _max_size = 8;
     _entries = new MapEntry<K, V>[8];
-    _eq = eq;
 }
 
 template<typename K, typename V>
@@ -64,12 +61,12 @@ Map<K, V>::~Map() {
 
 template<typename K, typename V>
 void Map<K, V>::put(K k, V v) {
-    if(_size >= _length) {
+    if(_size >= _max_size) {
         expand();
     }
     int i;
     for(i = 0; i < _size; i++) {
-        if(_eq(_entries[i].key(), k)) {
+        if(_entries[i].key() == k) {
             _entries[i].set(k, v);
             break;
         }
@@ -82,7 +79,7 @@ void Map<K, V>::put(K k, V v) {
 template<typename K, typename V>
 V Map<K, V>::get(K k) {
     for(int i = 0; i < _size; i++) {
-        if(_eq(_entries[i].key(), k))
+        if(_entries[i].key() == k)
             return _entries[i].value();
     }
     return Universe::PNone;
@@ -110,11 +107,11 @@ int Map<K, V>::index(K k) {
 
 template<typename K, typename V>
 void Map<K, V>::expand() {
-    MapEntry<K, V>* p = new MapEntry<K, V>[_length * 2];
-    memcpy(p, _entries, sizeof(MapEntry<K, V>) * _length);
+    MapEntry<K, V>* p = new MapEntry<K, V>[_max_size * 2];
+    memcpy(p, _entries, sizeof(MapEntry<K, V>) * _max_size);
     delete[] _entries;
     _entries = p;
-    _length *= 2;
+    _max_size *= 2;
 }
 
 template<typename K, typename V>

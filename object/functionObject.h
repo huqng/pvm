@@ -1,7 +1,7 @@
 #ifndef _FUNCTION_OBJECT_H
 #define _FUNCTION_OBJECT_H
 
-#include "../code/codeObject.h"
+#include "../object/codeObject.h"
 #include "../utils/map.h"
 
 typedef PObject* (*NFP)(ObjList* args);
@@ -53,7 +53,7 @@ public:
 
     PObject* call(ObjList* args);
 
-    friend class FrameObject;
+    friend class Frame;
 };
 
 #endif

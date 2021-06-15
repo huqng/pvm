@@ -34,18 +34,18 @@ Interpreter::Interpreter() {
     op[131] = &Interpreter::call_function;
     op[132] = &Interpreter::make_function;
 
-    _frame = nullptr;
-    _builtins = new Map<PObject*, PObject*>(obj_eq);
+    _frame = nullptr; /* initialize from codeObject when run() */
+    _builtins = new Map<PObject*, PObject*>();
     _builtins->put(new StringObject("True"), Universe::PTrue);
     _builtins->put(new StringObject("False"), Universe::PFalse);
     _builtins->put(new StringObject("None"), Universe::PNone);
     _builtins->put(new StringObject("len"), new FunctionObject(len));
 
-    debug = 1;
+    debug = 0;
 }
 
 void Interpreter::run(CodeObject* co) {
-    _frame = new FrameObject(co);
+    _frame = new Frame(co);
     eval_frame();
     destroy_frame();
 }
@@ -73,7 +73,7 @@ void Interpreter::build_frame(PObject* callable, ObjList* args) {
         if(debug) {
             cerr << "\t<Non-Native Function>" << endl;
         }
-        FrameObject* frame = new FrameObject((FunctionObject*)callable, args);
+        Frame* frame = new Frame((FunctionObject*)callable, args);
         frame->set_sender(_frame);
         _frame = frame;
     }
@@ -87,10 +87,14 @@ void Interpreter::build_frame(PObject* callable, ObjList* args) {
 
 void Interpreter::eval_frame() {    
     while(_frame->has_more_codes()) {
+
+        /* pc is updated automatically in get_op_code() or get_op_arg() */
         unsigned char op_code = _frame->get_op_code();
 
-        //cout << "opcode = " << (int)op_code << endl;
+        if(debug)
+            cout << setw(8) << _frame->get_pc() << " | " << (int)op_code << ": ";
 
+        /* (optional) op-arg */
         int op_arg = -1;
         bool has_arg = op_code >= HAVE_ARGUMENT;
         if(has_arg) {
@@ -101,18 +105,20 @@ void Interpreter::eval_frame() {
             cout << "Unimplemented opcode [" << (int)op_code << "]" << endl;
         }
 
-        cout << setw(8) << _frame->get_pc();
+        /* op */
         (this->*op[op_code])(op_arg);
     }
 }
 
 void Interpreter::leave_frame(PObject* retv) {
+    /* a frame has a return value */
     destroy_frame();
     push(retv);
 }
 
 void Interpreter::destroy_frame() {
-    FrameObject* tmp = _frame;
+    /* destroy current frame and return to last frame */
+    Frame* tmp = _frame;
     _frame = _frame->sender();
     delete tmp;
 }
@@ -359,6 +365,7 @@ void Interpreter::load_fast(int arg) {
 /* 130 */
 
 void Interpreter::call_function(int op_arg) {
+    /* call function: build a frame with args and enter */
     if(debug) {
         cerr << "CALL_FUNCTION | given args = " << op_arg << endl;
     }

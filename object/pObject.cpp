@@ -78,7 +78,3 @@ PObject* PObject::le(PObject* x) {
 PObject* PObject::len() {
     return _klass->len(this);
 }
-
-bool obj_eq(PObject* a, PObject* b) {
-    return a->eq(b) == Universe::PTrue;
-}

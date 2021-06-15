@@ -1,12 +1,12 @@
-#include "frameObject.h"
+#include "frame.h"
 
-FrameObject::FrameObject(CodeObject* co) {
-    _stack = new ArrayList<PObject*>();
+Frame::Frame(CodeObject* co) {
+    _stack = new ObjList();
     _loop_stack = new ArrayList<LoopBlock*>();
 
     _consts = co->_consts;
     _names = co->_names;
-    _locals = new Map<PObject*, PObject*>(obj_eq);
+    _locals = new Map<PObject*, PObject*>();
     _globals = _locals;
     _fast_locals = nullptr;
 
@@ -15,7 +15,7 @@ FrameObject::FrameObject(CodeObject* co) {
     _sender = nullptr;
 }
 
-FrameObject::FrameObject(FunctionObject* fo, ObjList* args) {
+Frame::Frame(FunctionObject* fo, ObjList* args) {
     _stack = new ObjList();
     _loop_stack = new ArrayList<LoopBlock*>();
 
@@ -23,12 +23,12 @@ FrameObject::FrameObject(FunctionObject* fo, ObjList* args) {
 
     _consts = _co->_consts;
     _names = _co->_names;
-    _locals = new Map<PObject*, PObject*>(obj_eq);
+    _locals = new Map<PObject*, PObject*>();
     _globals = fo->globals();
 
     if(_co->_argcount > 0) {
         if(args->size() + fo->_defaults->size() < _co->_argcount) {
-            cerr << "FrameObject: too few arguments" << endl;
+            cerr << "Frame: too few arguments" << endl;
             exit(-1);
         }
         _fast_locals = new ObjList(_co->_argcount);
@@ -49,19 +49,19 @@ FrameObject::FrameObject(FunctionObject* fo, ObjList* args) {
     _sender = nullptr;
 }
 
-FrameObject::FrameObject() {
+Frame::Frame() {
 
 }
 
-bool FrameObject::has_more_codes() {
+bool Frame::has_more_codes() {
     return _pc < _co->_bytecodes->length();
 }
 
-unsigned char FrameObject::get_op_code() {
+unsigned char Frame::get_op_code() {
     return _co->_bytecodes->value()[_pc++];
 }
 
-int FrameObject::get_op_arg() {
+int Frame::get_op_arg() {
     int byte1 = _co->_bytecodes->value()[_pc++] & 0xFF;
     int byte2 = _co->_bytecodes->value()[_pc++] & 0xFF;
     return byte2 << 8 | byte1;

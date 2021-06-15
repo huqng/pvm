@@ -3,6 +3,7 @@
 #include <iomanip>
 using namespace std;
 
+/* code object klass */
 CodeObjectKlass* CodeObjectKlass::instance = nullptr;
 
 CodeObjectKlass::CodeObjectKlass() {
@@ -15,6 +16,7 @@ CodeObjectKlass* CodeObjectKlass::get_instance() {
     return instance;
 }
 
+/* code object initialize */
 CodeObject::CodeObject(
         int argcount,
         int nlocals,
@@ -73,9 +75,4 @@ void CodeObject::print_details() {
 
     cout << "\t" << setw(12) << "notable: " << "[length = " << _notable->length() << "]" << endl;
     cout << "================= Parse succeed ===============" << endl;
-}
-
-PObject* CodeObject::add(PObject* x) {
-    cout << "error add: Code Object at " << this << endl;
-    exit(-1);
 }

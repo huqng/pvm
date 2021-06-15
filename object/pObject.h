@@ -31,6 +31,4 @@ public:
     PObject* len();
 };
 
-bool obj_eq(PObject* a, PObject* b);
-
 #endif

@@ -1,47 +1,48 @@
-#ifndef _FRAME_OBJECT_H
-#define _FRAME_OBJECT_H
+#ifndef _FRAME_H
+#define _FRAME_H
 
 #include "../object/functionObject.h"
 #include "../utils/map.h"
 
 class LoopBlock;
 
-class FrameObject {
+class Frame {
 private:
 
-    ArrayList<PObject*>*    _stack;
+    ObjList*    _stack;
     ArrayList<LoopBlock*>*  _loop_stack;
 
-    ArrayList<PObject*>*    _consts;
-    ArrayList<PObject*>*    _names;
+    ObjList*    _consts;
+    ObjList*    _names;
 
     Map<PObject*, PObject*>*    _locals;
     Map<PObject*, PObject*>*    _globals;
-    ArrayList<PObject*>*        _fast_locals;
+    ObjList*    _fast_locals;
 
-    CodeObject*             _co;
-    int                     _pc;
+    CodeObject*     _co;
+    int             _pc;
 
-    FrameObject*            _sender;
+    Frame*    _sender;
 public:
-    FrameObject(FunctionObject* fo, ArrayList<PObject*>* args);
-    FrameObject(CodeObject* co);
-    FrameObject();
+    /* can built from functionObject or CodeObject (entry)*/
+    Frame(FunctionObject* fo, ArrayList<PObject*>* args);
+    Frame(CodeObject* co);
+    Frame();
     
     void    set_pc(int x) { _pc = x; }
     int     get_pc() { return _pc; }
 
-    ArrayList<PObject*>*    stack() {
+    ObjList*    stack() {
         return _stack;
     }
     ArrayList<LoopBlock*>*  loop_stack() {
         return _loop_stack;
     }
 
-    ArrayList<PObject*>*    consts() {
+    ObjList*    consts() {
         return _consts;
     }
-    ArrayList<PObject*>*    names() {
+    ObjList*    names() {
         return _names;
     }
     Map<PObject*, PObject*>*    locals() {
@@ -50,7 +51,7 @@ public:
     Map<PObject*, PObject*>*    globals() {
         return _globals;
     }
-    ArrayList<PObject*>*    fast_locals() {
+    ObjList*    fast_locals() {
         return _fast_locals;
     }
 
@@ -58,11 +59,11 @@ public:
     unsigned char   get_op_code();
     int             get_op_arg();
 
-    void set_sender(FrameObject* x) {
+    void set_sender(Frame* x) {
         _sender = x;
     }
     
-    FrameObject* sender() {
+    Frame* sender() {
         return _sender;
     }
 

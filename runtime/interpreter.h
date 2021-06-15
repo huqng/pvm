@@ -2,7 +2,7 @@
 #define _INTERPRETER_H
 
 #include "../utils/map.h"
-#include "frameObject.h"
+#include "frame.h"
 
 class CodeObject;
 
@@ -20,17 +20,17 @@ public:
         unsigned char b_type, 
         unsigned int b_target, 
         int b_level):
-        _type(b_type),
-        _target(b_target),
-        _level(b_level) {
+            _type(b_type),
+            _target(b_target),
+            _level(b_level) {
 
-    }
+        }
 };
 
 class Interpreter {
 private:
     Map<PObject*, PObject*>* _builtins;
-    FrameObject* _frame;
+    Frame* _frame;
     bool        debug;
 
     /* stack op */

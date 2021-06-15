@@ -1,16 +1,15 @@
 #include "binaryFileParser.h"
-#include "../runtime/universe.h"
 
 #include <iomanip>
 
-BinaryFileParser::BinaryFileParser(BufferedInputStream* s): fs(s) {
+BinaryFileParser::BinaryFileParser(BufferedInputStream* s): is(s) {
     _string_table = new ArrayList<PObject*>();
 }
 
 CodeObject* BinaryFileParser::parse() {
-    int magic_number = fs->read_int();
-    int moddate = fs->read_int();
-    char obj_type = fs->read();
+    int magic_number = is->read_int();
+    int moddate = is->read_int();
+    char obj_type = is->read();
 
     cout << setiosflags(ios::left) << hex;
     cout << setw(20) << "Magic number: " << "0x" << magic_number << endl;
@@ -18,22 +17,25 @@ CodeObject* BinaryFileParser::parse() {
 
     if(obj_type == 'c') {
         cout << setw(20) << "Obj-type:" << "\'c\'" << endl;
+        
         CodeObject* result = get_code_object();
 
         result->print_details();
 
         return result;
     }
-    cout << resetiosflags(ios::fmtflags::_S_ios_fmtflags_max);
-    return nullptr;
+    else {
+        cout << "fail to parse" << endl;
+        exit(-1);
+    }
 }
 
 
 CodeObject* BinaryFileParser::get_code_object() {
-    int argcount = fs->read_int();
-    int nlocals = fs->read_int();
-    int stacksize = fs->read_int();
-    int flags = fs->read_int();
+    int argcount = is->read_int();
+    int nlocals = is->read_int();
+    int stacksize = is->read_int();
+    int flags = is->read_int();
 
     StringObject* bytecode = get_byte_code();
     ArrayList<PObject*>*consts = get_consts();
@@ -44,7 +46,7 @@ CodeObject* BinaryFileParser::get_code_object() {
 
     StringObject* file_name = get_file_name();
     StringObject* module_name = get_module_name();
-    int lineno = fs->read_int();
+    int lineno = is->read_int();
     StringObject* notable = get_no_table();
     return new CodeObject(
         argcount,
@@ -65,7 +67,7 @@ CodeObject* BinaryFileParser::get_code_object() {
 }
 
 StringObject* BinaryFileParser::get_byte_code() {
-    char obj_type = fs->read();
+    char obj_type = is->read();
     if(obj_type == 's') {
         return get_string();
     }
@@ -75,7 +77,7 @@ StringObject* BinaryFileParser::get_byte_code() {
         return s;
     }
     else if(obj_type == 'R') {
-        return (StringObject*)_string_table->get(fs->read_int());
+        return (StringObject*)_string_table->get(is->read_int());
     }
     else {
         cerr << "parse error: " << obj_type << endl;
@@ -84,9 +86,9 @@ StringObject* BinaryFileParser::get_byte_code() {
 }
 
 ArrayList<PObject*>* BinaryFileParser::get_consts() {
-    if(fs->read() == '(')
+    if(is->read() == '(')
         return get_tuple();
-    fs->unread();
+    is->unread();
     return NULL;
 }
 
@@ -119,27 +121,27 @@ StringObject* BinaryFileParser::get_no_table() {
 }
 
 StringObject* BinaryFileParser::get_string() {
-    int len = fs->read_int();
+    int len = is->read_int();
     char* buf = new char[len];
     for(int i = 0; i < len; i++)
-        buf[i] = fs->read();
+        buf[i] = is->read();
     StringObject* s =  new StringObject(buf, len);
     delete[] buf;
     return s;
 }
 
 ArrayList<PObject*>* BinaryFileParser::get_tuple() {
-    int length = fs->read_int();
+    int length = is->read_int();
     StringObject* str;
     ArrayList<PObject*>* tuple = new ArrayList<PObject*>();
     for(int i = 0; i < length; i++) {
-        char obj_type = fs->read();
+        char obj_type = is->read();
         switch (obj_type) {
         case 'c':
             tuple->add(get_code_object());
             break;
         case 'i':
-            tuple->add(new integerObject(fs->read_int()));
+            tuple->add(new integerObject(is->read_int()));
             break;
         case 'N':
             tuple->add(Universe::PNone);
@@ -153,7 +155,7 @@ ArrayList<PObject*>* BinaryFileParser::get_tuple() {
             tuple->add(get_string());
             break;
         case 'R':
-            tuple->add(_string_table->get(fs->read_int()));
+            tuple->add(_string_table->get(is->read_int()));
             break;
         default:
             cerr << "parse error: obj_type" << endl;

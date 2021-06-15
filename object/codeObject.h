@@ -3,6 +3,7 @@
 
 #include "../object/stringObject.h"
 #include "../utils/arrayList.h"
+#include "../object/pObject.h"
 
 class CodeObjectKlass: public Klass {
 private:
@@ -18,16 +19,16 @@ protected:
     int                     _nlocals;
     int                     _stacksize;
     int                     _flag;
-    StringObject*                _bytecodes;
+    StringObject*           _bytecodes;
     ArrayList<PObject*>*    _consts;
     ArrayList<PObject*>*    _names;
     ArrayList<PObject*>*    _varnames;
     ArrayList<PObject*>*    _freevars;
     ArrayList<PObject*>*    _cellvars;
-    StringObject*                _file_name;
-    StringObject*                _co_name;
+    StringObject*           _file_name;
+    StringObject*           _co_name;
     int                     _lineno;
-    StringObject*                _notable;
+    StringObject*           _notable;
 public:
     CodeObject(
         int argcount,
@@ -49,9 +50,7 @@ public:
 
     void print_details();
     
-    virtual PObject* add(PObject* x);
-
-    friend class FrameObject;
+    friend class Frame;
     friend class FunctionObject;
 };
 

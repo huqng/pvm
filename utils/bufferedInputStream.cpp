@@ -1,9 +1,7 @@
 #include "bufferedInputStream.h"
-
 #include <iostream>
 
 using namespace std;
-
 
 BufferedInputStream::BufferedInputStream(char const* filename) {
     fp = fopen(filename, "rb");
@@ -22,11 +20,13 @@ BufferedInputStream::~BufferedInputStream() {
 }
 
 unsigned char BufferedInputStream::read() {
+    /* if buffer is full, re-read */
     if(index >= BUFFER_LEN) {
         index = 0;
         index_lim = fread(buffer, 1,BUFFER_LEN, fp);
     }
-    else if(index >= index_lim) {
+    /* if read more than limit, error */
+    if(index >= index_lim) {
         cerr << "unexpected eof" << endl;
         cerr << "lim = " << index_lim << ", index = " << index << endl;
         exit(-1);
@@ -44,6 +44,6 @@ int BufferedInputStream::read_int() {
 }
 
 void BufferedInputStream::unread() {
+    /* should called after read() */
     index--;
 }
-
