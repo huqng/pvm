@@ -141,7 +141,7 @@ ArrayList<PObject*>* BinaryFileParser::get_tuple() {
             tuple->add(get_code_object());
             break;
         case 'i':
-            tuple->add(new integerObject(is->read_int()));
+            tuple->add(new IntegerObject(is->read_int()));
             break;
         case 'N':
             tuple->add(Universe::PNone);

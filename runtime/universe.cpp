@@ -1,12 +1,12 @@
 #include "universe.h"
 
-integerObject* Universe::PFalse = nullptr;
-integerObject* Universe::PTrue = nullptr;
+IntegerObject* Universe::PFalse = nullptr;
+IntegerObject* Universe::PTrue = nullptr;
 PObject* Universe::PNone = nullptr;
 
 void Universe::genesis() {
-    PTrue = new integerObject(1);
-    PFalse = new integerObject(0);
+    PTrue = new IntegerObject(1);
+    PFalse = new IntegerObject(0);
     PNone = new PObject();
 
     ObjDict* klass_dict = new ObjDict(equal2obj);

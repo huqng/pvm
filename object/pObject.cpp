@@ -1,6 +1,6 @@
 #include "pObject.h"
 #include <iostream>
-#include "../runtime/universe.h"
+#include "runtime/universe.h"
 using namespace std;
 
 PObject::PObject() {

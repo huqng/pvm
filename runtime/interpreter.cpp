@@ -1,7 +1,6 @@
-
-#include "../code/opcode.h"
+#include "code/opcode.h"
 #include "interpreter.h"
-#include "../object/functionObject.h"
+#include "functionObject.h"
 #include "universe.h"
 
 #include <iostream>

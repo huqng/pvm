@@ -2,6 +2,8 @@
 
 project(pyvm)
 
+include_directories("./object" "./code" "./runtime" "utils" ".")
+
 add_executable(
     pyvm 
     main.cpp

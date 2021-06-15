@@ -1,7 +1,7 @@
 #ifndef _CLASS_H
 #define _CLASS_H
 
-#include "../utils/map.h"
+#include "utils/map.h"
 
 class StringObject;
 class PObject;

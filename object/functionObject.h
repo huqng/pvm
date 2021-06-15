@@ -1,9 +1,9 @@
 #ifndef _FUNCTION_OBJECT_H
 #define _FUNCTION_OBJECT_H
 
-#include "../object/codeObject.h"
-#include "../utils/map.h"
-#include "../runtime/universe.h"
+#include "object/codeObject.h"
+#include "utils/map.h"
+#include "runtime/universe.h"
 
 typedef PObject* (*NFP)(ObjList* args);
 

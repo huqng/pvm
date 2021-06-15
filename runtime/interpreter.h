@@ -1,7 +1,7 @@
 #ifndef _INTERPRETER_H
 #define _INTERPRETER_H
 
-#include "../utils/map.h"
+#include "utils/map.h"
 #include "frame.h"
 
 class CodeObject;

@@ -1,4 +1,4 @@
-#include "../runtime/universe.h"
+#include "runtime/universe.h"
 #include "integerObject.h"
 
 #include <iostream>
@@ -18,7 +18,7 @@ IntegerKlass* IntegerKlass::get_instance() {
 
 void IntegerKlass::print(PObject* x) {
     assert(x->klass() == (Klass*)this);
-    cout << ((integerObject*)x)->value();
+    cout << ((IntegerObject*)x)->value();
 }
 
 PObject* IntegerKlass::add(PObject* x, PObject* y) {
@@ -26,9 +26,9 @@ PObject* IntegerKlass::add(PObject* x, PObject* y) {
         return Universe::PNone;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
-    integerObject* ix = (integerObject*)x;
-    integerObject* iy = (integerObject*)y;
-    return new integerObject(ix->value() + iy->value());
+    IntegerObject* ix = (IntegerObject*)x;
+    IntegerObject* iy = (IntegerObject*)y;
+    return new IntegerObject(ix->value() + iy->value());
 }
 
 PObject* IntegerKlass::sub(PObject* x, PObject* y) {
@@ -36,9 +36,9 @@ PObject* IntegerKlass::sub(PObject* x, PObject* y) {
         return Universe::PNone;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
-    integerObject* ix = (integerObject*)x;
-    integerObject* iy = (integerObject*)y;
-    return new integerObject(ix->value() - iy->value());
+    IntegerObject* ix = (IntegerObject*)x;
+    IntegerObject* iy = (IntegerObject*)y;
+    return new IntegerObject(ix->value() - iy->value());
 }
 
 PObject* IntegerKlass::mul(PObject* x, PObject* y) {
@@ -46,9 +46,9 @@ PObject* IntegerKlass::mul(PObject* x, PObject* y) {
         return Universe::PNone;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
-    integerObject* ix = (integerObject*)x;
-    integerObject* iy = (integerObject*)y;
-    return new integerObject(ix->value() * iy->value());
+    IntegerObject* ix = (IntegerObject*)x;
+    IntegerObject* iy = (IntegerObject*)y;
+    return new IntegerObject(ix->value() * iy->value());
 }
 
 PObject* IntegerKlass::div(PObject* x, PObject* y) {
@@ -56,9 +56,9 @@ PObject* IntegerKlass::div(PObject* x, PObject* y) {
         return Universe::PNone;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
-    integerObject* ix = (integerObject*)x;
-    integerObject* iy = (integerObject*)y;
-    return new integerObject(ix->value() / iy->value());
+    IntegerObject* ix = (IntegerObject*)x;
+    IntegerObject* iy = (IntegerObject*)y;
+    return new IntegerObject(ix->value() / iy->value());
 }
 
 PObject* IntegerKlass::mod(PObject* x, PObject* y) {
@@ -66,9 +66,9 @@ PObject* IntegerKlass::mod(PObject* x, PObject* y) {
         return Universe::PNone;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
-    integerObject* ix = (integerObject*)x;
-    integerObject* iy = (integerObject*)y;
-    return new integerObject(ix->value() % iy->value());
+    IntegerObject* ix = (IntegerObject*)x;
+    IntegerObject* iy = (IntegerObject*)y;
+    return new IntegerObject(ix->value() % iy->value());
 }
 
 PObject* IntegerKlass::greater(PObject* x, PObject* y) {
@@ -76,8 +76,8 @@ PObject* IntegerKlass::greater(PObject* x, PObject* y) {
         return Universe::PFalse;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
-    integerObject* ix = (integerObject*)x;
-    integerObject* iy = (integerObject*)y;
+    IntegerObject* ix = (IntegerObject*)x;
+    IntegerObject* iy = (IntegerObject*)y;
     return ix->value() > iy->value() ? Universe::PTrue : Universe::PFalse;
 }
 
@@ -86,8 +86,8 @@ PObject* IntegerKlass::less(PObject* x, PObject* y) {
         return Universe::PFalse;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
-    integerObject* ix = (integerObject*)x;
-    integerObject* iy = (integerObject*)y;
+    IntegerObject* ix = (IntegerObject*)x;
+    IntegerObject* iy = (IntegerObject*)y;
     return ix->value() < iy->value() ? Universe::PTrue : Universe::PFalse;
 }
 
@@ -96,8 +96,8 @@ PObject* IntegerKlass::eq(PObject* x, PObject* y) {
         return Universe::PFalse;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
-    integerObject* ix = (integerObject*)x;
-    integerObject* iy = (integerObject*)y;
+    IntegerObject* ix = (IntegerObject*)x;
+    IntegerObject* iy = (IntegerObject*)y;
     return ix->value() == iy->value() ? Universe::PTrue : Universe::PFalse;
 }
 
@@ -106,8 +106,8 @@ PObject* IntegerKlass::ne(PObject* x, PObject* y) {
         return Universe::PFalse;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
-    integerObject* ix = (integerObject*)x;
-    integerObject* iy = (integerObject*)y;
+    IntegerObject* ix = (IntegerObject*)x;
+    IntegerObject* iy = (IntegerObject*)y;
     return ix->value() != iy->value() ? Universe::PTrue : Universe::PFalse;
 }
 
@@ -116,8 +116,8 @@ PObject* IntegerKlass::ge(PObject* x, PObject* y) {
         return Universe::PFalse;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
-    integerObject* ix = (integerObject*)x;
-    integerObject* iy = (integerObject*)y;
+    IntegerObject* ix = (IntegerObject*)x;
+    IntegerObject* iy = (IntegerObject*)y;
     return ix->value() >= iy->value() ? Universe::PTrue : Universe::PFalse;
 }
 
@@ -126,16 +126,16 @@ PObject* IntegerKlass::le(PObject* x, PObject* y) {
         return Universe::PFalse;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
-    integerObject* ix = (integerObject*)x;
-    integerObject* iy = (integerObject*)y;
+    IntegerObject* ix = (IntegerObject*)x;
+    IntegerObject* iy = (IntegerObject*)y;
     return ix->value() <= iy->value() ? Universe::PTrue : Universe::PFalse;
 }
 
-integerObject::integerObject(int x) {
+IntegerObject::IntegerObject(int x) {
     _value = x;
     this->set_klass(IntegerKlass::get_instance());
 }
 
-int integerObject::value() {
+int IntegerObject::value() {
     return _value;
 }

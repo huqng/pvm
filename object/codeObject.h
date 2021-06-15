@@ -1,9 +1,9 @@
 #ifndef _CODE_OBJECT_H
 #define _CODE_OBJECT_H
 
-#include "../object/stringObject.h"
-#include "../utils/arrayList.h"
-#include "../object/pObject.h"
+#include "object/stringObject.h"
+#include "utils/arrayList.h"
+#include "object/pObject.h"
 
 class CodeObjectKlass: public Klass {
 private:

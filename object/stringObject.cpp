@@ -1,4 +1,4 @@
-#include "../runtime/universe.h"
+#include "runtime/universe.h"
 #include "stringObject.h"
 
 #include <cstring>
@@ -75,7 +75,7 @@ PObject* StringKlass::mul(PObject* x, PObject* y) {
 
 PObject* StringKlass::len(PObject* x) {
     assert(x->klass() == this);
-    return new integerObject(((StringObject*)x)->length());
+    return new IntegerObject(((StringObject*)x)->length());
 }
 
 StringObject::StringObject(const char* x) {

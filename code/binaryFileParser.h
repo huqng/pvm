@@ -1,9 +1,9 @@
 #ifndef _BINARY_FILE_PARSER_H
 #define _BINARY_FILE_PARSER_H
 
-#include "../utils/bufferedInputStream.h"
-#include "../object/codeObject.h"
-#include "../runtime/universe.h"
+#include "utils/bufferedInputStream.h"
+#include "object/codeObject.h"
+#include "runtime/universe.h"
 
 class BinaryFileParser {
 private:
