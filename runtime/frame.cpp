@@ -6,7 +6,7 @@ Frame::Frame(CodeObject* co) {
 
     _consts = co->_consts;
     _names = co->_names;
-    _locals = new Map<PObject*, PObject*>();
+    _locals = new Map<PObject*, PObject*>(equal2obj);
     _globals = _locals;
     _fast_locals = nullptr;
 
@@ -23,7 +23,7 @@ Frame::Frame(FunctionObject* fo, ObjList* args) {
 
     _consts = _co->_consts;
     _names = _co->_names;
-    _locals = new Map<PObject*, PObject*>();
+    _locals = new ObjDict(equal2obj);
     _globals = fo->globals();
 
     if(_co->_argcount > 0) {

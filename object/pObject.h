@@ -29,6 +29,10 @@ public:
     PObject* le(PObject* x);
 
     PObject* len();
+
+    PObject* getattr(PObject* x);
 };
+
+bool equal2obj(PObject*, PObject*);
 
 #endif

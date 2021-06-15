@@ -2,6 +2,9 @@
 #define _UNIVERSE_H
 
 #include "../object/integerObject.h"
+#include "../object/stringObject.h"
+#include "../object/functionObject.h"
+#include "../utils/map.h"
 
 class Universe {
 public:

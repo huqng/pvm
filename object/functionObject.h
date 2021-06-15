@@ -3,11 +3,13 @@
 
 #include "../object/codeObject.h"
 #include "../utils/map.h"
+#include "../runtime/universe.h"
 
 typedef PObject* (*NFP)(ObjList* args);
 
 /* native functions */
 PObject* len(ObjList* args);
+PObject* string_upper(ObjList* args);
 
 /* klasses */
 class FunctionKlass: public Klass {
@@ -25,6 +27,15 @@ private:
     static NativeFunctionKlass* instance;
 public:
     static NativeFunctionKlass* get_instance();
+    virtual void print(PObject* x);
+};
+
+class MethodKlass: public Klass {
+private:
+    MethodKlass();
+    static MethodKlass* instance;
+public:
+    static MethodKlass* get_instance();
     virtual void print(PObject* x);
 };
 
@@ -54,6 +65,26 @@ public:
     PObject* call(ObjList* args);
 
     friend class Frame;
+};
+
+/* method object */
+class MethodObject: public PObject {
+friend class MethodKlass;
+private:
+    PObject* _owner;
+    FunctionObject* _func;
+public:
+    MethodObject(FunctionObject* func): _owner(nullptr), _func(func) {
+        set_klass(MethodKlass::get_instance());
+    }
+
+    MethodObject(FunctionObject* func, PObject* owner): _owner(owner), _func(func) {   
+        set_klass(MethodKlass::get_instance());
+    }
+
+    void set_owner(PObject* x)  { _owner = x; }
+    PObject* owner()            { return _owner; }
+    FunctionObject* func()      { return _func; }
 };
 
 #endif

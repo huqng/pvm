@@ -58,6 +58,7 @@ private:
     void    store_global(int);          // 97
     void    load_const(int);            // 100
     void    load_name(int);             // 101
+    void    load_attr(int);             // 106
     void    compare_op(int);            // 107
     void    jump_forward(int);          // 110
     void    jump_absolute(int);         // 113

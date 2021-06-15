@@ -24,6 +24,7 @@ Interpreter::Interpreter() {
     op[97]  = &Interpreter::store_global;
     op[100] = &Interpreter::load_const;
     op[101] = &Interpreter::load_name;
+    op[106] = &Interpreter::load_attr;
     op[107] = &Interpreter::compare_op;
     op[110] = &Interpreter::jump_forward;
     op[113] = &Interpreter::jump_absolute;
@@ -35,7 +36,7 @@ Interpreter::Interpreter() {
     op[132] = &Interpreter::make_function;
 
     _frame = nullptr; /* initialize from codeObject when run() */
-    _builtins = new Map<PObject*, PObject*>();
+    _builtins = new Map<PObject*, PObject*>(equal2obj);
     _builtins->put(new StringObject("True"), Universe::PTrue);
     _builtins->put(new StringObject("False"), Universe::PFalse);
     _builtins->put(new StringObject("None"), Universe::PNone);
@@ -63,6 +64,9 @@ int Interpreter::stack_level() {
 }
 
 void Interpreter::build_frame(PObject* callable, ObjList* args) {
+    /* called in call_function() */
+    /* if no args, args is null */
+    /* callable is either FunctionObject, NativeFunctionObject or MethodObject */
     if(callable->klass() == NativeFunctionKlass::get_instance()) {
         if(debug) {
             cerr << "\t<Native Function>" << endl;
@@ -77,11 +81,24 @@ void Interpreter::build_frame(PObject* callable, ObjList* args) {
         frame->set_sender(_frame);
         _frame = frame;
     }
+    else if(callable->klass() == MethodKlass::get_instance()) {
+        if(debug) {
+            cerr << "\t<Method>";
+        }
+        MethodObject* method = (MethodObject*)callable;
+        if(args == nullptr) {
+            args = new ObjList(1);
+        }
+        args->insert(0, method->owner());
+        build_frame(method->func(), args);
+    }
     else {
-        cerr << "error build_frame, klass = " << callable->klass() << endl;
+        cerr << "Error build_frame, unrecognized klass = " << callable->klass() << endl;
         cerr << "\tinteger klass = " << IntegerKlass::get_instance() << endl;
         cerr << "\tstring klass = " << StringKlass::get_instance() << endl;
-        cerr << "\tstring klass = " << StringKlass::get_instance() << endl;
+        cerr << "\tfunction klass = " << FunctionKlass::get_instance() << endl;
+        cerr << "\tnative function klass = " << NativeFunctionKlass::get_instance() << endl;
+        cerr << "\tmethod klass = " << MethodKlass::get_instance() << endl;
     }
 }
 
@@ -92,7 +109,7 @@ void Interpreter::eval_frame() {
         unsigned char op_code = _frame->get_op_code();
 
         if(debug)
-            cout << setw(8) << _frame->get_pc() << " | " << (int)op_code << ": ";
+            cout << "[" << _frame->get_pc() << "]\t" << (int)op_code << ":\t";
 
         /* (optional) op-arg */
         int op_arg = -1;
@@ -238,22 +255,33 @@ void Interpreter::load_name(int arg) {
     }
     PObject* name = _frame->names()->get(arg);
     PObject* obj = _frame->locals()->get(name);
-    if(obj != Universe::PNone) {
+    if(obj != nullptr) {
         push(obj);
         return;
     }
     obj = _frame->globals()->get(name);
-    if(obj != Universe::PNone) {
+    if(obj != nullptr) {
         push(obj);
         return;
     }
     obj = _builtins->get(name);
-    if(obj != Universe::PNone) {
+    if(obj != nullptr) {
         push(obj);
         return;
     }
     push(Universe::PNone);
 
+}
+
+void Interpreter::load_attr(int arg) {
+    if(debug) {
+        cerr << "LOAD_ATTR | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
+    }
+    PObject* v = pop();
+    PObject* w = _frame->names()->get(arg);
+    PObject* attr = v->getattr(w);
+    /* load from klass_dict to stack */
+    push(attr);
 }
 
 void Interpreter::compare_op(int arg) {
@@ -331,12 +359,12 @@ void Interpreter::load_global(int arg) {
     }
     PObject* name = _frame->names()->get(arg);
     PObject* obj = _frame->globals()->get(name);
-    if(obj != Universe::PNone) {
+    if(obj != nullptr) {
         push(obj);
         return;
     }
     obj = _builtins->get(name);
-    if(obj != Universe::PNone) {
+    if(obj != nullptr) {
         push(obj);
         return;
     }

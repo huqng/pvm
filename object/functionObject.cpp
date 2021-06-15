@@ -6,10 +6,34 @@ using namespace std;
 /* init static klass instance */
 FunctionKlass* FunctionKlass::instance = nullptr;
 NativeFunctionKlass* NativeFunctionKlass::instance = nullptr;
+MethodKlass* MethodKlass::instance = nullptr;
 
 /* native functions */
 PObject* len(ObjList* args) {
     return args->get(0)->len();
+}
+
+PObject* string_upper(ObjList* args) {
+    /* a method in class <str> */
+    /* built to functionObject in Universe::genesis() */
+    PObject* arg = args->get(0);
+    assert(arg->klass() == StringKlass::get_instance());
+    StringObject* str_obj = (StringObject*)arg;
+    int length = str_obj->length();
+    if(length < 0)
+        return Universe::PNone;
+    
+    char* new_str = new char[length];
+    char c;
+    for(int i = 0; i < length; i++) {
+        c = str_obj->value()[i];
+        if(c >= 'a' && c <= 'z')
+            c += ('A' - 'a');
+        new_str[i] = c;
+    }
+    StringObject* s = new StringObject(new_str);
+    delete[] new_str;
+    return s;
 }
 
 /* klasses */
@@ -41,6 +65,21 @@ NativeFunctionKlass* NativeFunctionKlass::get_instance() {
 void NativeFunctionKlass::print(PObject* x) {
     assert(x->klass() == this);
     cout << "native function object at" << x;
+}
+
+MethodKlass::MethodKlass() {
+
+}
+
+MethodKlass* MethodKlass::get_instance() {
+    if(instance == nullptr)
+        instance = new MethodKlass();
+    return instance;
+}
+
+void MethodKlass::print(PObject* x) {
+    assert(x->klass() == this);
+    cout << "method object at " << x;
 }
 
 /* function opject */ 

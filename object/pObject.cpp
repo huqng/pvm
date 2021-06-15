@@ -78,3 +78,24 @@ PObject* PObject::le(PObject* x) {
 PObject* PObject::len() {
     return _klass->len(this);
 }
+
+bool equal2obj(PObject* a, PObject* b) {
+    return a->eq(b) == Universe::PTrue;
+}
+
+
+PObject* PObject::getattr(PObject* x) {
+    PObject* result = Universe::PNone;
+    result = this->_klass->klass_dict()->get(x);
+    /* 
+        if attr is function, make a method, 
+        else return the attr itself. 
+        native function attr is put into klass_dict in Universe::genesis()
+    */
+    if(result->klass() == NativeFunctionKlass::get_instance() || result->klass() == FunctionKlass::get_instance()) {
+        /* method and its owner */
+        result = new MethodObject((FunctionObject*)result, this);
+    }
+
+    return result;
+}

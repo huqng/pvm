@@ -1,16 +1,24 @@
 #ifndef _CLASS_H
 #define _CLASS_H
 
+#include "../utils/map.h"
+
 class StringObject;
 class PObject;
 
 class Klass {
 private:
     StringObject* _name;
+    ObjDict* _klass_dict;
 public:
     Klass() {}
+    
     void            set_name(StringObject* x) { _name = x; }
-    StringObject*    name() { return _name; }
+    StringObject*   name() { return _name; }
+
+    void        set_klass_dict(ObjDict* dict) { _klass_dict = dict; }
+    ObjDict*    klass_dict() { return _klass_dict; }
+
 
     virtual void print(PObject* obj) {}
 
