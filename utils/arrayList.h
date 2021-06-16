@@ -10,10 +10,10 @@ using namespace std;
 template<typename T>
 class ArrayList {
 private:
-    int _length;
+    int _length; /* max size of array */
     T* array;
-    int _size;
-    void expand();
+    int _size; 
+    void expand(); /* used size of array */
 public:
     ArrayList(int n);
     ArrayList();
@@ -99,9 +99,10 @@ T ArrayList<T>::get(int index) {
 
 template<typename T>
 void ArrayList<T>::set(int index, T t) {
-    if(index < 0 && index >= _size) {
-        cerr << "get: invalid index" << endl;
-        exit(-1);
+    if(_size <= index)
+        _size = index + 1;
+    while(_length < _size) {
+        this->expand();
     }
     array[index] = t;
 }

@@ -78,6 +78,22 @@ PObject* StringKlass::len(PObject* x) {
     return new IntegerObject(((StringObject*)x)->length());
 }
 
+PObject* StringKlass::subscr(PObject* obj, PObject* x) {
+    assert(obj->klass() == this);
+    assert(x->klass() == IntegerKlass::get_instance());
+    StringObject* s = (StringObject*)obj;
+    IntegerObject* index = (IntegerObject*)x;
+
+    int i = (index->value()) < 0 ? (index->value() + s->length()) : index->value();
+    if(i < 0 || i >= s->length()) {
+        cerr << "string index out of range" << endl;
+        exit(-1);
+    }
+
+    return new StringObject(s->value() + i, 1);
+}
+
+/* string object */
 StringObject::StringObject(const char* x) {
     _length = strlen(x);
     _value = new char[_length];

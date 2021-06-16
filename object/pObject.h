@@ -29,6 +29,7 @@ public:
     PObject* le(PObject* x);
 
     PObject* len();
+    PObject* subscr(PObject* x); /* subscript */
 
     PObject* getattr(PObject* x);
 };

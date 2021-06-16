@@ -79,6 +79,10 @@ PObject* PObject::len() {
     return _klass->len(this);
 }
 
+PObject* PObject::subscr(PObject* x) {
+    return _klass->subscr(this, x);
+}
+
 bool equal2obj(PObject* a, PObject* b) {
     return a->eq(b) == Universe::PTrue;
 }

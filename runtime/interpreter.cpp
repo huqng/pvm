@@ -1,6 +1,7 @@
-#include "code/opcode.h"
+#include "opcode.h"
 #include "interpreter.h"
 #include "functionObject.h"
+#include "listObject.h"
 #include "universe.h"
 
 #include <iostream>
@@ -14,6 +15,7 @@ Interpreter::Interpreter() {
     
     op[1]   = &Interpreter::pop_top;
     op[23]  = &Interpreter::binary_add;
+    op[25]  = &Interpreter::binary_subscr;
     op[71]  = &Interpreter::print_item;
     op[72]  = &Interpreter::print_newline;
     op[80]  = &Interpreter::break_loop;;
@@ -23,6 +25,7 @@ Interpreter::Interpreter() {
     op[97]  = &Interpreter::store_global;
     op[100] = &Interpreter::load_const;
     op[101] = &Interpreter::load_name;
+    op[103] = &Interpreter::build_list;
     op[106] = &Interpreter::load_attr;
     op[107] = &Interpreter::compare_op;
     op[110] = &Interpreter::jump_forward;
@@ -159,7 +162,7 @@ void Interpreter::pop_top(int arg) {
 
 /* 20 */
 
-void Interpreter::binary_add(int arg) {
+void Interpreter::binary_add(int arg) /* 23 */ {
     if(debug) {
         cerr << "BINARY_ADD" << endl;
     }
@@ -167,6 +170,15 @@ void Interpreter::binary_add(int arg) {
     u = pop();
     v = pop();
     push(v->add(u));
+}
+
+void Interpreter::binary_subscr(int arg) /* 25 */ {
+    if(debug) {
+        cerr << "BINARY_SUBSCR" << endl;
+    }
+    PObject* index = pop();
+    PObject* obj = pop();
+    push(obj->subscr(index));
 }
 
 /* 30 */
@@ -177,8 +189,8 @@ void Interpreter::print_item(int arg) {
     if(debug) {
         cerr << "PRINT_ITEM | ";
     }
-    PObject* u = pop();
-    u->print();
+    PObject* obj = pop();
+    obj->print();
     if(debug) {
         cerr << endl;
     }
@@ -248,7 +260,7 @@ void Interpreter::load_const(int arg) {
     push(v);
 }
 
-void Interpreter::load_name(int arg) {
+void Interpreter::load_name(int arg) /* 101 */ {
     if(debug) {
         cerr << "LOAD_NAME | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
     }
@@ -269,7 +281,17 @@ void Interpreter::load_name(int arg) {
         return;
     }
     push(Universe::PNone);
+}
 
+void Interpreter::build_list(int arg) { /* 103 */
+    if(debug) {
+        cerr << "BUILD_LIST | [" << arg << "]" << endl;
+    }
+    PObject* lst = new ListObject();
+    while(arg--) {
+        ((ListObject*)lst)->set(arg, pop());
+    }
+    push(lst);
 }
 
 void Interpreter::load_attr(int arg) {

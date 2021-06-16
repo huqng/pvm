@@ -1,11 +1,11 @@
 #cmake_minimum_required(VERSION 3.18)
 
-project(pyvm)
+project(pvm)
 
-include_directories("./object" "./code" "./runtime" "utils" ".")
+include_directories("./object" "./code" "./runtime" "./utils" ".")
 
 add_executable(
-    pyvm 
+    pvm 
     main.cpp
     code/binaryFileParser.cpp
     object/codeObject.cpp
@@ -14,6 +14,7 @@ add_executable(
     object/stringObject.cpp
     object/klass.cpp
     object/functionObject.cpp
+    object/listObject.cpp
     utils/bufferedInputStream.cpp
     runtime/frame.cpp
     runtime/interpreter.cpp

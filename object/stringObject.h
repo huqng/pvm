@@ -21,11 +21,9 @@ public:
     virtual PObject* le     (PObject* x, PObject* y);
 
     virtual PObject* add(PObject* x, PObject* y);
-    // virtual PObject* sub(PObject* x, PObject* y);
     virtual PObject* mul(PObject* x, PObject* y);
-    // virtual PObject* div(PObject* x, PObject* y);
-    // virtual PObject* mod(PObject* x, PObject* y); 
     virtual PObject* len(PObject* x);
+    virtual PObject* subscr(PObject* obj, PObject* x);
 };
 
 /* string object */

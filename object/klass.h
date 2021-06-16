@@ -1,7 +1,7 @@
 #ifndef _CLASS_H
 #define _CLASS_H
 
-#include "utils/map.h"
+#include "map.h"
 
 class StringObject;
 class PObject;
@@ -36,6 +36,7 @@ public:
     virtual PObject* mod(PObject* x, PObject* y) { return nullptr; }
 
     virtual PObject* len(PObject* x) { return nullptr; }
+    virtual PObject* subscr(PObject* obj, PObject* index) { return nullptr; }
 };
 
 #endif

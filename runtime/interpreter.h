@@ -49,6 +49,7 @@ private:
     void    unimplemented(int);         // ?
     void    pop_top (int);              // 1
     void    binary_add(int);            // 23
+    void    binary_subscr(int);         // 25
     void    print_item(int);            // 71
     void    print_newline(int);         // 72
     void    break_loop(int);            // 80
@@ -58,6 +59,7 @@ private:
     void    store_global(int);          // 97
     void    load_const(int);            // 100
     void    load_name(int);             // 101
+    void    build_list(int);            // 103
     void    load_attr(int);             // 106
     void    compare_op(int);            // 107
     void    jump_forward(int);          // 110

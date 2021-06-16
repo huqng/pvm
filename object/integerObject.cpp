@@ -1,4 +1,4 @@
-#include "runtime/universe.h"
+#include "universe.h"
 #include "integerObject.h"
 
 #include <iostream>
