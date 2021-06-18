@@ -24,7 +24,7 @@ public:
     Klass*  klass();
     void    set_klass(Klass* x);
     
-    void print();
+    /* operators */
     Object* add(Object* x);
     Object* sub(Object* x);
     Object* mul(Object* x);
@@ -38,9 +38,15 @@ public:
     Object* ge(Object* x);
     Object* le(Object* x);
 
+    /* native function */
+    void print();
     Object* len();
+    
+    /* method */
     Object* subscr(Object* x); /* subscript */
     Object* contains(Object* x);
+    void store_subscr(Object* index, Object* x);
+
 
     Object* getattr(Object* x);
 };

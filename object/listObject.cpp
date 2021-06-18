@@ -61,6 +61,15 @@ Object* ListKlass::contains(Object* obj, Object* x) {
     return Universe::PFalse;
 }
 
+void ListKlass::store_subscr(Object* obj, Object* index, Object* x) {
+    assert(obj->klass() == this);
+    assert(index->klass() == IntegerKlass::get_instance());
+    ListObject* lst = (ListObject*)obj;
+    IntegerObject* tmp = (IntegerObject*)index;
+    int i = (tmp->value()) < 0 ? (tmp->value() + lst->size()) : tmp->value();
+    lst->set(i, x);
+}
+
 /* list object */
 ListObject::ListObject() {
     _inner_list = new ObjList();
@@ -87,6 +96,9 @@ Object* ListObject::get(int index) {
 
 void ListObject::set(int i, Object* obj) {
     this->_inner_list->set(i, obj);
+    for(int i = 0; i < _inner_list->size(); i++) {
+        cout << _inner_list->get(i) << endl;
+    }
 }
 
 Object* ListObject::top() {

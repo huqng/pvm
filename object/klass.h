@@ -20,7 +20,6 @@ public:
     ObjDict*    klass_dict() { return _klass_dict; }
 
 
-    virtual void print(Object* obj) {}
 
     virtual Object* greater(Object* x, Object* y) { return nullptr; }
     virtual Object* less   (Object* x, Object* y) { return nullptr; }
@@ -35,9 +34,12 @@ public:
     virtual Object* div(Object* x, Object* y) { return nullptr; }
     virtual Object* mod(Object* x, Object* y) { return nullptr; }
 
+    virtual void print(Object* obj) {}
     virtual Object* len(Object* x) { return nullptr; }
+    
     virtual Object* subscr(Object* obj, Object* index) { return nullptr; }
     virtual Object* contains(Object* obj, Object* x) { return nullptr; }
+    virtual void store_subscr(Object* obj, Object* index, Object* x) { }
 };
 
 #endif

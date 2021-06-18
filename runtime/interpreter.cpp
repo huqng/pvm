@@ -16,6 +16,7 @@ Interpreter::Interpreter() {
     op[1]   = &Interpreter::pop_top;
     op[23]  = &Interpreter::binary_add;
     op[25]  = &Interpreter::binary_subscr;
+    op[60]  = &Interpreter::store_subscr;
     op[71]  = &Interpreter::print_item;
     op[72]  = &Interpreter::print_newline;
     op[80]  = &Interpreter::break_loop;;
@@ -182,6 +183,22 @@ void Interpreter::binary_subscr(int arg) /* 25 */ {
 }
 
 /* 30 */
+
+/* 40 */
+
+/* 50 */
+
+/* 60 */
+
+void Interpreter::store_subscr(int arg) /* 60 */ {
+    if(debug) {
+        cerr << "STORE_SUBSCR" << endl;
+    }
+    Object* x = pop();
+    Object* obj = pop();
+    Object* index = pop();
+    obj->store_subscr(x, index);
+}
 
 /* 70 */
 

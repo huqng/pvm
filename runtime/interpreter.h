@@ -50,6 +50,7 @@ private:
     void    pop_top (int);              // 1
     void    binary_add(int);            // 23
     void    binary_subscr(int);         // 25
+    void    store_subscr(int);          // 60
     void    print_item(int);            // 71
     void    print_newline(int);         // 72
     void    break_loop(int);            // 80

@@ -108,6 +108,12 @@ Object* Object::contains(Object* x) {
     return _klass->contains(this, x);
 }
 
+void Object::store_subscr(Object* index, Object* x) {
+    _klass->store_subscr(this, index, x);
+}
+
+
+
 bool equal2obj(Object* a, Object* b) {
     return a->eq(b) == Universe::PTrue;
 }

@@ -99,6 +99,10 @@ T ArrayList<T>::get(int index) {
 
 template<typename T>
 void ArrayList<T>::set(int index, T t) {
+    if(index < 0) {
+        cerr << "error arraylist set: index = " << index << endl;
+        exit(-1);
+    }
     if(_size <= index)
         _size = index + 1;
     while(_max_size < _size) {

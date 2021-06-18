@@ -13,9 +13,11 @@ private:
 public:
     static ListKlass* get_instance();
 
+    /* native function & methods*/
     virtual void print(Object* obj);
-    virtual Object* subscr(Object* lst, Object* x);
-    virtual Object* contains(Object* lst, Object* x);
+    virtual Object* subscr(Object* obj, Object* x);
+    virtual Object* contains(Object* obj, Object* x);
+    virtual void store_subscr(Object* obj, Object* x, Object* index);
 };
 
 /* List Object */
