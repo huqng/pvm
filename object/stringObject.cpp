@@ -93,6 +93,22 @@ PObject* StringKlass::subscr(PObject* obj, PObject* x) {
     return new StringObject(s->value() + i, 1);
 }
 
+PObject* StringKlass::contains(PObject* obj, PObject* x) {
+    assert(obj->klass() == this);
+    if(x->klass() != this)
+        return Universe::PFalse;
+    else {
+        StringObject* s = (StringObject*)obj;
+        StringObject* subs = (StringObject*)x;
+        if(strstr(s->value(), subs->value()) != nullptr)
+            return Universe::PTrue;
+        else
+            return Universe::PFalse;
+    }
+    
+}
+
+
 /* string object */
 StringObject::StringObject(const char* x) {
     _length = strlen(x);

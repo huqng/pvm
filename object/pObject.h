@@ -3,6 +3,16 @@
 
 #include "klass.h"
 
+class ObjectKlass: public Klass {
+private:
+    ObjectKlass();
+    static ObjectKlass* instance;
+public:
+    static ObjectKlass* get_instance();
+    virtual void print(PObject*);
+};
+
+
 class PObject {
 private:
     Klass* _klass;
@@ -30,6 +40,7 @@ public:
 
     PObject* len();
     PObject* subscr(PObject* x); /* subscript */
+    PObject* contains(PObject* x);
 
     PObject* getattr(PObject* x);
 };

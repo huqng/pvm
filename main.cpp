@@ -1,5 +1,5 @@
-#include "code/binaryFileParser.h"
-#include "runtime/interpreter.h"
+#include "binaryFileParser.h"
+#include "interpreter.h"
 
 int main() {
     /* a file-read-util */

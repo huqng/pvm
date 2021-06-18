@@ -24,6 +24,7 @@ public:
     virtual PObject* mul(PObject* x, PObject* y);
     virtual PObject* len(PObject* x);
     virtual PObject* subscr(PObject* obj, PObject* x);
+    virtual PObject* contains(PObject* obj, PObject* x);
 };
 
 /* string object */

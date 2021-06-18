@@ -154,6 +154,8 @@ enum {
     NOT_EQUAL,
     GREATER,
     GREATER_EQUAL,
+    IN,
+    NOT_IN,
     IS = 8,
     IS_NOT
 };

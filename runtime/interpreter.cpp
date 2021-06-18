@@ -331,6 +331,17 @@ void Interpreter::compare_op(int arg) {
     case GREATER:
         push(v->greater(u));
         break;
+    case IN:
+        /* v in u */
+        push(u->contains(v));
+        break;
+    case NOT_IN:
+        if(u->contains(v) == Universe::PTrue)
+            push(Universe::PFalse);
+        else
+            push(Universe::PTrue);
+
+        break;
     case IS:
         if(v == u)
             push(Universe::PTrue);

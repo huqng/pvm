@@ -1,10 +1,31 @@
 #include "pObject.h"
 #include <iostream>
-#include "runtime/universe.h"
+#include <cassert>
+#include "universe.h"
 using namespace std;
 
-PObject::PObject() {
+/* object klass */
+ObjectKlass* ObjectKlass::instance = nullptr;
 
+ObjectKlass::ObjectKlass() {
+
+}
+
+ObjectKlass* ObjectKlass::get_instance() {
+    if(instance == nullptr) 
+        instance = new ObjectKlass();
+    return instance;
+}
+
+void ObjectKlass::print(PObject* obj) {
+    assert((obj->klass() == this));
+    cout << "<Object>";
+}
+
+/* Object */
+
+PObject::PObject() {
+    set_klass(ObjectKlass::get_instance());
 }
 
 PObject::~PObject() {
@@ -81,6 +102,10 @@ PObject* PObject::len() {
 
 PObject* PObject::subscr(PObject* x) {
     return _klass->subscr(this, x);
+}
+
+PObject* PObject::contains(PObject* x) {
+    return _klass->contains(this, x);
 }
 
 bool equal2obj(PObject* a, PObject* b) {

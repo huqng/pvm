@@ -1,11 +1,11 @@
 #ifndef _FUNCTION_OBJECT_H
 #define _FUNCTION_OBJECT_H
 
-#include "object/codeObject.h"
-#include "utils/map.h"
-#include "runtime/universe.h"
+#include "codeObject.h"
+#include "map.h"
+#include "universe.h"
 
-typedef PObject* (*NFP)(ObjList* args);
+typedef PObject* (*NativeFunction)(ObjList* args);
 
 /* native functions */
 PObject* len(ObjList* args);
@@ -49,11 +49,11 @@ private:
     Map<PObject*, PObject*>* _globals; 
     ObjList*        _defaults;
 
-    NFP             _native_func;
+    NativeFunction             _native_func;
 
 public: 
     FunctionObject(PObject* co);
-    FunctionObject(NFP nfp);
+    FunctionObject(NativeFunction nfp);
     //FunctionObject(Klass* klass);
 
     StringObject*   func_name();

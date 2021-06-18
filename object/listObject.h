@@ -14,7 +14,8 @@ public:
     static ListKlass* get_instance();
 
     virtual void print(PObject* obj);
-    virtual PObject* subscr(PObject* lst, PObject* index);
+    virtual PObject* subscr(PObject* lst, PObject* x);
+    virtual PObject* contains(PObject* lst, PObject* x);
 };
 
 /* List Object */
@@ -33,5 +34,8 @@ public:
     void set(int i, PObject* obj);
     PObject* top();
 };
+
+/* built in methods */
+PObject* list_append(ObjList*);
 
 #endif

@@ -37,6 +37,7 @@ public:
 
     virtual PObject* len(PObject* x) { return nullptr; }
     virtual PObject* subscr(PObject* obj, PObject* index) { return nullptr; }
+    virtual PObject* contains(PObject* obj, PObject* x) { return nullptr; }
 };
 
 #endif

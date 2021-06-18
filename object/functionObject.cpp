@@ -96,7 +96,7 @@ FunctionObject::FunctionObject(PObject* x) {
     set_klass(FunctionKlass::get_instance());
 }
 
-FunctionObject::FunctionObject(NFP nfp) {
+FunctionObject::FunctionObject(NativeFunction nfp) {
     _func_code  =   nullptr;
     _func_name  =   nullptr;
     _flags      =   0;

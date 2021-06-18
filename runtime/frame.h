@@ -1,8 +1,8 @@
 #ifndef _FRAME_H
 #define _FRAME_H
 
-#include "object/functionObject.h"
-#include "utils/map.h"
+#include "functionObject.h"
+#include "map.h"
 
 class LoopBlock;
 

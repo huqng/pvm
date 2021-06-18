@@ -8,7 +8,9 @@ using namespace std;
 ListKlass* ListKlass::instance = nullptr;
 
 ListKlass::ListKlass() {
-
+    ObjDict* klass_dict = new ObjDict(equal2obj);
+    klass_dict->put(new StringObject("append"), new FunctionObject(list_append));
+    set_klass_dict(klass_dict);
 }
 
 ListKlass* ListKlass::get_instance() {
@@ -18,15 +20,20 @@ ListKlass* ListKlass::get_instance() {
 }
 
 void ListKlass::print(PObject* obj) {
+
+
     assert(obj->klass() == ListKlass::get_instance());
     ListObject* lst = (ListObject*)obj;
+
     cout << "[";
+   
     if(lst->size() > 0)
         lst->get(0)->print();
     for(int i = 1; i < lst->size(); i++) {
         cout << ", ";
         lst->get(i)->print();
     }
+
     cout << "]";
 }
 
@@ -44,6 +51,16 @@ PObject* ListKlass::subscr(PObject* obj, PObject* x) {
     return lst->get(index->value());
 }
 
+PObject* ListKlass::contains(PObject* obj, PObject* x) {
+    assert(obj->klass() == this);
+    ListObject* lst = (ListObject*)obj;
+    for(int i = 0; i < lst->inner_list()->size(); i++) {
+        if(equal2obj(lst->inner_list()->get(i), x)) {
+            return Universe::PTrue;
+        }
+    }
+    return Universe::PFalse;
+}
 
 /* list object */
 ListObject::ListObject() {
@@ -75,4 +92,11 @@ void ListObject::set(int i, PObject* obj) {
 
 PObject* ListObject::top() {
     return this->get(this->size());
+}
+
+/* built in methods */
+PObject* list_append(ObjList* args) {
+    assert(args->size() == 2);
+    ((ListObject*)(args->get(0)))->inner_list()->add(args->get(1));
+    return Universe::PNone;
 }
