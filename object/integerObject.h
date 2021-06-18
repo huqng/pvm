@@ -1,7 +1,7 @@
 #ifndef _INTEGER_OBJECT_H
 #define _INTEGER_OBJECT_H
 
-#include "pObject.h"
+#include "object.h"
 
 class IntegerKlass: public Klass {
 private:
@@ -11,23 +11,23 @@ private:
 public:
     static IntegerKlass* get_instance();
 
-    virtual void print(PObject* x);
+    virtual void print(Object* x);
 
-    virtual PObject* greater(PObject* x, PObject* y);
-    virtual PObject* less   (PObject* x, PObject* y);
-    virtual PObject* eq     (PObject* x, PObject* y);
-    virtual PObject* ne     (PObject* x, PObject* y);
-    virtual PObject* ge     (PObject* x, PObject* y);
-    virtual PObject* le     (PObject* x, PObject* y);
+    virtual Object* greater(Object* x, Object* y);
+    virtual Object* less   (Object* x, Object* y);
+    virtual Object* eq     (Object* x, Object* y);
+    virtual Object* ne     (Object* x, Object* y);
+    virtual Object* ge     (Object* x, Object* y);
+    virtual Object* le     (Object* x, Object* y);
 
-    virtual PObject* add(PObject* x, PObject* y);
-    virtual PObject* sub(PObject* x, PObject* y);
-    virtual PObject* mul(PObject* x, PObject* y);
-    virtual PObject* div(PObject* x, PObject* y);
-    virtual PObject* mod(PObject* x, PObject* y); 
+    virtual Object* add(Object* x, Object* y);
+    virtual Object* sub(Object* x, Object* y);
+    virtual Object* mul(Object* x, Object* y);
+    virtual Object* div(Object* x, Object* y);
+    virtual Object* mod(Object* x, Object* y); 
 };
 
-class IntegerObject: public PObject {
+class IntegerObject: public Object {
 private:
     int _value;
 public:

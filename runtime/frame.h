@@ -15,8 +15,8 @@ private:
     ObjList*    _consts;
     ObjList*    _names;
 
-    Map<PObject*, PObject*>*    _locals;
-    Map<PObject*, PObject*>*    _globals;
+    Map<Object*, Object*>*    _locals;
+    Map<Object*, Object*>*    _globals;
     ObjList*    _fast_locals;
 
     CodeObject*     _co;
@@ -25,7 +25,7 @@ private:
     Frame*    _sender;
 public:
     /* can built from functionObject or CodeObject (entry)*/
-    Frame(FunctionObject* fo, ArrayList<PObject*>* args);
+    Frame(FunctionObject* fo, ArrayList<Object*>* args);
     Frame(CodeObject* co);
     Frame();
     
@@ -45,10 +45,10 @@ public:
     ObjList*    names() {
         return _names;
     }
-    Map<PObject*, PObject*>*    locals() {
+    Map<Object*, Object*>*    locals() {
         return _locals;
     }
-    Map<PObject*, PObject*>*    globals() {
+    Map<Object*, Object*>*    globals() {
         return _globals;
     }
     ObjList*    fast_locals() {

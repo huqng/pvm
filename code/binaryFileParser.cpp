@@ -3,7 +3,7 @@
 #include <iomanip>
 
 BinaryFileParser::BinaryFileParser(BufferedInputStream* s): is(s) {
-    _string_table = new ArrayList<PObject*>();
+    _string_table = new ArrayList<Object*>();
 }
 
 CodeObject* BinaryFileParser::parse() {
@@ -38,11 +38,11 @@ CodeObject* BinaryFileParser::get_code_object() {
     int flags = is->read_int();
 
     StringObject* bytecode = get_byte_code();
-    ArrayList<PObject*>*consts = get_consts();
-    ArrayList<PObject*>*names = get_names();
-    ArrayList<PObject*>*var_names = get_var_names();
-    ArrayList<PObject*>*free_vars = get_free_vars();
-    ArrayList<PObject*>*cell_vars = get_cell_vars();
+    ArrayList<Object*>*consts = get_consts();
+    ArrayList<Object*>*names = get_names();
+    ArrayList<Object*>*var_names = get_var_names();
+    ArrayList<Object*>*free_vars = get_free_vars();
+    ArrayList<Object*>*cell_vars = get_cell_vars();
 
     StringObject* file_name = get_file_name();
     StringObject* module_name = get_module_name();
@@ -73,7 +73,7 @@ StringObject* BinaryFileParser::get_byte_code() {
     }
     else if(obj_type == 't') {
         StringObject* s = get_string();
-        _string_table->add(s);
+        _string_table->append(s);
         return s;
     }
     else if(obj_type == 'R') {
@@ -85,26 +85,26 @@ StringObject* BinaryFileParser::get_byte_code() {
     }
 }
 
-ArrayList<PObject*>* BinaryFileParser::get_consts() {
+ArrayList<Object*>* BinaryFileParser::get_consts() {
     if(is->read() == '(')
         return get_tuple();
     is->unread();
     return NULL;
 }
 
-ArrayList<PObject*>* BinaryFileParser::get_names() {
+ArrayList<Object*>* BinaryFileParser::get_names() {
     return get_consts();
 }
 
-ArrayList<PObject*>* BinaryFileParser::get_var_names() {
+ArrayList<Object*>* BinaryFileParser::get_var_names() {
     return get_consts();
 }
 
-ArrayList<PObject*>* BinaryFileParser::get_free_vars() {
+ArrayList<Object*>* BinaryFileParser::get_free_vars() {
     return get_consts();
 }
 
-ArrayList<PObject*>* BinaryFileParser::get_cell_vars() {
+ArrayList<Object*>* BinaryFileParser::get_cell_vars() {
     return get_consts();
 }
 
@@ -130,32 +130,32 @@ StringObject* BinaryFileParser::get_string() {
     return s;
 }
 
-ArrayList<PObject*>* BinaryFileParser::get_tuple() {
+ArrayList<Object*>* BinaryFileParser::get_tuple() {
     int length = is->read_int();
     StringObject* str;
-    ArrayList<PObject*>* tuple = new ArrayList<PObject*>();
+    ArrayList<Object*>* tuple = new ArrayList<Object*>();
     for(int i = 0; i < length; i++) {
         char obj_type = is->read();
         switch (obj_type) {
         case 'c':
-            tuple->add(get_code_object());
+            tuple->append(get_code_object());
             break;
         case 'i':
-            tuple->add(new IntegerObject(is->read_int()));
+            tuple->append(new IntegerObject(is->read_int()));
             break;
         case 'N':
-            tuple->add(Universe::PNone);
+            tuple->append(Universe::PNone);
             break;
         case 't':
             str = get_string();
-            tuple->add(str);
-            _string_table->add(str);
+            tuple->append(str);
+            _string_table->append(str);
             break;
         case 's':
-            tuple->add(get_string());
+            tuple->append(get_string());
             break;
         case 'R':
-            tuple->add(_string_table->get(is->read_int()));
+            tuple->append(_string_table->get(is->read_int()));
             break;
         default:
             cerr << "parse error: obj_type" << endl;

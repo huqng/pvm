@@ -29,18 +29,18 @@ public:
 
 class Interpreter {
 private:
-    Map<PObject*, PObject*>* _builtins;
+    Map<Object*, Object*>* _builtins;
     Frame* _frame;
     bool        debug;
 
     /* stack op */
-    void        push(PObject* p);
-    PObject*    pop();
+    void        push(Object* p);
+    Object*    pop();
     int         stack_level();
     
-    void        build_frame(PObject* callable, ArrayList<PObject*>* args);
+    void        build_frame(Object* callable, ArrayList<Object*>* args);
     void        eval_frame();
-    void        leave_frame(PObject* retv);
+    void        leave_frame(Object* retv);
     void        destroy_frame();
 
     /* instructions */

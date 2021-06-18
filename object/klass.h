@@ -4,7 +4,7 @@
 #include "map.h"
 
 class StringObject;
-class PObject;
+class Object;
 
 class Klass {
 private:
@@ -20,24 +20,24 @@ public:
     ObjDict*    klass_dict() { return _klass_dict; }
 
 
-    virtual void print(PObject* obj) {}
+    virtual void print(Object* obj) {}
 
-    virtual PObject* greater(PObject* x, PObject* y) { return nullptr; }
-    virtual PObject* less   (PObject* x, PObject* y) { return nullptr; }
-    virtual PObject* eq     (PObject* x, PObject* y) { return nullptr; }
-    virtual PObject* ne     (PObject* x, PObject* y) { return nullptr; }
-    virtual PObject* ge     (PObject* x, PObject* y) { return nullptr; }
-    virtual PObject* le     (PObject* x, PObject* y) { return nullptr; }
+    virtual Object* greater(Object* x, Object* y) { return nullptr; }
+    virtual Object* less   (Object* x, Object* y) { return nullptr; }
+    virtual Object* eq     (Object* x, Object* y) { return nullptr; }
+    virtual Object* ne     (Object* x, Object* y) { return nullptr; }
+    virtual Object* ge     (Object* x, Object* y) { return nullptr; }
+    virtual Object* le     (Object* x, Object* y) { return nullptr; }
 
-    virtual PObject* add(PObject* x, PObject* y) { return nullptr; }
-    virtual PObject* sub(PObject* x, PObject* y) { return nullptr; }
-    virtual PObject* mul(PObject* x, PObject* y) { return nullptr; }
-    virtual PObject* div(PObject* x, PObject* y) { return nullptr; }
-    virtual PObject* mod(PObject* x, PObject* y) { return nullptr; }
+    virtual Object* add(Object* x, Object* y) { return nullptr; }
+    virtual Object* sub(Object* x, Object* y) { return nullptr; }
+    virtual Object* mul(Object* x, Object* y) { return nullptr; }
+    virtual Object* div(Object* x, Object* y) { return nullptr; }
+    virtual Object* mod(Object* x, Object* y) { return nullptr; }
 
-    virtual PObject* len(PObject* x) { return nullptr; }
-    virtual PObject* subscr(PObject* obj, PObject* index) { return nullptr; }
-    virtual PObject* contains(PObject* obj, PObject* x) { return nullptr; }
+    virtual Object* len(Object* x) { return nullptr; }
+    virtual Object* subscr(Object* obj, Object* index) { return nullptr; }
+    virtual Object* contains(Object* obj, Object* x) { return nullptr; }
 };
 
 #endif

@@ -16,12 +16,12 @@ IntegerKlass* IntegerKlass::get_instance() {
     return instance;
 }
 
-void IntegerKlass::print(PObject* x) {
+void IntegerKlass::print(Object* x) {
     assert(x->klass() == (Klass*)this);
-    cout << ((IntegerObject*)x)->value();
+    cout << ((IntegerObject*)x)->value();    
 }
 
-PObject* IntegerKlass::add(PObject* x, PObject* y) {
+Object* IntegerKlass::add(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::PNone;
     assert(x->klass() == (Klass*)this);
@@ -31,7 +31,7 @@ PObject* IntegerKlass::add(PObject* x, PObject* y) {
     return new IntegerObject(ix->value() + iy->value());
 }
 
-PObject* IntegerKlass::sub(PObject* x, PObject* y) {
+Object* IntegerKlass::sub(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::PNone;
     assert(x->klass() == (Klass*)this);
@@ -41,7 +41,7 @@ PObject* IntegerKlass::sub(PObject* x, PObject* y) {
     return new IntegerObject(ix->value() - iy->value());
 }
 
-PObject* IntegerKlass::mul(PObject* x, PObject* y) {
+Object* IntegerKlass::mul(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::PNone;
     assert(x->klass() == (Klass*)this);
@@ -51,7 +51,7 @@ PObject* IntegerKlass::mul(PObject* x, PObject* y) {
     return new IntegerObject(ix->value() * iy->value());
 }
 
-PObject* IntegerKlass::div(PObject* x, PObject* y) {
+Object* IntegerKlass::div(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::PNone;
     assert(x->klass() == (Klass*)this);
@@ -61,7 +61,7 @@ PObject* IntegerKlass::div(PObject* x, PObject* y) {
     return new IntegerObject(ix->value() / iy->value());
 }
 
-PObject* IntegerKlass::mod(PObject* x, PObject* y) {
+Object* IntegerKlass::mod(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::PNone;
     assert(x->klass() == (Klass*)this);
@@ -71,7 +71,7 @@ PObject* IntegerKlass::mod(PObject* x, PObject* y) {
     return new IntegerObject(ix->value() % iy->value());
 }
 
-PObject* IntegerKlass::greater(PObject* x, PObject* y) {
+Object* IntegerKlass::greater(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::PFalse;
     assert(x->klass() == (Klass*)this);
@@ -81,7 +81,7 @@ PObject* IntegerKlass::greater(PObject* x, PObject* y) {
     return ix->value() > iy->value() ? Universe::PTrue : Universe::PFalse;
 }
 
-PObject* IntegerKlass::less(PObject* x, PObject* y) {
+Object* IntegerKlass::less(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::PFalse;
     assert(x->klass() == (Klass*)this);
@@ -91,7 +91,7 @@ PObject* IntegerKlass::less(PObject* x, PObject* y) {
     return ix->value() < iy->value() ? Universe::PTrue : Universe::PFalse;
 }
 
-PObject* IntegerKlass::eq(PObject* x, PObject* y) {
+Object* IntegerKlass::eq(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::PFalse;
     assert(x->klass() == (Klass*)this);
@@ -101,7 +101,7 @@ PObject* IntegerKlass::eq(PObject* x, PObject* y) {
     return ix->value() == iy->value() ? Universe::PTrue : Universe::PFalse;
 }
 
-PObject* IntegerKlass::ne(PObject* x, PObject* y) {
+Object* IntegerKlass::ne(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::PFalse;
     assert(x->klass() == (Klass*)this);
@@ -111,7 +111,7 @@ PObject* IntegerKlass::ne(PObject* x, PObject* y) {
     return ix->value() != iy->value() ? Universe::PTrue : Universe::PFalse;
 }
 
-PObject* IntegerKlass::ge(PObject* x, PObject* y) {
+Object* IntegerKlass::ge(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::PFalse;
     assert(x->klass() == (Klass*)this);
@@ -121,7 +121,7 @@ PObject* IntegerKlass::ge(PObject* x, PObject* y) {
     return ix->value() >= iy->value() ? Universe::PTrue : Universe::PFalse;
 }
 
-PObject* IntegerKlass::le(PObject* x, PObject* y) {
+Object* IntegerKlass::le(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::PFalse;
     assert(x->klass() == (Klass*)this);

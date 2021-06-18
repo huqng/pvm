@@ -18,22 +18,22 @@ StringKlass* StringKlass::get_instance() {
     return instance;
 }
 
-void StringKlass::print(PObject* x) {
+void StringKlass::print(Object* x) {
     assert(x->klass() == (Klass*)this);
     for(int i = 0; i < ((StringObject*)x)->length(); i++) {
         cout << ((StringObject*)x)->value()[i];
     }
 }
 
-PObject* StringKlass::greater(PObject* x, PObject* y) {
+Object* StringKlass::greater(Object* x, Object* y) {
     return 0;    
 }
 
-PObject* StringKlass::less(PObject* x, PObject* y) {
+Object* StringKlass::less(Object* x, Object* y) {
     return 0;
 }
 
-PObject* StringKlass::eq(PObject* x, PObject* y) {
+Object* StringKlass::eq(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::PFalse;
     StringObject* sx = (StringObject*)x;
@@ -50,35 +50,35 @@ PObject* StringKlass::eq(PObject* x, PObject* y) {
     return Universe::PTrue;
 }
 
-PObject* StringKlass::ne(PObject* x, PObject* y) {
+Object* StringKlass::ne(Object* x, Object* y) {
     if(eq(x, y) == Universe::PFalse)
         return Universe::PTrue;
     else    
         return Universe::PFalse;
 }
 
-PObject* StringKlass::ge(PObject* x, PObject* y) {
+Object* StringKlass::ge(Object* x, Object* y) {
     return 0;
 }
 
-PObject* StringKlass::le(PObject* x, PObject* y) {
+Object* StringKlass::le(Object* x, Object* y) {
     return 0;
 }
 
-PObject* StringKlass::add(PObject* x, PObject* y) {
+Object* StringKlass::add(Object* x, Object* y) {
     return 0;
 }
 
-PObject* StringKlass::mul(PObject* x, PObject* y) {
+Object* StringKlass::mul(Object* x, Object* y) {
     return 0;
 }
 
-PObject* StringKlass::len(PObject* x) {
+Object* StringKlass::len(Object* x) {
     assert(x->klass() == this);
     return new IntegerObject(((StringObject*)x)->length());
 }
 
-PObject* StringKlass::subscr(PObject* obj, PObject* x) {
+Object* StringKlass::subscr(Object* obj, Object* x) {
     assert(obj->klass() == this);
     assert(x->klass() == IntegerKlass::get_instance());
     StringObject* s = (StringObject*)obj;
@@ -93,7 +93,7 @@ PObject* StringKlass::subscr(PObject* obj, PObject* x) {
     return new StringObject(s->value() + i, 1);
 }
 
-PObject* StringKlass::contains(PObject* obj, PObject* x) {
+Object* StringKlass::contains(Object* obj, Object* x) {
     assert(obj->klass() == this);
     if(x->klass() != this)
         return Universe::PFalse;
@@ -111,16 +111,16 @@ PObject* StringKlass::contains(PObject* obj, PObject* x) {
 
 /* string object */
 StringObject::StringObject(const char* x) {
-    _length = strlen(x);
-    _value = new char[_length];
+    _max_size = strlen(x);
+    _value = new char[_max_size];
     strcpy(_value, x);
     this->set_klass(StringKlass::get_instance());
 }
 
 StringObject::StringObject(const char* x, const int length) {
-    _length = length;
-    _value = new char[_length];
-    memcpy(_value, x, _length);
+    _max_size = length;
+    _value = new char[_max_size];
+    memcpy(_value, x, _max_size);
     this->set_klass(StringKlass::get_instance());
 }
 
@@ -129,5 +129,5 @@ const char* StringObject::value() {
 }
 
 const int StringObject::length() {
-    return _length;
+    return _max_size;
 }

@@ -3,7 +3,6 @@
 
 #include "stringObject.h"
 #include "arrayList.h"
-#include "pObject.h"
 
 class CodeObjectKlass: public Klass {
 private:
@@ -13,18 +12,18 @@ public:
     static CodeObjectKlass* get_instance();
 };
 
-class CodeObject: public PObject {
+class CodeObject: public Object {
 protected:
     int                     _argcount;
     int                     _nlocals;
     int                     _stacksize;
     int                     _flag;
     StringObject*           _bytecodes;
-    ArrayList<PObject*>*    _consts;
-    ArrayList<PObject*>*    _names;
-    ArrayList<PObject*>*    _varnames;
-    ArrayList<PObject*>*    _freevars;
-    ArrayList<PObject*>*    _cellvars;
+    ArrayList<Object*>*    _consts;
+    ArrayList<Object*>*    _names;
+    ArrayList<Object*>*    _varnames;
+    ArrayList<Object*>*    _freevars;
+    ArrayList<Object*>*    _cellvars;
     StringObject*           _file_name;
     StringObject*           _co_name;
     int                     _lineno;
@@ -36,11 +35,11 @@ public:
         int stacksize,
         int flag,
         StringObject* bytecodes,
-        ArrayList<PObject*>* consts,
-        ArrayList<PObject*>* names,
-        ArrayList<PObject*>* varnames,
-        ArrayList<PObject*>* freevars,
-        ArrayList<PObject*>* cellvars,
+        ArrayList<Object*>* consts,
+        ArrayList<Object*>* names,
+        ArrayList<Object*>* varnames,
+        ArrayList<Object*>* freevars,
+        ArrayList<Object*>* cellvars,
         StringObject* file_name,
         StringObject* co_name,
         int lineno,

@@ -1,7 +1,7 @@
 #ifndef _LIST_OBJECT_H
 #define _LIST_OBJECT_H
 
-#include "pObject.h"
+#include "object.h"
 #include "arrayList.h"
 #include "universe.h"
 
@@ -13,13 +13,13 @@ private:
 public:
     static ListKlass* get_instance();
 
-    virtual void print(PObject* obj);
-    virtual PObject* subscr(PObject* lst, PObject* x);
-    virtual PObject* contains(PObject* lst, PObject* x);
+    virtual void print(Object* obj);
+    virtual Object* subscr(Object* lst, Object* x);
+    virtual Object* contains(Object* lst, Object* x);
 };
 
 /* List Object */
-class ListObject: public PObject {
+class ListObject: public Object {
 private:
     ObjList* _inner_list;
 public:
@@ -28,14 +28,15 @@ public:
     ObjList* inner_list() { return _inner_list; }
 
     int size() { return _inner_list->size(); }
-    void append(PObject* obj) { _inner_list->add(obj); }
-    PObject* pop() { return _inner_list->pop(); }
-    PObject* get(int index);
-    void set(int i, PObject* obj);
-    PObject* top();
+    void append(Object* obj) { _inner_list->append(obj); }
+    Object* pop() { return _inner_list->pop(); }
+    Object* get(int index);
+    void set(int i, Object* obj);
+    Object* top();
 };
 
-/* built in methods */
-PObject* list_append(ObjList*);
+/* built in methods, should add to klass_dict */
+Object* list_append(ObjList*);
+Object* list_insert(ObjList* args);
 
 #endif

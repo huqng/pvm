@@ -6,7 +6,7 @@ Frame::Frame(CodeObject* co) {
 
     _consts = co->_consts;
     _names = co->_names;
-    _locals = new Map<PObject*, PObject*>(equal2obj);
+    _locals = new Map<Object*, Object*>(equal2obj);
     _globals = _locals;
     _fast_locals = nullptr;
 

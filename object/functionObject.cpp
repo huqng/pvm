@@ -9,14 +9,14 @@ NativeFunctionKlass* NativeFunctionKlass::instance = nullptr;
 MethodKlass* MethodKlass::instance = nullptr;
 
 /* native functions */
-PObject* len(ObjList* args) {
+Object* len(ObjList* args) {
     return args->get(0)->len();
 }
 
-PObject* string_upper(ObjList* args) {
+Object* string_upper(ObjList* args) {
     /* a method in class <str> */
     /* built to functionObject in Universe::genesis() */
-    PObject* arg = args->get(0);
+    Object* arg = args->get(0);
     assert(arg->klass() == StringKlass::get_instance());
     StringObject* str_obj = (StringObject*)arg;
     int length = str_obj->length();
@@ -47,7 +47,7 @@ FunctionKlass* FunctionKlass::get_instance() {
     return instance;
 }
 
-void FunctionKlass::print(PObject* x) {
+void FunctionKlass::print(Object* x) {
     assert(x->klass() == this);
     cout << "function object at " << x;
 }
@@ -62,7 +62,7 @@ NativeFunctionKlass* NativeFunctionKlass::get_instance() {
     return instance;
 }
 
-void NativeFunctionKlass::print(PObject* x) {
+void NativeFunctionKlass::print(Object* x) {
     assert(x->klass() == this);
     cout << "native function object at" << x;
 }
@@ -77,14 +77,14 @@ MethodKlass* MethodKlass::get_instance() {
     return instance;
 }
 
-void MethodKlass::print(PObject* x) {
+void MethodKlass::print(Object* x) {
     assert(x->klass() == this);
     cout << "method object at " << x;
 }
 
 /* function opject */ 
 
-FunctionObject::FunctionObject(PObject* x) {
+FunctionObject::FunctionObject(Object* x) {
     assert(x->klass() == CodeObjectKlass::get_instance());
 
     CodeObject* co = (CodeObject*)x;
@@ -106,17 +106,17 @@ FunctionObject::FunctionObject(NativeFunction nfp) {
     set_klass(NativeFunctionKlass::get_instance());
 }
 
-void FunctionObject::set_defaults(ArrayList<PObject*>* x) {
+void FunctionObject::set_defaults(ArrayList<Object*>* x) {
     if(x == nullptr) {
         _defaults = nullptr;
         return;
     }
-    _defaults = new ArrayList<PObject*>(x->length());
+    _defaults = new ArrayList<Object*>(x->length());
     for(int i = 0; i < x->length(); i++) {
         _defaults->set(i, x->get(i));
     }
 }
 
-PObject* FunctionObject::call(ObjList* args) {
+Object* FunctionObject::call(ObjList* args) {
     return (*_native_func)(args);
 }

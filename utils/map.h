@@ -140,8 +140,8 @@ V Map<K, V>::remove(K k) {
     exit(-1);
 }
 
-class PObject;
+class Object;
 
-typedef Map<PObject*, PObject*> ObjDict;
+typedef Map<Object*, Object*> ObjDict;
 
 #endif

@@ -2,12 +2,12 @@
 
 IntegerObject* Universe::PFalse = nullptr;
 IntegerObject* Universe::PTrue = nullptr;
-PObject* Universe::PNone = nullptr;
+Object* Universe::PNone = nullptr;
 
 void Universe::genesis() {
     PTrue = new IntegerObject(1);
     PFalse = new IntegerObject(0);
-    PNone = new PObject();
+    PNone = new Object();
 
     ObjDict* klass_dict = new ObjDict(equal2obj);
     StringKlass::get_instance()->set_klass_dict(klass_dict);

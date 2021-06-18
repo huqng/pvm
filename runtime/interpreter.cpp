@@ -38,7 +38,7 @@ Interpreter::Interpreter() {
     op[132] = &Interpreter::make_function;
 
     _frame = nullptr; /* initialize from codeObject when run() */
-    _builtins = new Map<PObject*, PObject*>(equal2obj);
+    _builtins = new Map<Object*, Object*>(equal2obj);
     _builtins->put(new StringObject("True"), Universe::PTrue);
     _builtins->put(new StringObject("False"), Universe::PFalse);
     _builtins->put(new StringObject("None"), Universe::PNone);
@@ -53,11 +53,11 @@ void Interpreter::run(CodeObject* co) {
     destroy_frame();
 }
 
-void Interpreter::push(PObject* p) {
-    _frame->stack()->add(p);
+void Interpreter::push(Object* p) {
+    _frame->stack()->append(p);
 }
 
-PObject* Interpreter::pop() {
+Object* Interpreter::pop() {
     return _frame->stack()->pop();
 }
 
@@ -65,7 +65,7 @@ int Interpreter::stack_level() {
     return _frame->stack()->size();
 }
 
-void Interpreter::build_frame(PObject* callable, ObjList* args) {
+void Interpreter::build_frame(Object* callable, ObjList* args) {
     /* called in call_function() */
     /* if no args, args is null */
     /* callable is either FunctionObject, NativeFunctionObject or MethodObject */
@@ -129,7 +129,7 @@ void Interpreter::eval_frame() {
     }
 }
 
-void Interpreter::leave_frame(PObject* retv) {
+void Interpreter::leave_frame(Object* retv) {
     /* a frame has a return value */
     destroy_frame();
     push(retv);
@@ -166,7 +166,7 @@ void Interpreter::binary_add(int arg) /* 23 */ {
     if(debug) {
         cerr << "BINARY_ADD" << endl;
     }
-    PObject *u, *v;
+    Object *u, *v;
     u = pop();
     v = pop();
     push(v->add(u));
@@ -176,8 +176,8 @@ void Interpreter::binary_subscr(int arg) /* 25 */ {
     if(debug) {
         cerr << "BINARY_SUBSCR" << endl;
     }
-    PObject* index = pop();
-    PObject* obj = pop();
+    Object* index = pop();
+    Object* obj = pop();
     push(obj->subscr(index));
 }
 
@@ -189,7 +189,7 @@ void Interpreter::print_item(int arg) {
     if(debug) {
         cerr << "PRINT_ITEM | ";
     }
-    PObject* obj = pop();
+    Object* obj = pop();
     obj->print();
     if(debug) {
         cerr << endl;
@@ -219,7 +219,7 @@ void Interpreter::return_value(int arg) {
     if(debug) {
         cerr << "RETURN_VALUE" << endl;
     }
-    PObject* retv = pop();
+    Object* retv = pop();
     if(_frame->is_first_frame())
         return;
     leave_frame(retv);
@@ -256,7 +256,7 @@ void Interpreter::load_const(int arg) {
     if(debug) {
         cerr << "LOAD_CONST" << endl;
     }
-    PObject* v = _frame->consts()->get(arg);
+    Object* v = _frame->consts()->get(arg);
     push(v);
 }
 
@@ -264,8 +264,8 @@ void Interpreter::load_name(int arg) /* 101 */ {
     if(debug) {
         cerr << "LOAD_NAME | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
     }
-    PObject* name = _frame->names()->get(arg);
-    PObject* obj = _frame->locals()->get(name);
+    Object* name = _frame->names()->get(arg);
+    Object* obj = _frame->locals()->get(name);
     if(obj != nullptr) {
         push(obj);
         return;
@@ -287,7 +287,7 @@ void Interpreter::build_list(int arg) { /* 103 */
     if(debug) {
         cerr << "BUILD_LIST | [" << arg << "]" << endl;
     }
-    PObject* lst = new ListObject();
+    Object* lst = new ListObject();
     while(arg--) {
         ((ListObject*)lst)->set(arg, pop());
     }
@@ -298,9 +298,9 @@ void Interpreter::load_attr(int arg) {
     if(debug) {
         cerr << "LOAD_ATTR | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
     }
-    PObject* v = pop();
-    PObject* w = _frame->names()->get(arg);
-    PObject* attr = v->getattr(w);
+    Object* v = pop();
+    Object* w = _frame->names()->get(arg);
+    Object* attr = v->getattr(w);
     /* load from klass_dict to stack */
     push(attr);
 }
@@ -309,7 +309,7 @@ void Interpreter::compare_op(int arg) {
     if(debug) {
         cerr << "COMPARE_OP" << endl;
     }   
-    PObject *u, *v;
+    Object *u, *v;
     u = pop();
     v = pop();
     switch (arg) {
@@ -380,7 +380,7 @@ void Interpreter::pop_jump_if_false(int arg) {
     if(debug) {
         cerr << "POP_JUMP_IF_FALSE" << endl;
     }
-    PObject* v = pop();
+    Object* v = pop();
     if(v == Universe::PFalse)
         _frame->set_pc(arg);
 }
@@ -389,8 +389,8 @@ void Interpreter::load_global(int arg) {
     if(debug) {
         cerr << "LOAD_GLOBAL" << endl;
     }
-    PObject* name = _frame->names()->get(arg);
-    PObject* obj = _frame->globals()->get(name);
+    Object* name = _frame->names()->get(arg);
+    Object* obj = _frame->globals()->get(name);
     if(obj != nullptr) {
         push(obj);
         return;
@@ -410,7 +410,7 @@ void Interpreter::setup_loop(int arg) {
     if(debug) {
         cerr << "SETUP_LOOP" << endl;
     }
-    _frame->loop_stack()->add(
+    _frame->loop_stack()->append(
         new LoopBlock(SETUP_LOOP, _frame->get_pc() + arg, stack_level())
     );
 }
@@ -429,9 +429,9 @@ void Interpreter::call_function(int op_arg) {
     if(debug) {
         cerr << "CALL_FUNCTION | given args = " << op_arg << endl;
     }
-    ArrayList<PObject*>* args = nullptr;
+    ArrayList<Object*>* args = nullptr;
     if(op_arg > 0) {
-        args = new ArrayList<PObject*>(op_arg);
+        args = new ArrayList<Object*>(op_arg);
         while(op_arg--) {
             args->set(op_arg, pop());
         }
@@ -446,14 +446,14 @@ void Interpreter::make_function(int arg) {
     if(debug) {
         cerr << "MAKE_FUNCTION | default args = " << arg << endl;
     }
-    PObject* v = pop();
+    Object* v = pop();
     FunctionObject* fo = new FunctionObject(v);
 
     fo->set_globals(_frame->globals());
 
     if(arg > 0) {
         /* default args */
-        ArrayList<PObject*>* defaults = new ArrayList<PObject*>(arg);
+        ArrayList<Object*>* defaults = new ArrayList<Object*>(arg);
         while(arg--) {
             defaults->set(arg, pop());
         }
@@ -461,7 +461,7 @@ void Interpreter::make_function(int arg) {
         delete defaults;
     }
     else
-        fo->set_defaults(new ArrayList<PObject*>(arg));
+        fo->set_defaults(new ArrayList<Object*>(arg));
 
     push(fo);
 }

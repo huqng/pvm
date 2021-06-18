@@ -10,6 +10,7 @@ ListKlass* ListKlass::instance = nullptr;
 ListKlass::ListKlass() {
     ObjDict* klass_dict = new ObjDict(equal2obj);
     klass_dict->put(new StringObject("append"), new FunctionObject(list_append));
+    klass_dict->put(new StringObject("insert"), new FunctionObject(list_insert));
     set_klass_dict(klass_dict);
 }
 
@@ -19,14 +20,12 @@ ListKlass* ListKlass::get_instance() {
     return instance;
 }
 
-void ListKlass::print(PObject* obj) {
-
-
+void ListKlass::print(Object* obj) {
     assert(obj->klass() == ListKlass::get_instance());
     ListObject* lst = (ListObject*)obj;
 
-    cout << "[";
-   
+    cout << "["; 
+
     if(lst->size() > 0)
         lst->get(0)->print();
     for(int i = 1; i < lst->size(); i++) {
@@ -37,7 +36,7 @@ void ListKlass::print(PObject* obj) {
     cout << "]";
 }
 
-PObject* ListKlass::subscr(PObject* obj, PObject* x) {
+Object* ListKlass::subscr(Object* obj, Object* x) {
     assert(obj->klass() == this);
     assert(x->klass() == IntegerKlass::get_instance());
     ListObject* lst = (ListObject*)obj;
@@ -51,7 +50,7 @@ PObject* ListKlass::subscr(PObject* obj, PObject* x) {
     return lst->get(index->value());
 }
 
-PObject* ListKlass::contains(PObject* obj, PObject* x) {
+Object* ListKlass::contains(Object* obj, Object* x) {
     assert(obj->klass() == this);
     ListObject* lst = (ListObject*)obj;
     for(int i = 0; i < lst->inner_list()->size(); i++) {
@@ -73,7 +72,7 @@ ListObject::ListObject(ObjList* x) {
     set_klass(ListKlass::get_instance());
 }
 
-PObject* ListObject::get(int index) {
+Object* ListObject::get(int index) {
     //if(index >= this->_inner_list->size() || index < -this->_inner_list->size()) {
         /* index out of range */
     //    return Universe::PNone;
@@ -86,17 +85,30 @@ PObject* ListObject::get(int index) {
     return this->_inner_list->get(index % _inner_list->size());
 }
 
-void ListObject::set(int i, PObject* obj) {
+void ListObject::set(int i, Object* obj) {
     this->_inner_list->set(i, obj);
 }
 
-PObject* ListObject::top() {
+Object* ListObject::top() {
     return this->get(this->size());
 }
 
 /* built in methods */
-PObject* list_append(ObjList* args) {
+Object* list_append(ObjList* args) {
     assert(args->size() == 2);
-    ((ListObject*)(args->get(0)))->inner_list()->add(args->get(1));
+    assert(args->get(0)->klass() == ListKlass::get_instance());
+    ((ListObject*)(args->get(0)))->inner_list()->append(args->get(1));
+    return Universe::PNone;
+}
+
+Object* list_insert(ObjList* args) {
+    assert(args->size() == 3);
+    assert(args->get(0)->klass() == ListKlass::get_instance());
+    assert(args->get(1)->klass() == IntegerKlass::get_instance());
+    ListObject* lst = (ListObject*)(args->get(0));
+    IntegerObject* index = (IntegerObject*)(args->get(1));
+    Object* obj = args->get(2);
+
+    lst->inner_list()->insert(index->value(), obj);
     return Universe::PNone;
 }

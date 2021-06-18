@@ -15,7 +15,7 @@ class Universe {
 public:
     static IntegerObject* PTrue;
     static IntegerObject* PFalse;
-    static PObject* PNone;
+    static Object* PNone;
 
     static void genesis();
     static void destory();

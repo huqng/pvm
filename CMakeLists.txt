@@ -10,7 +10,7 @@ add_executable(
     code/binaryFileParser.cpp
     object/codeObject.cpp
     object/integerObject.cpp
-    object/pObject.cpp
+    object/object.cpp
     object/stringObject.cpp
     object/klass.cpp
     object/functionObject.cpp

@@ -1,4 +1,4 @@
-#include "pObject.h"
+#include "object.h"
 #include <iostream>
 #include <cassert>
 #include "universe.h"
@@ -17,22 +17,22 @@ ObjectKlass* ObjectKlass::get_instance() {
     return instance;
 }
 
-void ObjectKlass::print(PObject* obj) {
+void ObjectKlass::print(Object* obj) {
     assert((obj->klass() == this));
     cout << "<Object>";
 }
 
 /* Object */
 
-PObject::PObject() {
+Object::Object() {
     set_klass(ObjectKlass::get_instance());
 }
 
-PObject::~PObject() {
+Object::~Object() {
     
 }
 
-Klass* PObject::klass() {
+Klass* Object::klass() {
     if(_klass == nullptr) {
         cerr << "error get klass: null _klass" << endl;
         exit(-1);
@@ -40,7 +40,7 @@ Klass* PObject::klass() {
     return _klass;
 }
 
-void PObject::set_klass(Klass* x) {
+void Object::set_klass(Klass* x) {
     _klass = x;
     if(_klass == nullptr) {
         cerr << "error set klass: null _klass" << endl;
@@ -48,73 +48,73 @@ void PObject::set_klass(Klass* x) {
     }
 }
 
-void PObject::print() {
+void Object::print() {
     _klass->print(this);
 }
 
-PObject* PObject::add(PObject* x) {
+Object* Object::add(Object* x) {
     return _klass->add(this, x);
 }
 
-PObject* PObject::sub(PObject* x) {
+Object* Object::sub(Object* x) {
     return _klass->sub(this, x);
 }
 
-PObject* PObject::mul(PObject* x) {
+Object* Object::mul(Object* x) {
     return _klass->mul(this, x);
 }
 
-PObject* PObject::div(PObject* x) {
+Object* Object::div(Object* x) {
     return _klass->div(this, x);
 }
 
-PObject* PObject::mod(PObject* x) {
+Object* Object::mod(Object* x) {
     return _klass->mod(this, x);
 }
 
-PObject* PObject::greater(PObject* x) {
+Object* Object::greater(Object* x) {
     return _klass->greater(this, x);
 }
 
-PObject* PObject::less(PObject* x) {
+Object* Object::less(Object* x) {
     return _klass->less(this, x);
 }
 
-PObject* PObject::eq(PObject* x) {
+Object* Object::eq(Object* x) {
     return _klass->eq(this, x);
 }
 
-PObject* PObject::ne(PObject* x) {
+Object* Object::ne(Object* x) {
     return _klass->ne(this, x);
 }
 
-PObject* PObject::ge(PObject* x) {
+Object* Object::ge(Object* x) {
     return _klass->ge(this, x);
 }
 
-PObject* PObject::le(PObject* x) {
+Object* Object::le(Object* x) {
     return _klass->le(this, x);
 }
 
-PObject* PObject::len() {
+Object* Object::len() {
     return _klass->len(this);
 }
 
-PObject* PObject::subscr(PObject* x) {
+Object* Object::subscr(Object* x) {
     return _klass->subscr(this, x);
 }
 
-PObject* PObject::contains(PObject* x) {
+Object* Object::contains(Object* x) {
     return _klass->contains(this, x);
 }
 
-bool equal2obj(PObject* a, PObject* b) {
+bool equal2obj(Object* a, Object* b) {
     return a->eq(b) == Universe::PTrue;
 }
 
 
-PObject* PObject::getattr(PObject* x) {
-    PObject* result = Universe::PNone;
+Object* Object::getattr(Object* x) {
+    Object* result = Universe::PNone;
     result = this->_klass->klass_dict()->get(x);
     /* 
         if attr is function, make a method, 

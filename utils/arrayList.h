@@ -10,7 +10,7 @@ using namespace std;
 template<typename T>
 class ArrayList {
 private:
-    int _length; /* max size of array */
+    int _max_size; /* max size of array */
     T* array;
     int _size; 
     void expand(); /* used size of array */
@@ -19,7 +19,7 @@ public:
     ArrayList();
     ~ArrayList();
 
-    void add(T t);
+    void append(T t);
     void insert(int index, T t);
     void set(int index, T t);
     T get(int index);
@@ -32,14 +32,14 @@ public:
 
 template<typename T>
 ArrayList<T>::ArrayList(int n) {
-    _length = n;
+    _max_size = n;
     _size = n;
     array = new T[n];
 }
 
 template<typename T>
 ArrayList<T>::ArrayList() {
-    _length = 8;
+    _max_size = 8;
     _size = 0;
     array = new T[8];
 }
@@ -50,8 +50,8 @@ ArrayList<T>::~ArrayList() {
 }
 
 template<typename T>
-void ArrayList<T>::add(T t) {
-    if(_size >= _length)
+void ArrayList<T>::append(T t) {
+    if(_size >= _max_size)
         expand();
     array[_size++] = t;
 }
@@ -62,8 +62,8 @@ void ArrayList<T>::insert(int index, T t) {
         cerr << "insert: invalid index" << endl;
         exit(-1);
     }
-    add(t);
-    for(int i = _size; i > index; i--) {
+    append(t);
+    for(int i = _size - 1; i > index; i--) {
         array[i] = array[i - 1]; 
     }
     array[index] = t;
@@ -71,11 +71,11 @@ void ArrayList<T>::insert(int index, T t) {
 
 template<typename T>
 void ArrayList<T>::expand() {
-    T* newarray = new T[_length * 2];
-    memcpy(newarray, array, sizeof(T) * _length);
+    T* newarray = new T[_max_size * 2];
+    memcpy(newarray, array, sizeof(T) * _max_size);
     delete[] array;
     array = newarray;
-    _length *= 2;
+    _max_size *= 2;
 }
 
 template<typename T>
@@ -85,7 +85,7 @@ int ArrayList<T>::size() {
 
 template<typename T>
 int ArrayList<T>::length() {
-    return _length;
+    return _max_size;
 }
 
 template<typename T>
@@ -101,7 +101,7 @@ template<typename T>
 void ArrayList<T>::set(int index, T t) {
     if(_size <= index)
         _size = index + 1;
-    while(_length < _size) {
+    while(_max_size < _size) {
         this->expand();
     }
     array[index] = t;
@@ -109,9 +109,15 @@ void ArrayList<T>::set(int index, T t) {
 
 template<typename T>
 T ArrayList<T>::pop() {
-    return array[--_size];
+    if(_size > 0)
+        return array[--_size];
+    else {
+        cout << "error pop from empty arraylist" << endl;
+        exit(-1);
+    }
 }
 
-typedef ArrayList<PObject*> ObjList;
+class Object;
+typedef ArrayList<Object*> ObjList;
 
 #endif
