@@ -8,8 +8,7 @@ using namespace std;
 
 StringKlass* StringKlass::instance = nullptr;
 
-StringKlass::StringKlass() {
-    
+StringKlass::StringKlass() { 
 }
 
 StringKlass* StringKlass::get_instance() {

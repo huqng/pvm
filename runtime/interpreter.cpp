@@ -17,6 +17,7 @@ Interpreter::Interpreter() {
     op[23]  = &Interpreter::binary_add;
     op[25]  = &Interpreter::binary_subscr;
     op[60]  = &Interpreter::store_subscr;
+    op[61]  = &Interpreter::delete_subscr;
     op[71]  = &Interpreter::print_item;
     op[72]  = &Interpreter::print_newline;
     op[80]  = &Interpreter::break_loop;;
@@ -90,7 +91,7 @@ void Interpreter::build_frame(Object* callable, ObjList* args) {
         }
         MethodObject* method = (MethodObject*)callable;
         if(args == nullptr) {
-            args = new ObjList(1);
+            args = new ObjList();
         }
         args->insert(0, method->owner());
         build_frame(method->func(), args);
@@ -198,6 +199,15 @@ void Interpreter::store_subscr(int arg) /* 60 */ {
     Object* obj = pop();
     Object* index = pop();
     obj->store_subscr(x, index);
+}
+
+void Interpreter::delete_subscr(int arg) /* 61 */ {
+    if(debug) {
+        cerr << "DELETE_SUBSCR";
+    }
+    Object* index = pop();
+    Object* obj = pop();
+    obj->del_subscr(index);
 }
 
 /* 70 */

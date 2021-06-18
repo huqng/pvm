@@ -13,11 +13,14 @@ private:
 public:
     static ListKlass* get_instance();
 
+    virtual Object* eq(Object* x, Object* y);
+
     /* native function & methods*/
     virtual void print(Object* obj);
     virtual Object* subscr(Object* obj, Object* x);
     virtual Object* contains(Object* obj, Object* x);
-    virtual void store_subscr(Object* obj, Object* x, Object* index);
+    virtual void store_subscr(Object* obj, Object* index, Object* x);
+    virtual void del_subscr(Object* obj, Object* index);
 };
 
 /* List Object */
@@ -37,8 +40,12 @@ public:
     Object* top();
 };
 
-/* built in methods, should add to klass_dict */
-Object* list_append(ObjList*);
+/* built in methods of class list, should add to klass_dict 
+   used to build functionnObject in make_function() */
+Object* list_append(ObjList* args);
 Object* list_insert(ObjList* args);
+Object* list_index(ObjList* args);
+Object* list_pop(ObjList* args);
+Object* list_remove(ObjList* args);
 
 #endif

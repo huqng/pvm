@@ -26,6 +26,7 @@ public:
     int size();
     int length();
     T pop();
+    void delete_index(int index);
 };
 
 
@@ -119,6 +120,19 @@ T ArrayList<T>::pop() {
         cout << "error pop from empty arraylist" << endl;
         exit(-1);
     }
+}
+
+template<typename T>
+void ArrayList<T>::delete_index(int index) {
+    if(index < 0 || index >= _size) {
+        cerr << "error arraylist delete index: index = " << index;
+        cerr << "size = " << _size << endl;
+        exit(-1);
+    }
+    for(int i = index; i < _size - 1; i++) {
+        array[i] = array[i + 1];
+    }
+    _size -= 1;
 }
 
 class Object;

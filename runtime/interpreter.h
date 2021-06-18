@@ -51,6 +51,7 @@ private:
     void    binary_add(int);            // 23
     void    binary_subscr(int);         // 25
     void    store_subscr(int);          // 60
+    void    delete_subscr(int);         // 61
     void    print_item(int);            // 71
     void    print_newline(int);         // 72
     void    break_loop(int);            // 80

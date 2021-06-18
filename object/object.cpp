@@ -8,7 +8,7 @@ using namespace std;
 ObjectKlass* ObjectKlass::instance = nullptr;
 
 ObjectKlass::ObjectKlass() {
-
+    
 }
 
 ObjectKlass* ObjectKlass::get_instance() {
@@ -112,6 +112,9 @@ void Object::store_subscr(Object* index, Object* x) {
     _klass->store_subscr(this, index, x);
 }
 
+void Object::del_subscr(Object* index) {
+    _klass->del_subscr(this, index);
+}
 
 
 bool equal2obj(Object* a, Object* b) {

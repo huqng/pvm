@@ -40,6 +40,7 @@ public:
     virtual Object* subscr(Object* obj, Object* index) { return nullptr; }
     virtual Object* contains(Object* obj, Object* x) { return nullptr; }
     virtual void store_subscr(Object* obj, Object* index, Object* x) { }
+    virtual void del_subscr(Object* obj, Object* index) { }
 };
 
 #endif

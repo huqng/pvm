@@ -46,6 +46,7 @@ public:
     Object* subscr(Object* x); /* subscript */
     Object* contains(Object* x);
     void store_subscr(Object* index, Object* x);
+    void del_subscr(Object* index);
 
 
     Object* getattr(Object* x);
