@@ -15,6 +15,8 @@ ListKlass::ListKlass() {
     klass_dict->put(new StringObject("index"), new FunctionObject(list_index));
     klass_dict->put(new StringObject("pop"), new FunctionObject(list_pop));
     klass_dict->put(new StringObject("remove"), new FunctionObject(list_remove));
+    klass_dict->put(new StringObject("reverse"), new FunctionObject(list_reverse));
+    klass_dict->put(new StringObject("sort"), new FunctionObject(list_sort));
     set_klass_dict(klass_dict);
 }
 
@@ -189,3 +191,22 @@ Object* list_remove(ObjList* args) {
     return Universe::PNone;
 }
 
+Object* list_reverse(ObjList* args) {
+    assert(args->size() == 1);
+    assert(args->get(0)->klass() == ListKlass::get_instance());
+    ListObject* lst = (ListObject*)(args->get(0));
+    int lhs = 0;
+    int rhs = lst->size() - 1;
+    while(lhs < rhs) {
+        Object* tmp = lst->get(lhs);
+        lst->set(lhs, lst->get(rhs));
+        lst->set(rhs, tmp);
+        lhs++;
+        rhs--;
+    }
+    return Universe::PNone;
+}
+
+Object* list_sort(ObjList* args) {
+    return Universe::PNone;
+}

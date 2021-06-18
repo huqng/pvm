@@ -47,5 +47,7 @@ Object* list_insert(ObjList* args);
 Object* list_index(ObjList* args);
 Object* list_pop(ObjList* args);
 Object* list_remove(ObjList* args);
+Object* list_reverse(ObjList* args);
+Object* list_sort(ObjList* args);
 
 #endif
