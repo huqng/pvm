@@ -2,7 +2,7 @@
 #define _FRAME_H
 
 #include "functionObject.h"
-#include "map.h"
+#include "dictObject.h"
 
 class LoopBlock;
 
@@ -15,8 +15,8 @@ private:
     ObjList*    _consts;
     ObjList*    _names;
 
-    Map<Object*, Object*>*    _locals;
-    Map<Object*, Object*>*    _globals;
+    DictObject* _locals;
+    DictObject* _globals;
     ObjList*    _fast_locals;
 
     CodeObject*     _co;
@@ -45,10 +45,10 @@ public:
     ObjList*    names() {
         return _names;
     }
-    Map<Object*, Object*>*    locals() {
+    DictObject* locals() {
         return _locals;
     }
-    Map<Object*, Object*>*    globals() {
+    DictObject* globals() {
         return _globals;
     }
     ObjList*    fast_locals() {

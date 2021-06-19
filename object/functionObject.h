@@ -2,8 +2,9 @@
 #define _FUNCTION_OBJECT_H
 
 #include "codeObject.h"
-#include "map.h"
 #include "universe.h"
+
+class DictObject;
 
 typedef Object* (*NativeFunction)(ObjList* args);
 
@@ -46,7 +47,7 @@ private:
     StringObject*   _func_name;
     unsigned int    _flags;
 
-    Map<Object*, Object*>* _globals; 
+    DictObject*     _globals; 
     ObjList*        _defaults;
 
     NativeFunction             _native_func;
@@ -58,8 +59,8 @@ public:
 
     StringObject*   func_name();
     int             flags();
-    Map<Object*, Object*>* globals() { return _globals; }
-    void set_globals(Map<Object*, Object*>* x) { _globals = x; }
+    DictObject* globals() { return _globals; }
+    void set_globals(DictObject* x) { _globals = x; }
     void set_defaults(ObjList* x);
 
     Object* call(ObjList* args);

@@ -17,7 +17,7 @@ StringTable* StringTable::get_instance() {
 /* Interpreter */
 
 Interpreter::Interpreter() {
-    debug = 1;
+    debug = 0;
 
     op = new op_t[256];
     for(int i = 0; i < 256; i++)
@@ -58,7 +58,7 @@ Interpreter::Interpreter() {
     op[132] = &Interpreter::make_function;
 
     _frame = nullptr; /* initialize from codeObject when run() */
-    _builtins = new Map<Object*, Object*>(equal2obj);
+    _builtins = new DictObject();
     _builtins->put(new StringObject("True"), Universe::PTrue);
     _builtins->put(new StringObject("False"), Universe::PFalse);
     _builtins->put(new StringObject("None"), Universe::PNone);

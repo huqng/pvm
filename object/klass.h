@@ -9,7 +9,7 @@ class Object;
 class Klass {
 private:
     const char* _name;
-    ObjMap* _klass_dict;
+    ObjMap*     _klass_dict;
 public:
     Klass() {}
     ~Klass() {
@@ -21,7 +21,7 @@ public:
     const char* name() { return _name; }
 
     void        set_klass_dict(ObjMap* dict) { _klass_dict = dict; }
-    ObjMap*    klass_dict() { return _klass_dict; }
+    ObjMap*     klass_dict() { return _klass_dict; }
 
 
 

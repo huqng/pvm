@@ -41,8 +41,8 @@ public:
 
 class Interpreter {
 private:
-    Map<Object*, Object*>* _builtins;
-    Frame* _frame;
+    DictObject* _builtins;
+    Frame*      _frame;
     bool        debug;
 
     /* stack op */
