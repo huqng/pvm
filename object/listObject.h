@@ -18,7 +18,9 @@ private:
 public:
     static ListKlass* get_instance();
 
+    virtual Object* add(Object* x, Object* y);
     virtual Object* eq(Object* x, Object* y);
+    virtual Object* mul(Object* x, Object* y);
 
     /* native function & methods*/
     virtual void print(Object* obj);

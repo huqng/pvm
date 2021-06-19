@@ -26,6 +26,21 @@ ListKlass* ListKlass::get_instance() {
     return instance;
 }
 
+Object* ListKlass::add(Object* x, Object* y) {
+    assert(x != nullptr && x->klass() == this);
+    assert(y != nullptr && y->klass() == this);
+    ListObject* lx = (ListObject*)x;
+    ListObject* ly = (ListObject*)y;
+    ListObject* lz = new ListObject();
+    for(int i = 0; i < lx->size(); i++) {
+        lz->append(lx->get(i));
+    }
+    for(int i = 0; i < ly->size(); i++) {
+        lz->append(ly->get(i));
+    }
+    return lz;
+}
+
 Object* ListKlass::eq(Object* x, Object* y) {
     assert(x->klass() == this);
     if(y->klass() != this)
@@ -40,6 +55,21 @@ Object* ListKlass::eq(Object* x, Object* y) {
         }
     }
     return Universe::PTrue;
+}
+
+Object* ListKlass::mul(Object* x, Object* y) {
+    assert(x != nullptr && x->klass() == this);
+    assert(y != nullptr && y->klass() == IntegerKlass::get_instance());
+    ListObject* lx = (ListObject*)x;
+    int times = ((IntegerObject*)y)->value();
+    assert(times >= 0);
+    ListObject* ret = new ListObject();
+    for(int i = 0; i < times; i++) {
+        for(int j = 0; j < lx->size(); j++) {
+            ret->append(lx->get(j));
+        }
+    }
+    return ret;
 }
 
 void ListKlass::print(Object* obj) {

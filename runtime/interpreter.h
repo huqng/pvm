@@ -50,7 +50,11 @@ private:
 
     void    unimplemented(int);         // ?
     void    pop_top (int);              // 1
+    void    binary_multiply(int);       // 20
+    void    binary_divide(int);         // 21
+    void    binary_modulo(int);         // 22
     void    binary_add(int);            // 23
+    void    binary_subtract(int);       // 24
     void    binary_subscr(int);         // 25
     void    store_subscr(int);          // 60
     void    delete_subscr(int);         // 61

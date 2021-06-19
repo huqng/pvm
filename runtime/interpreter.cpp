@@ -30,7 +30,11 @@ Interpreter::Interpreter() {
         op[i] = &Interpreter::unimplemented;
     
     op[1]   = &Interpreter::pop_top;
+    op[20]  = &Interpreter::binary_multiply;
+    op[21]  = &Interpreter::binary_divide;
+    op[22]  = &Interpreter::binary_modulo;
     op[23]  = &Interpreter::binary_add;
+    op[24]  = &Interpreter::binary_subtract;
     op[25]  = &Interpreter::binary_subscr;
     op[60]  = &Interpreter::store_subscr;
     op[61]  = &Interpreter::delete_subscr;
@@ -188,6 +192,36 @@ void Interpreter::pop_top(int arg) {
 
 /* 20 */
 
+void Interpreter::binary_multiply(int arg) /* 20*/ {
+    if(debug) {
+        cerr << "BINARY_MULTIPLY" << endl;
+    }
+    Object *u, *v;
+    u = pop();
+    v = pop();
+    push(v->mul(u));
+}
+
+void Interpreter::binary_divide(int arg) /* 21 */ {
+    if(debug) {
+        cerr << "BINARY_DIVIDE" << endl;
+    }
+    Object *u, *v;
+    u = pop();
+    v = pop();
+    push(v->div(u));
+}
+
+void Interpreter::binary_modulo(int arg) /* 22 */ {
+    if(debug) {
+        cerr << "BINARY_MODULO" << endl;
+    }
+    Object *u, *v;
+    u = pop();
+    v = pop();
+    push(v->mod(u));
+}
+
 void Interpreter::binary_add(int arg) /* 23 */ {
     if(debug) {
         cerr << "BINARY_ADD" << endl;
@@ -196,6 +230,16 @@ void Interpreter::binary_add(int arg) /* 23 */ {
     u = pop();
     v = pop();
     push(v->add(u));
+}
+
+void Interpreter::binary_subtract(int arg) /* 24 */ {
+    if(debug) {
+        cerr << "BINARY_SUBTRACT" << endl;
+    }
+    Object *u, *v;
+    u = pop();
+    v = pop();
+    push(v->sub(u));
 }
 
 void Interpreter::binary_subscr(int arg) /* 25 */ {

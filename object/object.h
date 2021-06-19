@@ -16,13 +16,13 @@ public:
 class Object {
 private:
     Klass* _klass;
-
+protected:
+    void    set_klass(Klass* x);
 public:
     Object();
     virtual ~Object();
 
     Klass*  klass();
-    void    set_klass(Klass* x);
     
     /* operators */
     Object* add(Object* x);
