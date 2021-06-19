@@ -15,6 +15,7 @@ add_executable(
     object/klass.cpp
     object/functionObject.cpp
     object/listObject.cpp
+    object/dictObject.cpp
     utils/bufferedInputStream.cpp
     runtime/frame.cpp
     runtime/interpreter.cpp

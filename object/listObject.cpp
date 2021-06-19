@@ -8,7 +8,8 @@ using namespace std;
 ListKlass* ListKlass::instance = nullptr;
 
 ListKlass::ListKlass() {
-    ObjDict* klass_dict = new ObjDict(equal2obj);
+    set_name("List");
+    ObjMap* klass_dict = new ObjMap(equal2obj);
     /* add builtin methods to klass_dict */
     klass_dict->put(new StringObject("append"), new FunctionObject(list_append));
     klass_dict->put(new StringObject("insert"), new FunctionObject(list_insert));
@@ -144,10 +145,10 @@ Object* ListKlass::iter(Object* obj) {
 ListIteratorKlass* ListIteratorKlass::instance = nullptr;
 
 ListIteratorKlass::ListIteratorKlass() {
-    ObjDict* klass_dict = new ObjDict(equal2obj);
+    ObjMap* klass_dict = new ObjMap(equal2obj);
     klass_dict->put(new StringObject("next"), new FunctionObject(listiterator_next));
     set_klass_dict(klass_dict);
-    set_name("listiterator");
+    set_name("ListIterator");
 }
 
 ListIteratorKlass* ListIteratorKlass::get_instance() {

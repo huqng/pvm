@@ -1,12 +1,4 @@
-#include "opcode.h"
 #include "interpreter.h"
-#include "functionObject.h"
-#include "listObject.h"
-#include "universe.h"
-
-#include <iostream>
-#include <iomanip>
-using namespace std;
 
 /* String Table */
 
@@ -25,6 +17,8 @@ StringTable* StringTable::get_instance() {
 /* Interpreter */
 
 Interpreter::Interpreter() {
+    debug = 1;
+
     op = new op_t[256];
     for(int i = 0; i < 256; i++)
         op[i] = &Interpreter::unimplemented;
@@ -36,6 +30,7 @@ Interpreter::Interpreter() {
     op[23]  = &Interpreter::binary_add;
     op[24]  = &Interpreter::binary_subtract;
     op[25]  = &Interpreter::binary_subscr;
+    op[54]  = &Interpreter::store_map;
     op[60]  = &Interpreter::store_subscr;
     op[61]  = &Interpreter::delete_subscr;
     op[68]  = &Interpreter::get_iter;
@@ -50,6 +45,7 @@ Interpreter::Interpreter() {
     op[100] = &Interpreter::load_const;
     op[101] = &Interpreter::load_name;
     op[103] = &Interpreter::build_list;
+    op[105] = &Interpreter::build_map;
     op[106] = &Interpreter::load_attr;
     op[107] = &Interpreter::compare_op;
     op[110] = &Interpreter::jump_forward;
@@ -67,8 +63,6 @@ Interpreter::Interpreter() {
     _builtins->put(new StringObject("False"), Universe::PFalse);
     _builtins->put(new StringObject("None"), Universe::PNone);
     _builtins->put(new StringObject("len"), new FunctionObject(len));
-
-    debug = 0;
 }
 
 void Interpreter::run(CodeObject* co) {
@@ -257,6 +251,16 @@ void Interpreter::binary_subscr(int arg) /* 25 */ {
 
 /* 50 */
 
+void Interpreter::store_map(int arg) /* 54 */ {
+    if(debug) {
+        cerr << "STORE_MAP" << endl;
+    }
+    Object* key = pop();
+    Object* value = pop();
+    DictObject* dict = (DictObject*)top();
+    dict->put(key, value);
+}
+
 /* 60 */
 
 void Interpreter::store_subscr(int arg) /* 60 */ {
@@ -328,7 +332,7 @@ void Interpreter::return_value(int arg) {
     leave_frame(retv);
 }
 
-void Interpreter::pop_block(int arg) {
+void Interpreter::pop_block(int arg) /* 87 */ {
     if(debug) {
         cerr << "POP_BLOCK" << endl;
     }
@@ -369,11 +373,18 @@ void Interpreter::store_global(int arg) /* 97 */ {
 
 /* 100 */
 
-void Interpreter::load_const(int arg) {
+void Interpreter::load_const(int arg) /* 100 */ {
     if(debug) {
-        cerr << "LOAD_CONST" << endl;
+        cerr << "LOAD_CONST | [" << arg << "] | ";
     }
     Object* v = _frame->consts()->get(arg);
+    if(v == nullptr)
+        v = Universe::PNone;
+    if(debug) {
+        cout << v->klass()->name() << " ";
+        v->print();
+        cout << endl;
+    }
     push(v);
 }
 
@@ -409,6 +420,14 @@ void Interpreter::build_list(int arg) { /* 103 */
         ((ListObject*)lst)->set(arg, pop());
     }
     push(lst);
+}
+
+void Interpreter::build_map(int arg) /* 105 */ {
+    if(debug) {
+        cerr << "BUILD_MAP" << endl;
+    }
+    Object* dict = new DictObject();
+    push(dict);    
 }
 
 void Interpreter::load_attr(int arg) {

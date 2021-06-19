@@ -144,7 +144,7 @@ ArrayList<Object*>* BinaryFileParser::get_tuple() {
             tuple->append(new IntegerObject(is->read_int()));
             break;
         case 'N':
-            tuple->append(Universe::PNone);
+            tuple->append(nullptr);
             break;
         case 't':
             str = get_string();

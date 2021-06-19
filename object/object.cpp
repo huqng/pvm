@@ -8,7 +8,7 @@ using namespace std;
 ObjectKlass* ObjectKlass::instance = nullptr;
 
 ObjectKlass::ObjectKlass() {
-    
+    set_name("Object");    
 }
 
 ObjectKlass* ObjectKlass::get_instance() {

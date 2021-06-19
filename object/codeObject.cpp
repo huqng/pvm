@@ -7,7 +7,7 @@ using namespace std;
 CodeObjectKlass* CodeObjectKlass::instance = nullptr;
 
 CodeObjectKlass::CodeObjectKlass() {
-
+    set_name("CodeObject");
 }
 
 CodeObjectKlass* CodeObjectKlass::get_instance() {

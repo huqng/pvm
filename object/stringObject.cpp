@@ -9,6 +9,7 @@ using namespace std;
 StringKlass* StringKlass::instance = nullptr;
 
 StringKlass::StringKlass() { 
+    set_name("String");
 }
 
 StringKlass* StringKlass::get_instance() {

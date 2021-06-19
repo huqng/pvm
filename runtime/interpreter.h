@@ -3,6 +3,17 @@
 
 #include "map.h"
 #include "frame.h"
+#include "opcode.h"
+#include "functionObject.h"
+#include "listObject.h"
+#include "dictObject.h"
+#include "universe.h"
+
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+
 
 class CodeObject;
 
@@ -56,6 +67,7 @@ private:
     void    binary_add(int);            // 23
     void    binary_subtract(int);       // 24
     void    binary_subscr(int);         // 25
+    void    store_map(int);             // 54
     void    store_subscr(int);          // 60
     void    delete_subscr(int);         // 61
     void    get_iter(int);              // 58
@@ -70,6 +82,7 @@ private:
     void    load_const(int);            // 100
     void    load_name(int);             // 101
     void    build_list(int);            // 103
+    void    build_map(int);             // 105
     void    load_attr(int);             // 106
     void    compare_op(int);            // 107
     void    jump_forward(int);          // 110

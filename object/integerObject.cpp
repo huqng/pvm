@@ -8,6 +8,7 @@ using namespace std;
 IntegerKlass* IntegerKlass::instance = nullptr;
 
 IntegerKlass::IntegerKlass() {
+    set_name("Integer");
 }
 
 IntegerKlass* IntegerKlass::get_instance() {

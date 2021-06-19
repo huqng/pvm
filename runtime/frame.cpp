@@ -23,7 +23,7 @@ Frame::Frame(FunctionObject* fo, ObjList* args) {
 
     _consts = _co->_consts;
     _names = _co->_names;
-    _locals = new ObjDict(equal2obj);
+    _locals = new ObjMap(equal2obj);
     _globals = fo->globals();
 
     if(_co->_argcount > 0) {

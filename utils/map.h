@@ -121,7 +121,7 @@ void Map<K, V>::expand() {
 template<typename K, typename V>
 bool Map<K, V>::has_key(K k) {
     for(int i = 0; i < _size; i++) {
-        if(eq(_entries[i].key(), k))
+        if(_eq(_entries[i].key(), k))
             return true;
     }
     return false;
@@ -131,7 +131,7 @@ template<typename K, typename V>
 V Map<K, V>::remove(K k) {
     if(has_key(k)) {
         int id = index(k);
-        V tmpv = _entries[id];
+        V tmpv = _entries[id].key();
         _entries[id] = _entries[--_size];
         return tmpv;
     }
@@ -142,6 +142,6 @@ V Map<K, V>::remove(K k) {
 
 class Object;
 
-typedef Map<Object*, Object*> ObjDict;
+typedef Map<Object*, Object*> ObjMap;
 
 #endif

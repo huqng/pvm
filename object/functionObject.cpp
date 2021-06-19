@@ -38,7 +38,7 @@ Object* string_upper(ObjList* args) {
 
 /* klasses */
 FunctionKlass::FunctionKlass() {
-
+    set_name("Function");
 }
 
 FunctionKlass* FunctionKlass::get_instance() {
@@ -53,7 +53,7 @@ void FunctionKlass::print(Object* x) {
 }
 
 NativeFunctionKlass::NativeFunctionKlass() {
-
+    set_name("NativeFunction");
 }
 
 NativeFunctionKlass* NativeFunctionKlass::get_instance() {
@@ -68,7 +68,7 @@ void NativeFunctionKlass::print(Object* x) {
 }
 
 MethodKlass::MethodKlass() {
-
+    set_name("Method");
 }
 
 MethodKlass* MethodKlass::get_instance() {
