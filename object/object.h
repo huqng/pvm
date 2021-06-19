@@ -47,9 +47,9 @@ public:
     Object* contains(Object* x);
     void store_subscr(Object* index, Object* x);
     void del_subscr(Object* index);
-
-
     Object* getattr(Object* x);
+    Object* iter();
+
 };
 
 bool equal2obj(Object*, Object*);

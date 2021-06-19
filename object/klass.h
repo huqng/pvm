@@ -2,19 +2,23 @@
 #define _CLASS_H
 
 #include "map.h"
+#include "arrayList.h"
 
-class StringObject;
 class Object;
 
 class Klass {
 private:
-    StringObject* _name;
+    const char* _name;
     ObjDict* _klass_dict;
 public:
     Klass() {}
-    
-    void            set_name(StringObject* x) { _name = x; }
-    StringObject*   name() { return _name; }
+    ~Klass() {
+        delete[] _name;
+        // TODO - delete obj_dict
+    }
+
+    void        set_name(const char* x) { _name = x; }
+    const char* name() { return _name; }
 
     void        set_klass_dict(ObjDict* dict) { _klass_dict = dict; }
     ObjDict*    klass_dict() { return _klass_dict; }
@@ -41,6 +45,7 @@ public:
     virtual Object* contains(Object* obj, Object* x) { return nullptr; }
     virtual void store_subscr(Object* obj, Object* index, Object* x) { }
     virtual void del_subscr(Object* obj, Object* index) { }
+    virtual Object* iter(Object* obj) { return nullptr; }
 };
 
 #endif

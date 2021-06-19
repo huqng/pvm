@@ -8,6 +8,7 @@ class CodeObject;
 
 class LoopBlock;
 class Interpreter;
+class StringTable;
 
 typedef void(Interpreter::*op_t)(int);
 
@@ -34,14 +35,15 @@ private:
     bool        debug;
 
     /* stack op */
-    void        push(Object* p);
-    Object*    pop();
-    int         stack_level();
+    void    push(Object* p);
+    Object* pop();
+    Object* top();
+    int     stack_level();
     
-    void        build_frame(Object* callable, ArrayList<Object*>* args);
-    void        eval_frame();
-    void        leave_frame(Object* retv);
-    void        destroy_frame();
+    void    build_frame(Object* callable, ArrayList<Object*>* args);
+    void    eval_frame();
+    void    leave_frame(Object* retv);
+    void    destroy_frame();
 
     /* instructions */
     op_t*   op;
@@ -52,12 +54,14 @@ private:
     void    binary_subscr(int);         // 25
     void    store_subscr(int);          // 60
     void    delete_subscr(int);         // 61
+    void    get_iter(int);              // 58
     void    print_item(int);            // 71
     void    print_newline(int);         // 72
     void    break_loop(int);            // 80
     void    return_value(int);          // 83
     void    pop_block(int);             // 87
     void    store_name(int);            // 90
+    void    for_iter(int);              // 93
     void    store_global(int);          // 97
     void    load_const(int);            // 100
     void    load_name(int);             // 101
@@ -76,6 +80,16 @@ private:
 public:
     Interpreter();
     void run(CodeObject* co);
+};
+
+class StringTable {
+private:
+    static StringTable* instance;
+    StringTable();
+public:
+    static StringTable* get_instance();
+
+    StringObject* str_next;
 };
 
 #endif

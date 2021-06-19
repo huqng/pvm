@@ -116,11 +116,9 @@ void Object::del_subscr(Object* index) {
     _klass->del_subscr(this, index);
 }
 
-
 bool equal2obj(Object* a, Object* b) {
     return a->eq(b) == Universe::PTrue;
 }
-
 
 Object* Object::getattr(Object* x) {
     Object* result = Universe::PNone;
@@ -136,4 +134,8 @@ Object* Object::getattr(Object* x) {
     }
 
     return result;
+}
+
+Object* Object::iter() {
+    return _klass->iter(this);
 }

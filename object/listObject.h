@@ -5,6 +5,11 @@
 #include "arrayList.h"
 #include "universe.h"
 
+class ListKlass;
+class ListIteratorKlass;
+class ListIteratorObject;
+class ListObject;
+
 /* List Klass */
 class ListKlass: public Klass {
 private:
@@ -21,6 +26,28 @@ public:
     virtual Object* contains(Object* obj, Object* x);
     virtual void store_subscr(Object* obj, Object* index, Object* x);
     virtual void del_subscr(Object* obj, Object* index);
+    virtual Object* iter(Object* obj);
+};
+
+/* List Iterator Klass */
+class ListIteratorKlass: public Klass {
+private:
+    static ListIteratorKlass* instance;
+    ListIteratorKlass();
+public:
+    static ListIteratorKlass* get_instance();
+};
+
+/* List Iterator Object */
+class ListIteratorObject: public Object {
+private:
+    ListObject* _owner;
+    int _iter_cnt;
+public:
+    ListIteratorObject(ListObject* owner);
+    ListObject* owner();
+    int iter_cnt();
+    void inc_cnt();
 };
 
 /* List Object */
@@ -49,5 +76,6 @@ Object* list_pop(ObjList* args);
 Object* list_remove(ObjList* args);
 Object* list_reverse(ObjList* args);
 Object* list_sort(ObjList* args);
+Object* listiterator_next(ObjList* args);
 
 #endif

@@ -8,6 +8,22 @@
 #include <iomanip>
 using namespace std;
 
+/* String Table */
+
+StringTable* StringTable::instance = nullptr;
+
+StringTable::StringTable() {
+    str_next = new StringObject("next");
+}
+
+StringTable* StringTable::get_instance() {
+    if(instance == nullptr)
+        instance = new StringTable();
+    return instance;
+}
+
+/* Interpreter */
+
 Interpreter::Interpreter() {
     op = new op_t[256];
     for(int i = 0; i < 256; i++)
@@ -18,12 +34,14 @@ Interpreter::Interpreter() {
     op[25]  = &Interpreter::binary_subscr;
     op[60]  = &Interpreter::store_subscr;
     op[61]  = &Interpreter::delete_subscr;
+    op[68]  = &Interpreter::get_iter;
     op[71]  = &Interpreter::print_item;
     op[72]  = &Interpreter::print_newline;
     op[80]  = &Interpreter::break_loop;;
     op[83]  = &Interpreter::return_value;
     op[87]  = &Interpreter::pop_block;
     op[90]  = &Interpreter::store_name;
+    op[93]  = &Interpreter::for_iter;
     op[97]  = &Interpreter::store_global;
     op[100] = &Interpreter::load_const;
     op[101] = &Interpreter::load_name;
@@ -61,6 +79,12 @@ void Interpreter::push(Object* p) {
 
 Object* Interpreter::pop() {
     return _frame->stack()->pop();
+}
+
+Object* Interpreter::top() {
+    Object* tmp = pop();
+    push(tmp);
+    return tmp;
 }
 
 int Interpreter::stack_level() {
@@ -113,7 +137,7 @@ void Interpreter::eval_frame() {
         unsigned char op_code = _frame->get_op_code();
 
         if(debug)
-            cout << "[" << _frame->get_pc() << "]\t" << (int)op_code << ":\t";
+            cout << "[" << _frame->get_pc() - 1 << "]\t" << (int)op_code << ":\t";
 
         /* (optional) op-arg */
         int op_arg = -1;
@@ -210,6 +234,14 @@ void Interpreter::delete_subscr(int arg) /* 61 */ {
     obj->del_subscr(index);
 }
 
+void Interpreter::get_iter(int arg) /* 68 */ {
+    if(debug) {
+        cerr << "GET_ITER" << endl;
+    }
+    Object* obj = pop();
+    push(obj->iter());
+}
+
 /* 70 */
 
 void Interpreter::print_item(int arg) {
@@ -263,14 +295,28 @@ void Interpreter::pop_block(int arg) {
 
 /* 90 */
 
-void Interpreter::store_name(int arg) {
+void Interpreter::store_name(int arg) /* 90 */ {
     if(debug) {
         cerr << "STORE_NAME | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
     }
     _frame->locals()->put(_frame->names()->get(arg), pop());
 }
 
-void Interpreter::store_global(int arg) {
+void Interpreter::for_iter(int arg) /* 93 */ {
+    if(debug) {
+        cerr << "FOR_ITER" << endl;
+    }
+    Object* iter = top();
+    Object* next_method_obj = iter->getattr(StringTable::get_instance()->str_next);
+    build_frame(next_method_obj, nullptr);
+
+    if(/* return value of iter.next() */ top() == nullptr) {
+        _frame->set_pc(_frame->get_pc() + arg);
+        pop();
+    }
+}
+
+void Interpreter::store_global(int arg) /* 97 */ {
     if(debug) {
         cerr << "STORE_GLOBAL" << endl;
     }
@@ -396,9 +442,9 @@ void Interpreter::jump_forward(int arg) {
     _frame->set_pc(_frame->get_pc() + arg);
 }
 
-void Interpreter::jump_absolute(int arg) {
+void Interpreter::jump_absolute(int arg) /* 113 */ {
     if(debug) {
-        cerr << "JUMP_ABSOLUTE" << endl;
+        cerr << "JUMP_ABSOLUTE | " << arg << endl;
     }
     _frame->set_pc(arg);
 }

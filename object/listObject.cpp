@@ -42,7 +42,6 @@ Object* ListKlass::eq(Object* x, Object* y) {
     return Universe::PTrue;
 }
 
-
 void ListKlass::print(Object* obj) {
     assert(obj->klass() == ListKlass::get_instance());
     ListObject* lst = (ListObject*)obj;
@@ -104,7 +103,51 @@ void ListKlass::del_subscr(Object* obj, Object* index) {
     lst->inner_list()->delete_index(i);
 }
 
+Object* ListKlass::iter(Object* obj) {
+    assert(obj != nullptr && obj->klass() == this);
+    ListObject* lst = (ListObject*)obj;
+    return new ListIteratorObject(lst);
+}
+
+/* list iterator klass */
+
+ListIteratorKlass* ListIteratorKlass::instance = nullptr;
+
+ListIteratorKlass::ListIteratorKlass() {
+    ObjDict* klass_dict = new ObjDict(equal2obj);
+    klass_dict->put(new StringObject("next"), new FunctionObject(listiterator_next));
+    set_klass_dict(klass_dict);
+    set_name("listiterator");
+}
+
+ListIteratorKlass* ListIteratorKlass::get_instance() {
+    if(instance == nullptr) 
+        instance = new ListIteratorKlass();
+    return instance;
+}
+
+/* list iterator object */
+
+ListIteratorObject::ListIteratorObject(ListObject* owner) {
+    _owner = owner;
+    _iter_cnt = 0;
+    set_klass(ListIteratorKlass::get_instance());
+}
+
+ListObject* ListIteratorObject::owner() {
+    return _owner;
+}
+
+int ListIteratorObject::iter_cnt() {
+    return _iter_cnt;
+}
+
+void ListIteratorObject::inc_cnt() {
+    _iter_cnt++;
+}
+
 /* list object */
+
 ListObject::ListObject() {
     _inner_list = new ObjList();
     set_klass(ListKlass::get_instance());
@@ -137,6 +180,7 @@ Object* ListObject::top() {
 }
 
 /* built in methods */
+
 Object* list_append(ObjList* args) {
     assert(args->size() == 2);
     assert(args->get(0)->klass() == ListKlass::get_instance());
@@ -177,7 +221,6 @@ Object* list_pop(ObjList* args) {
     return lst->pop();
 }
 
-
 Object* list_remove(ObjList* args) {
     assert(args->size() == 2);
     assert(args->get(0)->klass() == ListKlass::get_instance());
@@ -208,5 +251,29 @@ Object* list_reverse(ObjList* args) {
 }
 
 Object* list_sort(ObjList* args) {
+    assert(args->size() == 1);
+    assert(args->get(0)->klass() == ListKlass::get_instance());
+    ListObject* lst = (ListObject*)(args->get(0)); 
+
+    // TODO - sort
+
     return Universe::PNone;
+}
+
+Object* listiterator_next(ObjList* args) {
+    assert(args->size() == 1);
+    assert(args->get(0)->klass() == ListIteratorKlass::get_instance());
+    ListIteratorObject* iter = (ListIteratorObject*)(args->get(0)); 
+
+    ListObject* alist = iter->owner();
+    int iter_cnt = iter->iter_cnt();
+    if(iter_cnt < alist->inner_list()->size()) {
+        Object* obj = alist->get(iter_cnt);
+        iter->inc_cnt();
+        return obj;
+    }
+    else {
+        // TODO - need StopIteration Exception
+        return nullptr;
+    }
 }
