@@ -21,6 +21,7 @@ public:
     virtual Object* add(Object* x, Object* y);
     virtual Object* eq(Object* x, Object* y);
     virtual Object* mul(Object* x, Object* y);
+    virtual Object* len(Object* obj);
 
     /* native function & methods*/
     virtual void print(Object* obj);
@@ -28,7 +29,7 @@ public:
     virtual Object* contains(Object* obj, Object* x);
     virtual void store_subscr(Object* obj, Object* index, Object* x);
     virtual void del_subscr(Object* obj, Object* index);
-    virtual Object* iter(Object* obj);
+    virtual Object* iter(Object* x);
 };
 
 /* List Iterator Klass */

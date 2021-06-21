@@ -40,6 +40,7 @@ Interpreter::Interpreter() {
     op[83]  = &Interpreter::return_value;
     op[87]  = &Interpreter::pop_block;
     op[90]  = &Interpreter::store_name;
+    op[92]  = &Interpreter::unpack_sequence;
     op[93]  = &Interpreter::for_iter;
     op[97]  = &Interpreter::store_global;
     op[100] = &Interpreter::load_const;
@@ -292,7 +293,7 @@ void Interpreter::get_iter(int arg) /* 68 */ {
 
 /* 70 */
 
-void Interpreter::print_item(int arg) {
+void Interpreter::print_item(int arg) /* 71 */ {
     if(debug) {
         cerr << "PRINT_ITEM | ";
     }
@@ -303,7 +304,7 @@ void Interpreter::print_item(int arg) {
     }
 }
 
-void Interpreter::print_newline(int arg) {
+void Interpreter::print_newline(int arg) /* 72 */ {
     if(debug) {
         cerr << "PRINT_NEWLINE" << endl;
     }
@@ -312,7 +313,7 @@ void Interpreter::print_newline(int arg) {
 
 /* 80 */
 
-void Interpreter::break_loop(int arg) {
+void Interpreter::break_loop(int arg) /* 80 */ {
     if(debug) {
         cerr << "BREAK_LOOP" << endl;
     }
@@ -322,7 +323,7 @@ void Interpreter::break_loop(int arg) {
     _frame->set_pc(lb->_target);
 }
 
-void Interpreter::return_value(int arg) {
+void Interpreter::return_value(int arg) /* 83 */ {
     if(debug) {
         cerr << "RETURN_VALUE" << endl;
     }
@@ -348,6 +349,28 @@ void Interpreter::store_name(int arg) /* 90 */ {
         cerr << "STORE_NAME | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
     }
     _frame->locals()->put(_frame->names()->get(arg), pop());
+}
+
+void Interpreter::unpack_sequence(int arg) /* 92 */ {
+    if(debug) {
+        cerr << "UNPACK_SEQUENCE | " << arg << endl;
+    }
+    Object* seq = pop();
+    if(seq->len() != nullptr && ((IntegerObject*)(seq->len()))->value() == arg) {
+        while(arg--) {
+            push(seq->subscr(new IntegerObject(arg)));
+        }
+    }
+    else {
+        cerr << "error unpack sequence" << endl
+            << "obj type: " << seq->klass()->name() << endl;
+        if(seq->len() == nullptr)
+            cerr << "len = NULL" << endl;
+        else   
+            cerr << "len = " << ((IntegerObject*)(seq->len()))->value() << endl;
+        exit(-1);
+    }
+
 }
 
 void Interpreter::for_iter(int arg) /* 93 */ {

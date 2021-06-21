@@ -73,6 +73,11 @@ Object* ListKlass::mul(Object* x, Object* y) {
     return ret;
 }
 
+Object* ListKlass::len(Object* x) {
+    assert(x && x->klass() == this);
+    return new IntegerObject(((ListObject*)x)->size());
+}
+
 void ListKlass::print(Object* obj) {
     assert(obj->klass() == ListKlass::get_instance());
     ListObject* lst = (ListObject*)obj;

@@ -77,6 +77,7 @@ private:
     void    return_value(int);          // 83
     void    pop_block(int);             // 87
     void    store_name(int);            // 90
+    void    unpack_sequence(int);       // 92
     void    for_iter(int);              // 93
     void    store_global(int);          // 97
     void    load_const(int);            // 100
