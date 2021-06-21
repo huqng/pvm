@@ -13,9 +13,9 @@ class StringKlass;
 
 class Universe {
 public:
-    static IntegerObject* PTrue;
-    static IntegerObject* PFalse;
-    static Object* PNone;
+    static IntegerObject* True;
+    static IntegerObject* False;
+    static Object* None;
 
     static void genesis();
     static void destory();

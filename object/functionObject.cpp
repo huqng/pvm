@@ -21,7 +21,7 @@ Object* string_upper(ObjList* args) {
     StringObject* str_obj = (StringObject*)arg;
     int length = str_obj->length();
     if(length < 0)
-        return Universe::PNone;
+        return Universe::None;
     
     char* new_str = new char[length];
     char c;

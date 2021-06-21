@@ -45,17 +45,17 @@ Object* ListKlass::add(Object* x, Object* y) {
 Object* ListKlass::eq(Object* x, Object* y) {
     assert(x->klass() == this);
     if(y->klass() != this)
-        return Universe::PFalse;
+        return Universe::False;
     if(((ListObject*)y)->size() != ((ListObject*)x)->size())
-        return Universe::PFalse;
+        return Universe::False;
     for(int i = 0; i < ((ListObject*)x)->size(); i++) {
         Object* xi = ((ListObject*)x)->get(i);
         Object* yi = ((ListObject*)y)->get(i);
-        if(xi->eq(yi) == Universe::PFalse) {
-            return Universe::PFalse;
+        if(xi->eq(yi) == Universe::False) {
+            return Universe::False;
         }
     }
-    return Universe::PTrue;
+    return Universe::True;
 }
 
 Object* ListKlass::mul(Object* x, Object* y) {
@@ -108,10 +108,10 @@ Object* ListKlass::contains(Object* obj, Object* x) {
     ListObject* lst = (ListObject*)obj;
     for(int i = 0; i < lst->inner_list()->size(); i++) {
         if(equal2obj(lst->inner_list()->get(i), x)) {
-            return Universe::PTrue;
+            return Universe::True;
         }
     }
-    return Universe::PFalse;
+    return Universe::False;
 }
 
 void ListKlass::store_subscr(Object* obj, Object* index, Object* x) {
@@ -216,7 +216,7 @@ Object* list_append(ObjList* args) {
     assert(args->size() == 2);
     assert(args->get(0)->klass() == ListKlass::get_instance());
     ((ListObject*)(args->get(0)))->inner_list()->append(args->get(1));
-    return Universe::PNone;
+    return Universe::None;
 }
 
 Object* list_insert(ObjList* args) {
@@ -228,7 +228,7 @@ Object* list_insert(ObjList* args) {
     Object* obj = args->get(2);
 
     lst->inner_list()->insert(index->value(), obj);
-    return Universe::PNone;
+    return Universe::None;
 }
 
 Object* list_index(ObjList* args) {
@@ -237,12 +237,12 @@ Object* list_index(ObjList* args) {
     ListObject* lst = (ListObject*)(args->get(0));
 
     for(int i = 0; i < lst->size(); i++) {
-        if(lst->get(i)->eq(args->get(1)) == Universe::PTrue) {
+        if(lst->get(i)->eq(args->get(1)) == Universe::True) {
             return new IntegerObject(i);
         }
     }
     // TODO - exception
-    return Universe::PNone;
+    return Universe::None;
 }
 
 Object* list_pop(ObjList* args) {
@@ -257,12 +257,12 @@ Object* list_remove(ObjList* args) {
     assert(args->get(0)->klass() == ListKlass::get_instance());
     ListObject* lst = (ListObject*)args->get(0);
     for(int i = 0; i < lst->size(); i++) {
-        if(lst->get(i)->eq(args->get(1)) == Universe::PTrue) {
+        if(lst->get(i)->eq(args->get(1)) == Universe::True) {
             lst->inner_list()->delete_index(i);
             break;
         }
     }
-    return Universe::PNone;
+    return Universe::None;
 }
 
 Object* list_reverse(ObjList* args) {
@@ -278,7 +278,7 @@ Object* list_reverse(ObjList* args) {
         lhs++;
         rhs--;
     }
-    return Universe::PNone;
+    return Universe::None;
 }
 
 Object* list_sort(ObjList* args) {
@@ -288,7 +288,7 @@ Object* list_sort(ObjList* args) {
 
     // TODO - sort
 
-    return Universe::PNone;
+    return Universe::None;
 }
 
 Object* listiterator_next(ObjList* args) {

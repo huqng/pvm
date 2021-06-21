@@ -59,9 +59,9 @@ Interpreter::Interpreter() {
 
     _frame = nullptr; /* initialize from codeObject when run() */
     _builtins = new DictObject();
-    _builtins->put(new StringObject("True"), Universe::PTrue);
-    _builtins->put(new StringObject("False"), Universe::PFalse);
-    _builtins->put(new StringObject("None"), Universe::PNone);
+    _builtins->put(new StringObject("True"), Universe::True);
+    _builtins->put(new StringObject("False"), Universe::False);
+    _builtins->put(new StringObject("None"), Universe::None);
     _builtins->put(new StringObject("len"), new FunctionObject(len));
 }
 
@@ -379,7 +379,7 @@ void Interpreter::load_const(int arg) /* 100 */ {
     }
     Object* v = _frame->consts()->get(arg);
     if(v == nullptr)
-        v = Universe::PNone;
+        v = Universe::None;
     if(debug) {
         cout << v->klass()->name() << " ";
         v->print();
@@ -408,7 +408,7 @@ void Interpreter::load_name(int arg) /* 101 */ {
         push(obj);
         return;
     }
-    push(Universe::PNone);
+    push(Universe::None);
 }
 
 void Interpreter::build_list(int arg) { /* 103 */
@@ -472,23 +472,23 @@ void Interpreter::compare_op(int arg) {
         push(u->contains(v));
         break;
     case NOT_IN:
-        if(u->contains(v) == Universe::PTrue)
-            push(Universe::PFalse);
+        if(u->contains(v) == Universe::True)
+            push(Universe::False);
         else
-            push(Universe::PTrue);
+            push(Universe::True);
 
         break;
     case IS:
         if(v == u)
-            push(Universe::PTrue);
+            push(Universe::True);
         else
-            push(Universe::PFalse);
+            push(Universe::False);
         break;
     case IS_NOT:
         if(v != u)
-            push(Universe::PTrue);
+            push(Universe::True);
         else
-            push(Universe::PFalse);
+            push(Universe::False);
         break;
     default:
         cout << "error: unrecognized compare op [" << arg << "]" << endl;
@@ -517,7 +517,7 @@ void Interpreter::pop_jump_if_false(int arg) {
         cerr << "POP_JUMP_IF_FALSE" << endl;
     }
     Object* v = pop();
-    if(v == Universe::PFalse)
+    if(v == Universe::False)
         _frame->set_pc(arg);
 }
 
@@ -536,7 +536,7 @@ void Interpreter::load_global(int arg) {
         push(obj);
         return;
     }
-    push(Universe::PNone);
+    push(Universe::None);
 
 }
 

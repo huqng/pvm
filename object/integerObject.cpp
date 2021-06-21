@@ -24,7 +24,7 @@ void IntegerKlass::print(Object* x) {
 
 Object* IntegerKlass::add(Object* x, Object* y) {
     if(x->klass() != y->klass())
-        return Universe::PNone;
+        return Universe::None;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
     IntegerObject* ix = (IntegerObject*)x;
@@ -34,7 +34,7 @@ Object* IntegerKlass::add(Object* x, Object* y) {
 
 Object* IntegerKlass::sub(Object* x, Object* y) {
     if(x->klass() != y->klass())
-        return Universe::PNone;
+        return Universe::None;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
     IntegerObject* ix = (IntegerObject*)x;
@@ -44,7 +44,7 @@ Object* IntegerKlass::sub(Object* x, Object* y) {
 
 Object* IntegerKlass::mul(Object* x, Object* y) {
     if(x->klass() != y->klass())
-        return Universe::PNone;
+        return Universe::None;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
     IntegerObject* ix = (IntegerObject*)x;
@@ -54,7 +54,7 @@ Object* IntegerKlass::mul(Object* x, Object* y) {
 
 Object* IntegerKlass::div(Object* x, Object* y) {
     if(x->klass() != y->klass())
-        return Universe::PNone;
+        return Universe::None;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
     IntegerObject* ix = (IntegerObject*)x;
@@ -64,7 +64,7 @@ Object* IntegerKlass::div(Object* x, Object* y) {
 
 Object* IntegerKlass::mod(Object* x, Object* y) {
     if(x->klass() != y->klass())
-        return Universe::PNone;
+        return Universe::None;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
     IntegerObject* ix = (IntegerObject*)x;
@@ -74,62 +74,62 @@ Object* IntegerKlass::mod(Object* x, Object* y) {
 
 Object* IntegerKlass::greater(Object* x, Object* y) {
     if(x->klass() != y->klass())
-        return Universe::PFalse;
+        return Universe::False;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
     IntegerObject* ix = (IntegerObject*)x;
     IntegerObject* iy = (IntegerObject*)y;
-    return ix->value() > iy->value() ? Universe::PTrue : Universe::PFalse;
+    return ix->value() > iy->value() ? Universe::True : Universe::False;
 }
 
 Object* IntegerKlass::less(Object* x, Object* y) {
     if(x->klass() != y->klass())
-        return Universe::PFalse;
+        return Universe::False;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
     IntegerObject* ix = (IntegerObject*)x;
     IntegerObject* iy = (IntegerObject*)y;
-    return ix->value() < iy->value() ? Universe::PTrue : Universe::PFalse;
+    return ix->value() < iy->value() ? Universe::True : Universe::False;
 }
 
 Object* IntegerKlass::eq(Object* x, Object* y) {
     if(x->klass() != y->klass())
-        return Universe::PFalse;
+        return Universe::False;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
     IntegerObject* ix = (IntegerObject*)x;
     IntegerObject* iy = (IntegerObject*)y;
-    return ix->value() == iy->value() ? Universe::PTrue : Universe::PFalse;
+    return ix->value() == iy->value() ? Universe::True : Universe::False;
 }
 
 Object* IntegerKlass::ne(Object* x, Object* y) {
     if(x->klass() != y->klass())
-        return Universe::PFalse;
+        return Universe::False;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
     IntegerObject* ix = (IntegerObject*)x;
     IntegerObject* iy = (IntegerObject*)y;
-    return ix->value() != iy->value() ? Universe::PTrue : Universe::PFalse;
+    return ix->value() != iy->value() ? Universe::True : Universe::False;
 }
 
 Object* IntegerKlass::ge(Object* x, Object* y) {
     if(x->klass() != y->klass())
-        return Universe::PFalse;
+        return Universe::False;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
     IntegerObject* ix = (IntegerObject*)x;
     IntegerObject* iy = (IntegerObject*)y;
-    return ix->value() >= iy->value() ? Universe::PTrue : Universe::PFalse;
+    return ix->value() >= iy->value() ? Universe::True : Universe::False;
 }
 
 Object* IntegerKlass::le(Object* x, Object* y) {
     if(x->klass() != y->klass())
-        return Universe::PFalse;
+        return Universe::False;
     assert(x->klass() == (Klass*)this);
     assert(y->klass() == (Klass*)this);
     IntegerObject* ix = (IntegerObject*)x;
     IntegerObject* iy = (IntegerObject*)y;
-    return ix->value() <= iy->value() ? Universe::PTrue : Universe::PFalse;
+    return ix->value() <= iy->value() ? Universe::True : Universe::False;
 }
 
 IntegerObject::IntegerObject(int x) {

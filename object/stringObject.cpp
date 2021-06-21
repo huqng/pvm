@@ -35,26 +35,26 @@ Object* StringKlass::less(Object* x, Object* y) {
 
 Object* StringKlass::eq(Object* x, Object* y) {
     if(x->klass() != y->klass())
-        return Universe::PFalse;
+        return Universe::False;
     StringObject* sx = (StringObject*)x;
     StringObject* sy = (StringObject*)y;
 
     if(sx->length() != sy->length()) {
-        return Universe::PFalse;
+        return Universe::False;
     }
 
     for(int i = 0; i < sx->length(); i++) {
         if(sx->value()[i] != sy->value()[i])
-            return Universe::PFalse;
+            return Universe::False;
     }
-    return Universe::PTrue;
+    return Universe::True;
 }
 
 Object* StringKlass::ne(Object* x, Object* y) {
-    if(eq(x, y) == Universe::PFalse)
-        return Universe::PTrue;
+    if(eq(x, y) == Universe::False)
+        return Universe::True;
     else    
-        return Universe::PFalse;
+        return Universe::False;
 }
 
 Object* StringKlass::ge(Object* x, Object* y) {
@@ -96,14 +96,14 @@ Object* StringKlass::subscr(Object* obj, Object* x) {
 Object* StringKlass::contains(Object* obj, Object* x) {
     assert(obj->klass() == this);
     if(x->klass() != this)
-        return Universe::PFalse;
+        return Universe::False;
     else {
         StringObject* s = (StringObject*)obj;
         StringObject* subs = (StringObject*)x;
         if(strstr(s->value(), subs->value()) != nullptr)
-            return Universe::PTrue;
+            return Universe::True;
         else
-            return Universe::PFalse;
+            return Universe::False;
     }
     
 }

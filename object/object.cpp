@@ -117,11 +117,11 @@ void Object::del_subscr(Object* index) {
 }
 
 bool equal2obj(Object* a, Object* b) {
-    return a->eq(b) == Universe::PTrue;
+    return a->eq(b) == Universe::True;
 }
 
 Object* Object::getattr(Object* x) {
-    Object* result = Universe::PNone;
+    Object* result = Universe::None;
     result = this->_klass->klass_dict()->get(x);
     /* 
         if attr is function, make a method, 

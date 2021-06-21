@@ -1,15 +1,107 @@
 #include "dictObject.h"
 
+/* native methods */
+
+Object* dict_set_default(ObjList* args) {
+    assert(args->size() == 3);
+    assert(args->get(0)->klass() == (Klass*)(DictKlass::get_instance()));
+    DictObject* dict = (DictObject*)(args->get(0));
+    Object* key = args->get(1);
+    Object* value = args->get(2);
+    
+    if(!dict->has_key(key))
+        dict->put(key, value);
+    return Universe::None;
+}
+
+Object* dict_remove(ObjList* args) {
+    assert(args->size() == 2);
+    assert(args->get(0)->klass() == (Klass*)(DictKlass::get_instance()));
+    DictObject* dict = (DictObject*)(args->get(0));
+    Object* key = args->get(1);
+    dict->remove(key);
+    return Universe::None;
+}
+
+Object* dict_keys(ObjList* args) {
+    assert(args->size() == 1);
+    assert(args->get(0)->klass() == (Klass*)(DictKlass::get_instance()));
+    DictObject* dict = (DictObject*)(args->get(0));
+    ListObject* keys = new ListObject();
+    for(int i = 0; i < dict->size(); i++)
+        keys->append(dict->map()->get_key(i));
+    return keys;
+}
+
+Object* dict_values(ObjList* args) {
+    assert(args->size() == 1);
+    assert(args->get(0)->klass() == (Klass*)(DictKlass::get_instance()));
+    DictObject* dict = (DictObject*)(args->get(0));
+    ListObject* values = new ListObject();
+    for(int i = 0; i < dict->size(); i++) {
+        Object* value = dict->map()->get(dict->map()->get_key(i));
+        values->append(value);
+    }
+    
+    return values;
+}
+
+Object* dict_items(ObjList* args) {
+    /* TODO - use tuple instead of list */
+    assert(args->size() == 1);
+    assert(args->get(0)->klass() == (Klass*)(DictKlass::get_instance()));
+    DictObject* dict = (DictObject*)(args->get(0));
+    ListObject* items = new ListObject();
+    ListObject* item = nullptr;
+    for(int i = 0; i < dict->size(); i++) {
+        item = new ListObject();
+        Object* key = dict->map()->get_key(i);
+        Object* value = dict->map()->get(key);
+        item->append(key);
+        item->append(value);
+        items->append(item);
+    }
+    return items;
+}
+
+Object* dictiterator_next(ObjList* args) {
+    assert(args->size() == 1);
+    assert(args->get(0)->klass() == (Klass*)(DictIteratorKlass::get_instance()));
+    DictIteratorObject* iter = (DictIteratorObject*)(args->get(0)); 
+
+    DictObject* dict = iter->owner();
+    int iter_cnt = iter->iter_cnt();
+    if(iter_cnt < dict->size()) {
+        Object* key = dict->map()->get_key(iter_cnt);
+        iter->inc_cnt();
+        return key;
+    }
+    else {
+        // TODO - need StopIteration Exception
+        return nullptr;
+    }
+}
+
 /* dict klass */
 
 DictKlass* DictKlass::instance = nullptr;
 
 DictKlass::DictKlass() {
     set_name("Dict");
+
+    ObjMap* klass_dict = new ObjMap(equal2obj);
+    /* add builtin methods to klass_dict */
+    klass_dict->put(new StringObject("setdefault"), new FunctionObject(dict_set_default));
+    klass_dict->put(new StringObject("remove"), new FunctionObject(dict_remove));
+    klass_dict->put(new StringObject("keys"), new FunctionObject(dict_keys));
+    klass_dict->put(new StringObject("values"), new FunctionObject(dict_values));
+    klass_dict->put(new StringObject("items"), new FunctionObject(dict_items));
+    //klass_dict->put(new StringObject("METHOD_NAME"), new FunctionObject(METHOD_FUNCTION_POINTER));
+    set_klass_dict(klass_dict);
 }
 
 DictKlass* DictKlass::get_instance() {
-    if(instance == nullptr);
+    if(instance == nullptr)
         instance = new DictKlass();
     return instance;
 }
@@ -42,16 +134,16 @@ Object* DictKlass::subscr(Object* obj, Object* key) {
     if(d->map()->has_key(key) )
         return d->map()->get(key);
     else
-        return Universe::PNone;
+        return Universe::None;
 }
 
 Object* DictKlass::contains(Object* obj, Object* key) {
     assert(obj->klass() == (Klass*)this);
     DictObject* d = (DictObject*)obj;
     if(d->map()->has_key(key))
-        return Universe::PTrue;
+        return Universe::True;
     else
-        return Universe::PFalse;
+        return Universe::False;
 }
 
 void DictKlass::store_subscr(Object* obj, Object* key, Object* value) {
@@ -108,24 +200,6 @@ void DictIteratorObject::inc_cnt() {
     _iter_cnt++;
 }
 
-Object* dictiterator_next(ObjList* args) {
-    assert(args->size() == 1);
-    assert(args->get(0)->klass() == (Klass*)(DictIteratorKlass::get_instance()));
-    DictIteratorObject* iter = (DictIteratorObject*)(args->get(0)); 
-
-    DictObject* dict = iter->owner();
-    int iter_cnt = iter->iter_cnt();
-    if(iter_cnt < dict->size()) {
-        Object* key = dict->map()->get_key(iter_cnt);
-        iter->inc_cnt();
-        return key;
-    }
-    else {
-        // TODO - need StopIteration Exception
-        return nullptr;
-    }
-}
-
 /* dict object */
 
 DictObject::DictObject() {
@@ -150,7 +224,7 @@ Object* DictObject::get(Object* k) {
     if(_map->has_key(k))
         return _map->get(k);
     else
-        return Universe::PNone;
+        return Universe::None;
 }
 
 bool DictObject::has_key(Object* k) {

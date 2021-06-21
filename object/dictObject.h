@@ -4,6 +4,7 @@
 #include "object.h"
 #include "cassert"
 #include "universe.h"
+#include "listObject.h"
 #include <iostream>
 using namespace std;
 
@@ -11,6 +12,15 @@ class DictKlass;
 class DictObject;
 class DictIteratorKlass;
 class DictIteratorObject;
+
+/* native methods */
+/* to add to klass_dict in constructor of Klass */
+Object* dict_set_default(ObjList* args);
+Object* dict_remove(ObjList* args);
+Object* dict_keys(ObjList* args);
+Object* dict_values(ObjList* args);
+Object* dict_items(ObjList* args);
+Object* dictiterator_next(ObjList* args);
 
 /* dict klass */
 
@@ -52,8 +62,6 @@ public:
     void inc_cnt();
 };
 
-Object* dictiterator_next(ObjList* args);
-
 /* dict object */
 
 class DictObject: public Object {
@@ -70,7 +78,5 @@ public:
     int     size();
     Object* remove(Object* k);
 };
-
-
 
 #endif
