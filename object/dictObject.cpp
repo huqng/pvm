@@ -52,9 +52,9 @@ Object* dict_items(ObjList* args) {
     assert(args->get(0)->klass() == (Klass*)(DictKlass::get_instance()));
     DictObject* dict = (DictObject*)(args->get(0));
     ListObject* items = new ListObject();
-    ListObject* item = nullptr;
+    TupleObject* item = nullptr;
     for(int i = 0; i < dict->size(); i++) {
-        item = new ListObject();
+        item = new TupleObject();
         Object* key = dict->map()->get_key(i);
         Object* value = dict->map()->get(key);
         item->append(key);

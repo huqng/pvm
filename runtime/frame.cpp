@@ -1,11 +1,11 @@
 #include "frame.h"
 
 Frame::Frame(CodeObject* co) {
-    _stack = new ObjList();
+    _stack = new ListObject();
     _loop_stack = new ArrayList<LoopBlock*>();
 
-    _consts = co->_consts;
-    _names = co->_names;
+    _consts = new ListObject(co->_consts);
+    _names = new ListObject(co->_names);
     _locals = new DictObject();
     _globals = _locals;
     _fast_locals = nullptr;
@@ -15,38 +15,83 @@ Frame::Frame(CodeObject* co) {
     _sender = nullptr;
 }
 
-Frame::Frame(FunctionObject* fo, ObjList* args) {
-    _stack = new ObjList();
+Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
+    /* stack */
+    _stack = new ListObject();
     _loop_stack = new ArrayList<LoopBlock*>();
 
+    /* code */
     _co = fo->_func_code;
+    _pc = 0;
 
-    _consts = _co->_consts;
-    _names = _co->_names;
+    _consts = new ListObject(_co->_consts);
+    _names = new ListObject(_co->_names);
+
+    /* args */
     _locals = new DictObject();
     _globals = fo->globals();
+    _fast_locals = new ListObject();
 
-    if(_co->_argcount > 0) {
-        if(args->size() + fo->_defaults->size() < _co->_argcount) {
-            cerr << "Frame: too few arguments" << endl;
-            exit(-1);
-        }
-        _fast_locals = new ObjList(_co->_argcount);
-        int dft_cnt = fo->_defaults->length();
-        int argc_nt = _co->_argcount;
-        while(dft_cnt--) {
-            _fast_locals->set(--argc_nt, fo->_defaults->get(dft_cnt));
-        }
+    _sender = nullptr;
 
-        for(int i = 0; i < args->length(); i++) {
+    const int nadef = _co->_argcount; /* number of args defined */
+    const int nagiven = op_arg & 0xFF; /* number of args given*/
+    const int nkw = op_arg >> 8; /* number of kwargs given */
+    int kw_pos = nadef; /* args[argcnt] is */
+
+    /* put default args into fast_locals*/
+    int ndft = fo->_defaults->length();
+    if(nagiven + ndft < nadef) {
+        cerr << "error: too few arguments to call a function" << endl;
+        exit(-1);
+    }
+    int n = (int)nadef;
+    for(int i = 0; i < ndft; i++) {
+        /* default args are from right to left */
+        _fast_locals->set(nadef - 1 - i, fo->_defaults->get(ndft - 1 - i));
+    }
+
+    /* if given more args than defined, put them into a list */
+    ListObject* alist = new ListObject();
+    if(nagiven > nadef) {
+        for(int i = 0; i < nadef; i++) {
             _fast_locals->set(i, args->get(i));
         }
+        for(int i = nadef; i < nagiven; i++) {
+            alist->append(args->get(i));
+        }
     }
-    else
-        _fast_locals = nullptr;
+    else {
+        for(int i = 0; i < nagiven; i++)
+            _fast_locals->set(i, (args->get(i)));
+    }
 
-    _pc = 0;
-    _sender = nullptr;
+    /* put all kwargs into adict */
+    DictObject* adict = new DictObject;
+    for(int i = 0; i < nkw; i++) {
+        Object* key = args->get(nagiven + i * 2);
+        Object* value = args->get(nagiven + i * 2 + 1);
+        adict->put(key, value);
+    }
+
+    /* flags */
+    if(_co->_flag & CO_VARARGS) {
+        _fast_locals->set(nadef, alist);
+        kw_pos += 1;
+    }
+    else if(alist->size() > 0) {
+        cerr << "error given more args than need" << endl;
+        assert(0);
+    }
+
+    /* flags */
+    if(_co->_flag & CO_VARKEYWORDS) {
+        _fast_locals->set(kw_pos, adict);
+    }
+    else if(adict->size() > 0) {
+        cerr << "error given more kwargs than need" << endl;
+        assert(0);
+    }
 }
 
 Frame::Frame() {

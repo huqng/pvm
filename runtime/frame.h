@@ -9,15 +9,15 @@ class LoopBlock;
 class Frame {
 private:
 
-    ObjList*    _stack;
+    ListObject*    _stack;
     ArrayList<LoopBlock*>*  _loop_stack;
 
-    ObjList*    _consts;
-    ObjList*    _names;
+    ListObject*    _consts;
+    ListObject*    _names;
 
     DictObject* _locals;
     DictObject* _globals;
-    ObjList*    _fast_locals;
+    ListObject*    _fast_locals;
 
     CodeObject*     _co;
     int             _pc;
@@ -25,24 +25,24 @@ private:
     Frame*    _sender;
 public:
     /* can built from functionObject or CodeObject (entry)*/
-    Frame(FunctionObject* fo, ArrayList<Object*>* args);
+    Frame(FunctionObject* fo, ObjList* args, int op_arg);
     Frame(CodeObject* co);
     Frame();
     
     void    set_pc(int x) { _pc = x; }
     int     get_pc() { return _pc; }
 
-    ObjList*    stack() {
+    ListObject* stack() {
         return _stack;
     }
     ArrayList<LoopBlock*>*  loop_stack() {
         return _loop_stack;
     }
 
-    ObjList*    consts() {
+    ListObject* consts() {
         return _consts;
     }
-    ObjList*    names() {
+    ListObject* names() {
         return _names;
     }
     DictObject* locals() {
@@ -51,7 +51,7 @@ public:
     DictObject* globals() {
         return _globals;
     }
-    ObjList*    fast_locals() {
+    ListObject* fast_locals() {
         return _fast_locals;
     }
 

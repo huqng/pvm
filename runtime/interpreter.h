@@ -43,7 +43,7 @@ class Interpreter {
 private:
     DictObject* _builtins;
     Frame*      _frame;
-    bool        debug;
+    bool        dbg;
 
     /* stack op */
     void    push(Object* p);
@@ -51,7 +51,7 @@ private:
     Object* top();
     int     stack_level();
     
-    void    build_frame(Object* callable, ArrayList<Object*>* args);
+    void    build_frame(Object* callable, ArrayList<Object*>* args, int oparg);
     void    eval_frame();
     void    leave_frame(Object* retv);
     void    destroy_frame();
@@ -96,7 +96,7 @@ private:
     void    make_function(int);         // 132
 
 public:
-    Interpreter();
+    Interpreter(int debug);
     void run(CodeObject* co);
 };
 

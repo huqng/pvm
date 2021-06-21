@@ -16,8 +16,8 @@ StringTable* StringTable::get_instance() {
 
 /* Interpreter */
 
-Interpreter::Interpreter() {
-    debug = 0;
+Interpreter::Interpreter(int debug) {
+    this->dbg = debug;
 
     op = new op_t[256];
     for(int i = 0; i < 256; i++)
@@ -90,26 +90,26 @@ int Interpreter::stack_level() {
     return _frame->stack()->size();
 }
 
-void Interpreter::build_frame(Object* callable, ObjList* args) {
+void Interpreter::build_frame(Object* callable, ObjList* args, int oparg) {
     /* called in call_function() */
     /* if no args, args is null */
     /* callable is either FunctionObject, NativeFunctionObject or MethodObject */
     if(callable->klass() == NativeFunctionKlass::get_instance()) {
-        if(debug) {
+        if(dbg) {
             cerr << "\t<Native Function>" << endl;
         }
         push(((FunctionObject*)callable)->call(args));
     }
     else if(callable->klass() == FunctionKlass::get_instance()) {
-        if(debug) {
+        if(dbg) {
             cerr << "\t<Non-Native Function>" << endl;
         }
-        Frame* frame = new Frame((FunctionObject*)callable, args);
+        Frame* frame = new Frame((FunctionObject*)callable, args, oparg);
         frame->set_sender(_frame);
         _frame = frame;
     }
     else if(callable->klass() == MethodKlass::get_instance()) {
-        if(debug) {
+        if(dbg) {
             cerr << "\t<Method>";
         }
         MethodObject* method = (MethodObject*)callable;
@@ -117,7 +117,7 @@ void Interpreter::build_frame(Object* callable, ObjList* args) {
             args = new ObjList();
         }
         args->insert(0, method->owner());
-        build_frame(method->func(), args);
+        build_frame(method->func(), args, oparg);
     }
     else {
         cerr << "Error build_frame, unrecognized klass = " << callable->klass() << endl;
@@ -135,7 +135,7 @@ void Interpreter::eval_frame() {
         /* pc is updated automatically in get_op_code() or get_op_arg() */
         unsigned char op_code = _frame->get_op_code();
 
-        if(debug)
+        if(dbg)
             cout << "[" << _frame->get_pc() - 1 << "]\t" << (int)op_code << ":\t";
 
         /* (optional) op-arg */
@@ -177,7 +177,7 @@ void Interpreter::unimplemented(int arg) {
 /* 0 */
 
 void Interpreter::pop_top(int arg) {
-    if(debug) {
+    if(dbg) {
         cerr << "POP_TOP" << endl;
     }
     pop();
@@ -188,7 +188,7 @@ void Interpreter::pop_top(int arg) {
 /* 20 */
 
 void Interpreter::binary_multiply(int arg) /* 20*/ {
-    if(debug) {
+    if(dbg) {
         cerr << "BINARY_MULTIPLY" << endl;
     }
     Object *u, *v;
@@ -198,7 +198,7 @@ void Interpreter::binary_multiply(int arg) /* 20*/ {
 }
 
 void Interpreter::binary_divide(int arg) /* 21 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "BINARY_DIVIDE" << endl;
     }
     Object *u, *v;
@@ -208,7 +208,7 @@ void Interpreter::binary_divide(int arg) /* 21 */ {
 }
 
 void Interpreter::binary_modulo(int arg) /* 22 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "BINARY_MODULO" << endl;
     }
     Object *u, *v;
@@ -218,7 +218,7 @@ void Interpreter::binary_modulo(int arg) /* 22 */ {
 }
 
 void Interpreter::binary_add(int arg) /* 23 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "BINARY_ADD" << endl;
     }
     Object *u, *v;
@@ -228,7 +228,7 @@ void Interpreter::binary_add(int arg) /* 23 */ {
 }
 
 void Interpreter::binary_subtract(int arg) /* 24 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "BINARY_SUBTRACT" << endl;
     }
     Object *u, *v;
@@ -238,7 +238,7 @@ void Interpreter::binary_subtract(int arg) /* 24 */ {
 }
 
 void Interpreter::binary_subscr(int arg) /* 25 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "BINARY_SUBSCR" << endl;
     }
     Object* index = pop();
@@ -253,7 +253,7 @@ void Interpreter::binary_subscr(int arg) /* 25 */ {
 /* 50 */
 
 void Interpreter::store_map(int arg) /* 54 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "STORE_MAP" << endl;
     }
     Object* key = pop();
@@ -265,7 +265,7 @@ void Interpreter::store_map(int arg) /* 54 */ {
 /* 60 */
 
 void Interpreter::store_subscr(int arg) /* 60 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "STORE_SUBSCR" << endl;
     }
     Object* x = pop();
@@ -275,7 +275,7 @@ void Interpreter::store_subscr(int arg) /* 60 */ {
 }
 
 void Interpreter::delete_subscr(int arg) /* 61 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "DELETE_SUBSCR";
     }
     Object* index = pop();
@@ -284,7 +284,7 @@ void Interpreter::delete_subscr(int arg) /* 61 */ {
 }
 
 void Interpreter::get_iter(int arg) /* 68 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "GET_ITER" << endl;
     }
     Object* obj = pop();
@@ -294,18 +294,18 @@ void Interpreter::get_iter(int arg) /* 68 */ {
 /* 70 */
 
 void Interpreter::print_item(int arg) /* 71 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "PRINT_ITEM | ";
     }
     Object* obj = pop();
     obj->print();
-    if(debug) {
+    if(dbg) {
         cerr << endl;
     }
 }
 
 void Interpreter::print_newline(int arg) /* 72 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "PRINT_NEWLINE" << endl;
     }
     cout << endl;
@@ -314,7 +314,7 @@ void Interpreter::print_newline(int arg) /* 72 */ {
 /* 80 */
 
 void Interpreter::break_loop(int arg) /* 80 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "BREAK_LOOP" << endl;
     }
     LoopBlock* lb = _frame->loop_stack()->pop();
@@ -324,7 +324,7 @@ void Interpreter::break_loop(int arg) /* 80 */ {
 }
 
 void Interpreter::return_value(int arg) /* 83 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "RETURN_VALUE" << endl;
     }
     Object* retv = pop();
@@ -334,7 +334,7 @@ void Interpreter::return_value(int arg) /* 83 */ {
 }
 
 void Interpreter::pop_block(int arg) /* 87 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "POP_BLOCK" << endl;
     }
     LoopBlock* lb = _frame->loop_stack()->pop();
@@ -345,14 +345,14 @@ void Interpreter::pop_block(int arg) /* 87 */ {
 /* 90 */
 
 void Interpreter::store_name(int arg) /* 90 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "STORE_NAME | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
     }
     _frame->locals()->put(_frame->names()->get(arg), pop());
 }
 
 void Interpreter::unpack_sequence(int arg) /* 92 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "UNPACK_SEQUENCE | " << arg << endl;
     }
     Object* seq = pop();
@@ -374,12 +374,13 @@ void Interpreter::unpack_sequence(int arg) /* 92 */ {
 }
 
 void Interpreter::for_iter(int arg) /* 93 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "FOR_ITER" << endl;
     }
     Object* iter = top();
     Object* next_method_obj = iter->getattr(StringTable::get_instance()->str_next);
-    build_frame(next_method_obj, nullptr);
+    /* frame of next() of iterator */
+    build_frame(next_method_obj, nullptr, arg);
 
     if(/* return value of iter.next() */ top() == nullptr) {
         _frame->set_pc(_frame->get_pc() + arg);
@@ -388,7 +389,7 @@ void Interpreter::for_iter(int arg) /* 93 */ {
 }
 
 void Interpreter::store_global(int arg) /* 97 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "STORE_GLOBAL" << endl;
     }
     _frame->globals()->put(_frame->names()->get(arg), pop());
@@ -397,13 +398,13 @@ void Interpreter::store_global(int arg) /* 97 */ {
 /* 100 */
 
 void Interpreter::load_const(int arg) /* 100 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "LOAD_CONST | [" << arg << "] | ";
     }
     Object* v = _frame->consts()->get(arg);
     if(v == nullptr)
         v = Universe::None;
-    if(debug) {
+    if(dbg) {
         cout << v->klass()->name() << " ";
         v->print();
         cout << endl;
@@ -412,7 +413,7 @@ void Interpreter::load_const(int arg) /* 100 */ {
 }
 
 void Interpreter::load_name(int arg) /* 101 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "LOAD_NAME | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
     }
     Object* name = _frame->names()->get(arg);
@@ -435,7 +436,7 @@ void Interpreter::load_name(int arg) /* 101 */ {
 }
 
 void Interpreter::build_list(int arg) { /* 103 */
-    if(debug) {
+    if(dbg) {
         cerr << "BUILD_LIST | [" << arg << "]" << endl;
     }
     Object* lst = new ListObject();
@@ -446,7 +447,7 @@ void Interpreter::build_list(int arg) { /* 103 */
 }
 
 void Interpreter::build_map(int arg) /* 105 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "BUILD_MAP" << endl;
     }
     Object* dict = new DictObject();
@@ -454,7 +455,7 @@ void Interpreter::build_map(int arg) /* 105 */ {
 }
 
 void Interpreter::load_attr(int arg) {
-    if(debug) {
+    if(dbg) {
         cerr << "LOAD_ATTR | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
     }
     Object* v = pop();
@@ -465,7 +466,7 @@ void Interpreter::load_attr(int arg) {
 }
 
 void Interpreter::compare_op(int arg) {
-    if(debug) {
+    if(dbg) {
         cerr << "COMPARE_OP" << endl;
     }   
     Object *u, *v;
@@ -522,21 +523,21 @@ void Interpreter::compare_op(int arg) {
 /* 110 */
 
 void Interpreter::jump_forward(int arg) {
-    if(debug) {
+    if(dbg) {
         cerr << "JUMP_FORWARD" << endl;
     }
     _frame->set_pc(_frame->get_pc() + arg);
 }
 
 void Interpreter::jump_absolute(int arg) /* 113 */ {
-    if(debug) {
+    if(dbg) {
         cerr << "JUMP_ABSOLUTE | " << arg << endl;
     }
     _frame->set_pc(arg);
 }
 
 void Interpreter::pop_jump_if_false(int arg) {
-    if(debug) {
+    if(dbg) {
         cerr << "POP_JUMP_IF_FALSE" << endl;
     }
     Object* v = pop();
@@ -545,7 +546,7 @@ void Interpreter::pop_jump_if_false(int arg) {
 }
 
 void Interpreter::load_global(int arg) {
-    if(debug) {
+    if(dbg) {
         cerr << "LOAD_GLOBAL" << endl;
     }
     Object* name = _frame->names()->get(arg);
@@ -566,7 +567,7 @@ void Interpreter::load_global(int arg) {
 /* 120 */
 
 void Interpreter::setup_loop(int arg) {
-    if(debug) {
+    if(dbg) {
         cerr << "SETUP_LOOP" << endl;
     }
     _frame->loop_stack()->append(
@@ -575,8 +576,8 @@ void Interpreter::setup_loop(int arg) {
 }
 
 void Interpreter::load_fast(int arg) {
-    if(debug) {
-        cerr << "LOAD_FAST" << endl;
+    if(dbg) {
+        cerr << "LOAD_FAST | " << arg << endl;
     }
     push(_frame->fast_locals()->get(arg));
 }
@@ -585,24 +586,30 @@ void Interpreter::load_fast(int arg) {
 
 void Interpreter::call_function(int op_arg) {
     /* call function: build a frame with args and enter */
-    if(debug) {
-        cerr << "CALL_FUNCTION | given args = " << op_arg << endl;
+    if(dbg) {
+        cerr << "CALL_FUNCTION";
     }
     ArrayList<Object*>* args = nullptr;
     if(op_arg > 0) {
-        args = new ArrayList<Object*>(op_arg);
-        while(op_arg--) {
-            args->set(op_arg, pop());
+        int nargs = op_arg & 0xFF;
+        int nkwargs = op_arg >> 8;
+        int nagiven = nargs + nkwargs * 2;
+        if(dbg) {
+            cout << "| given " << nagiven << " args, " << nkwargs << " of which are kwargs" << endl;
+        }
+        args = new ObjList(nagiven);
+        while(nagiven--) {
+            args->set(nagiven, pop());
         }
     }
-    build_frame(pop(), args);
+    build_frame(pop(), args, op_arg);
     if(args != nullptr) {
         delete args;
     }
 }
 
 void Interpreter::make_function(int arg) {
-    if(debug) {
+    if(dbg) {
         cerr << "MAKE_FUNCTION | default args = " << arg << endl;
     }
     Object* v = pop();

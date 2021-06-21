@@ -1,7 +1,25 @@
 #include "binaryFileParser.h"
 #include "interpreter.h"
+#include <getopt.h>
 
-int main() {
+int main(int argc, char** argv) {
+    int debug = 0;
+
+    const char* optstr = "d";
+    int opt;
+    while(opt = getopt(argc, argv, optstr)) {
+        switch (opt) {
+        case 'd':
+            debug = 1;
+            break;
+        
+        default:
+            break;
+        }
+        if(opt < 0)
+            break;
+    }
+
     /* a file-read-util */
     BufferedInputStream* bis = new BufferedInputStream("../.pytest/hello.pyc");
 
@@ -15,7 +33,7 @@ int main() {
     Universe::genesis();
 
     /* run interpreter */
-    Interpreter* interpreter = new Interpreter();
+    Interpreter* interpreter = new Interpreter(debug);
     interpreter->run(co);
 
 

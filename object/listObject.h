@@ -10,6 +10,11 @@ class ListIteratorKlass;
 class ListIteratorObject;
 class ListObject;
 
+typedef ListKlass TupleKlass;
+typedef ListIteratorKlass TupleIteratorKlass;
+typedef ListIteratorObject TupleIteratorObject;
+typedef ListObject TupleObject;
+
 /* List Klass */
 class ListKlass: public Klass {
 private:
