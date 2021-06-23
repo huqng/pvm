@@ -2,6 +2,7 @@
 #include "stringObject.h"
 #include "typeObject.h"
 
+#include <cassert>
 #include <iostream>
 #include <iomanip>
 using namespace std;
@@ -26,6 +27,11 @@ void CodeKlass::initialize() {
     set_type_object(obj);
 
     set_super(ObjectKlass::get_instance());
+}
+
+void CodeKlass::print(Object* x) {
+    assert(x != nullptr && x->klass() == this);
+    cout << "CodeObject at " << x;
 }
 
 /* code object initialize */

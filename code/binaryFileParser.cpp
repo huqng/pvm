@@ -163,8 +163,8 @@ ArrayList<Object*>* BinaryFileParser::get_tuple() {
             tuple->append(_string_table->get(is->read_int()));
             break;
         default:
-            cerr << "parse error: obj_type" << endl;
-            break;
+            cerr << "parse error: obj_type" << obj_type << endl;
+            exit(-1);
         }
     }
     return tuple;

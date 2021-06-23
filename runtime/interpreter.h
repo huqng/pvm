@@ -66,8 +66,10 @@ private:
     void    print_item(int);            // 71
     void    print_newline(int);         // 72
     void    break_loop(int);            // 80
+    void    load_locals(int);           // 82
     void    return_value(int);          // 83
     void    pop_block(int);             // 87
+    void    build_class(int);           // 89
     void    store_name(int);            // 90
     void    unpack_sequence(int);       // 92
     void    for_iter(int);              // 93

@@ -36,9 +36,11 @@ Interpreter::Interpreter(int debug) {
     op[68]  = &Interpreter::get_iter;
     op[71]  = &Interpreter::print_item;
     op[72]  = &Interpreter::print_newline;
-    op[80]  = &Interpreter::break_loop;;
+    op[80]  = &Interpreter::break_loop;
+    op[82]  = &Interpreter::load_locals;
     op[83]  = &Interpreter::return_value;
     op[87]  = &Interpreter::pop_block;
+    op[89]  = &Interpreter::build_class;
     op[90]  = &Interpreter::store_name;
     op[92]  = &Interpreter::unpack_sequence;
     op[93]  = &Interpreter::for_iter;
@@ -137,6 +139,7 @@ void Interpreter::build_frame(Object* callable, ObjList* args, int oparg) {
             cerr << "\t<type>" << endl;
         }
         Object* instance = ((TypeObject*)callable)->own_klass()->allocate_instance(args);
+        //Object* instance = Klass::allocate_instance(callable, args);
         push(instance);
     }
     else {
@@ -341,11 +344,24 @@ void Interpreter::break_loop(int arg) /* 80 */ {
     _frame->set_pc(lb->_target);
 }
 
+void Interpreter::load_locals(int arg) /* 82 */ {
+    if(_debug) {
+        cerr << "LOAD_LOCALS" << endl;
+    }
+    push(_frame->locals());
+}
+
 void Interpreter::return_value(int arg) /* 83 */ {
     if(_debug) {
-        cerr << "RETURN_VALUE" << endl;
+        cerr << "RETURN_VALUE | ";
     }
     Object* retv = pop();
+    if(_debug) {
+        retv->klass()->name()->print();
+        cout << " ";
+        retv->print();
+        cout << endl;
+    }
     if(_frame->is_first_frame())
         return;
     leave_frame(retv);
@@ -360,11 +376,25 @@ void Interpreter::pop_block(int arg) /* 87 */ {
         pop();
 }
 
+void Interpreter::build_class(int arg) /* 89 */ {
+    if(_debug) {
+        cerr << "BUILD_CLASS" << endl;
+    }
+    Object* locals_dict, *supers_tuple, *name_str;
+    locals_dict = pop();
+    supers_tuple = pop();
+    name_str = pop();
+    TypeObject* type_object = Klass::create_klass(locals_dict, supers_tuple, name_str);
+    push(type_object);
+}
+
 /* 90 */
 
 void Interpreter::store_name(int arg) /* 90 */ {
     if(_debug) {
-        cerr << "STORE_NAME | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
+        cerr << "STORE_NAME | index = [" << arg << "] | name = \"";
+        (_frame->names()->get(arg))->print();
+        cerr << "\"" << endl;
     }
     _frame->locals()->put(_frame->names()->get(arg), pop());
 }
@@ -433,13 +463,16 @@ void Interpreter::load_const(int arg) /* 100 */ {
 
 void Interpreter::load_name(int arg) /* 101 */ {
     if(_debug) {
-        cerr << "LOAD_NAME | " << ((StringObject*)_frame->names()->get(arg))->value();
+        Object* x = _frame->names()->get(arg);
+        cerr << "LOAD_NAME | index = [" << arg << "] | name = \"";
+        x->print();
+        cout << "\" | value = ";
+        cout.flush();
     }
     Object* name = _frame->names()->get(arg);
     Object* obj = _frame->locals()->get(name);
     if(obj != Universe::None) {
         if(_debug) {
-            cout << " | ";
             obj->klass()->name()->print();
             cout << " ";
             obj->print();
@@ -451,7 +484,6 @@ void Interpreter::load_name(int arg) /* 101 */ {
     obj = _frame->globals()->get(name);
     if(obj != Universe::None) {
         if(_debug) {
-            cout << " | ";
             obj->klass()->name()->print();
             cout << " ";
             obj->print();
@@ -463,7 +495,6 @@ void Interpreter::load_name(int arg) /* 101 */ {
     obj = _builtins->get(name);
     if(obj != Universe::None) {
         if(_debug) {
-            cout << " | ";
             obj->klass()->name()->print();
             cout << " ";
             obj->print();
@@ -473,7 +504,7 @@ void Interpreter::load_name(int arg) /* 101 */ {
         return;
     }
     if(_debug) {
-        cout << " | None\n";
+        cout << "None\n";
     }
     push(Universe::None);
 }

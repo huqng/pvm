@@ -51,6 +51,7 @@ public:
     Object* getattr(Object* x);
     Object* iter();
 
+    friend class Klass;
 };
 
 bool equal2obj(Object*, Object*);

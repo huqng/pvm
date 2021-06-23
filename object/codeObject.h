@@ -42,6 +42,8 @@ private:
 public:
     static CodeKlass* get_instance();
     void initialize();
+
+    virtual void print(Object* x);
 };
 
 class CodeObject: public Object {

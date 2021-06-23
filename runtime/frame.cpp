@@ -20,6 +20,8 @@ Frame::Frame(CodeObject* co) {
     _co = co;
     _pc = 0;
     _sender = nullptr;
+
+    _locals->put(new StringObject("__name__"), new StringObject("__main__"));
 }
 
 Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {

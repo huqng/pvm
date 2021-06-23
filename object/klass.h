@@ -33,7 +33,10 @@ public:
     void            set_super(Klass* super_klass) { _super = super_klass; }
     Klass*          super() { return _super; }
 
-    virtual Object* allocate_instance(ObjList* args) { return nullptr; }
+    static TypeObject* create_klass(Object* locals_dict, Object* supers_tuple, Object* name_str);
+    static Object* allocate_instance(Object* type_obj, ObjList* args);
+
+    virtual Object* allocate_instance(ObjList* args);
 
     virtual Object* greater(Object* x, Object* y) { return nullptr; }
     virtual Object* less   (Object* x, Object* y) { return nullptr; }
