@@ -1,5 +1,7 @@
 #include "binaryFileParser.h"
 #include "interpreter.h"
+#include "universe.h"
+
 #include <getopt.h>
 
 int main(int argc, char** argv) {

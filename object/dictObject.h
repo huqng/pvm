@@ -2,11 +2,12 @@
 #define _DICT_OBJECT_H
 
 #include "object.h"
-#include "cassert"
-#include "universe.h"
-#include "listObject.h"
-#include <iostream>
-using namespace std;
+#include "klass.h"
+#include "arrayList.h"
+#include "map.h"
+
+class Object;
+class Klass;
 
 class DictKlass;
 class DictObject;
@@ -30,6 +31,7 @@ private:
     static DictKlass* instance;
 public:
     static DictKlass* get_instance();
+    void initialize();
 
     virtual void print(Object* obj);
     virtual Object* subscr(Object* obj, Object* key);
@@ -47,6 +49,7 @@ private:
     static DictIteratorKlass* instance;
 public:
     static DictIteratorKlass* get_instance();
+    void initialize();
 };
 
 /* dict iterator */

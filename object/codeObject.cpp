@@ -1,19 +1,26 @@
 #include "codeObject.h"
+#include "stringObject.h"
+
+
 #include <iostream>
 #include <iomanip>
 using namespace std;
 
 /* code object klass */
-CodeObjectKlass* CodeObjectKlass::instance = nullptr;
+CodeKlass* CodeKlass::instance = nullptr;
 
-CodeObjectKlass::CodeObjectKlass() {
-    set_name("CodeObject");
+CodeKlass::CodeKlass() {
 }
 
-CodeObjectKlass* CodeObjectKlass::get_instance() {
+CodeKlass* CodeKlass::get_instance() {
     if(instance == nullptr)
-        instance = new CodeObjectKlass();
+        instance = new CodeKlass();
     return instance;
+}
+
+void CodeKlass::initialize() {
+    set_name(new StringObject("CodeObject"));
+
 }
 
 /* code object initialize */
@@ -23,11 +30,11 @@ CodeObject::CodeObject(
         int stacksize,
         int flag,
         StringObject* bytecodes,
-        ArrayList<Object*>* consts,
-        ArrayList<Object*>* names,
-        ArrayList<Object*>* varnames,
-        ArrayList<Object*>* freevars,
-        ArrayList<Object*>* cellvars,
+        ObjList* consts,
+        ObjList* names,
+        ObjList* varnames,
+        ObjList* freevars,
+        ObjList* cellvars,
         StringObject* file_name,
         StringObject* co_name,
         int lineno,
@@ -47,7 +54,7 @@ CodeObject::CodeObject(
         _co_name(co_name),
         _lineno(lineno),
         _notable(notable) {
-    set_klass(CodeObjectKlass::get_instance());
+    set_klass(CodeKlass::get_instance());
 }
 
 

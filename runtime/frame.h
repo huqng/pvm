@@ -1,8 +1,12 @@
 #ifndef _FRAME_H
 #define _FRAME_H
 
-#include "functionObject.h"
-#include "dictObject.h"
+#include "arrayList.h"
+
+class ListObject;
+class DictObject;
+class CodeObject;
+class FunctionObject;
 
 class LoopBlock;
 

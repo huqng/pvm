@@ -1,5 +1,7 @@
-#include "runtime/universe.h"
+#include "universe.h"
 #include "stringObject.h"
+#include "dictObject.h"
+#include "functionObject.h"
 
 #include <cstring>
 #include <iostream>
@@ -9,13 +11,20 @@ using namespace std;
 StringKlass* StringKlass::instance = nullptr;
 
 StringKlass::StringKlass() { 
-    set_name("String");
+    
 }
 
 StringKlass* StringKlass::get_instance() {
     if(instance == nullptr)
         instance = new StringKlass();
     return instance;
+}
+
+void StringKlass::initialize() {
+    set_name(new StringObject("String"));
+    DictObject* klass_dict = new DictObject();
+    klass_dict->put(new StringObject("upper"), new FunctionObject(string_upper));
+    set_klass_dict(klass_dict);
 }
 
 void StringKlass::print(Object* x) {

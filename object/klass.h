@@ -1,27 +1,26 @@
 #ifndef _CLASS_H
 #define _CLASS_H
 
-#include "map.h"
-#include "arrayList.h"
-
+class StringObject;
+class DictObject;
 class Object;
 
 class Klass {
 private:
-    const char* _name;
-    ObjMap*     _klass_dict;
+    StringObject*   _name;
+    DictObject*     _klass_dict;
 public:
     Klass() {}
     ~Klass() {
-        delete[] _name;
+        delete _name;
         // TODO - delete obj_dict
     }
 
-    void        set_name(const char* x) { _name = x; }
-    const char* name() { return _name; }
+    void            set_name(StringObject* x) { _name = x; }
+    StringObject*   name() { return _name; }
 
-    void        set_klass_dict(ObjMap* dict) { _klass_dict = dict; }
-    ObjMap*     klass_dict() { return _klass_dict; }
+    void            set_klass_dict(DictObject* dict) { _klass_dict = dict; }
+    DictObject*     klass_dict() { return _klass_dict; }
 
 
 

@@ -1,4 +1,8 @@
 #include "listObject.h"
+#include "stringObject.h"
+#include "dictObject.h"
+#include "universe.h"
+#include "functionObject.h"
 
 #include <iostream>
 #include <cassert>
@@ -8,8 +12,18 @@ using namespace std;
 ListKlass* ListKlass::instance = nullptr;
 
 ListKlass::ListKlass() {
-    set_name("List");
-    ObjMap* klass_dict = new ObjMap(equal2obj);
+
+}
+
+ListKlass* ListKlass::get_instance() {
+    if(instance == nullptr)
+        instance = new ListKlass();
+    return instance;
+}
+
+void ListKlass::initialize() {
+    set_name(new StringObject("List"));
+    DictObject* klass_dict = new DictObject();
     /* add builtin methods to klass_dict */
     klass_dict->put(new StringObject("append"), new FunctionObject(list_append));
     klass_dict->put(new StringObject("insert"), new FunctionObject(list_insert));
@@ -19,12 +33,6 @@ ListKlass::ListKlass() {
     klass_dict->put(new StringObject("reverse"), new FunctionObject(list_reverse));
     klass_dict->put(new StringObject("sort"), new FunctionObject(list_sort));
     set_klass_dict(klass_dict);
-}
-
-ListKlass* ListKlass::get_instance() {
-    if(instance == nullptr)
-        instance = new ListKlass();
-    return instance;
 }
 
 Object* ListKlass::add(Object* x, Object* y) {
@@ -150,16 +158,20 @@ Object* ListKlass::iter(Object* obj) {
 ListIteratorKlass* ListIteratorKlass::instance = nullptr;
 
 ListIteratorKlass::ListIteratorKlass() {
-    ObjMap* klass_dict = new ObjMap(equal2obj);
-    klass_dict->put(new StringObject("next"), new FunctionObject(listiterator_next));
-    set_klass_dict(klass_dict);
-    set_name("ListIterator");
+
 }
 
 ListIteratorKlass* ListIteratorKlass::get_instance() {
     if(instance == nullptr) 
         instance = new ListIteratorKlass();
     return instance;
+}
+
+void ListIteratorKlass::initialize() {
+    DictObject* klass_dict = new DictObject();
+    klass_dict->put(new StringObject("next"), new FunctionObject(listiterator_next));
+    set_klass_dict(klass_dict);
+    set_name(new StringObject("ListIterator"));
 }
 
 /* list iterator object */

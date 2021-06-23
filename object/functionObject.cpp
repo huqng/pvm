@@ -1,4 +1,8 @@
 #include "functionObject.h"
+#include "universe.h"
+#include "stringObject.h"
+#include "codeObject.h"
+
 #include <cassert>
 #include <iostream>
 using namespace std;
@@ -38,7 +42,7 @@ Object* string_upper(ObjList* args) {
 
 /* klasses */
 FunctionKlass::FunctionKlass() {
-    set_name("Function");
+
 }
 
 FunctionKlass* FunctionKlass::get_instance() {
@@ -47,13 +51,17 @@ FunctionKlass* FunctionKlass::get_instance() {
     return instance;
 }
 
+void FunctionKlass::initialize() {
+    set_name(new StringObject("Function"));
+}
+
 void FunctionKlass::print(Object* x) {
     assert(x->klass() == this);
     cout << "function object at " << x;
 }
 
 NativeFunctionKlass::NativeFunctionKlass() {
-    set_name("NativeFunction");
+
 }
 
 NativeFunctionKlass* NativeFunctionKlass::get_instance() {
@@ -62,19 +70,27 @@ NativeFunctionKlass* NativeFunctionKlass::get_instance() {
     return instance;
 }
 
+void NativeFunctionKlass::initialize() {
+    set_name(new StringObject("NativeFunction"));
+}
+
 void NativeFunctionKlass::print(Object* x) {
     assert(x->klass() == this);
     cout << "native function object at" << x;
 }
 
 MethodKlass::MethodKlass() {
-    set_name("Method");
+
 }
 
 MethodKlass* MethodKlass::get_instance() {
     if(instance == nullptr)
         instance = new MethodKlass();
     return instance;
+}
+
+void MethodKlass::initialize() {
+    set_name(new StringObject("Method"));
 }
 
 void MethodKlass::print(Object* x) {
@@ -85,7 +101,7 @@ void MethodKlass::print(Object* x) {
 /* function opject */ 
 
 FunctionObject::FunctionObject(Object* x) {
-    assert(x->klass() == CodeObjectKlass::get_instance());
+    assert(x->klass() == CodeKlass::get_instance());
 
     CodeObject* co = (CodeObject*)x;
 

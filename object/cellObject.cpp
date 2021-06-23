@@ -1,9 +1,10 @@
 #include "cellObject.h"
+#include "listObject.h"
+#include "stringObject.h"
 
 CellKlass* CellKlass::instance = nullptr;
 
 CellKlass::CellKlass() {
-    set_name("Cell");
 }
 
 CellKlass* CellKlass::get_instance() {
@@ -11,6 +12,11 @@ CellKlass* CellKlass::get_instance() {
         instance = new CellKlass();
     return instance;
 }
+
+void CellKlass::initialize() {
+    set_name(new StringObject("Cell"));
+}
+
 
 CellObject::CellObject(ListObject* table, int index) {
     _table = table;

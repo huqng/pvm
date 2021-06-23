@@ -1,22 +1,14 @@
 #ifndef _INTERPRETER_H
 #define _INTERPRETER_H
 
-#include "map.h"
-#include "frame.h"
 #include "opcode.h"
-#include "functionObject.h"
-#include "listObject.h"
-#include "dictObject.h"
-#include "universe.h"
-#include "cellObject.h"
+#include "arrayList.h"
 
-#include <iostream>
-#include <iomanip>
-using namespace std;
-
-
-
+class Object;
+class Frame;
 class CodeObject;
+class StringObject;
+class DictObject;
 
 class LoopBlock;
 class Interpreter;
@@ -52,7 +44,7 @@ private:
     Object* top();
     int     stack_level();
     
-    void    build_frame(Object* callable, ArrayList<Object*>* args, int oparg);
+    void    build_frame(Object* callable, ObjList* args, int oparg);
     void    eval_frame();
     void    leave_frame(Object* retv);
     void    destroy_frame();

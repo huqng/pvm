@@ -10,6 +10,7 @@ private:
     static StringKlass* instance;
 public:
     static StringKlass* get_instance();
+    void initialize(); /* called manually to avoid use objects in constructor of Klass */
 
     virtual void print(Object* x);
 

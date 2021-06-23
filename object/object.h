@@ -9,9 +9,10 @@ private:
     static ObjectKlass* instance;
 public:
     static ObjectKlass* get_instance();
+    void initialize();
+
     virtual void print(Object*);
 };
-
 
 class Object {
 private:

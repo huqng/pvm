@@ -1,6 +1,11 @@
 #include "binaryFileParser.h"
+#include "codeObject.h"
+#include "stringObject.h"
+#include "universe.h"
 
 #include <iomanip>
+#include <iostream>
+using namespace std;
 
 BinaryFileParser::BinaryFileParser(BufferedInputStream* s): is(s) {
     _string_table = new ArrayList<Object*>(equal2obj);

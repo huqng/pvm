@@ -1,4 +1,11 @@
 #include "frame.h"
+#include "listObject.h"
+#include "dictObject.h"
+#include "codeObject.h"
+#include "stringObject.h"
+#include "functionObject.h"
+
+#include <cassert>
 
 Frame::Frame(CodeObject* co) {
     _stack = new ListObject();

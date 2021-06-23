@@ -1,20 +1,28 @@
+#include "universe.h"
 #include "object.h"
+#include "stringObject.h"
+#include "dictObject.h"
+#include "functionObject.h"
+
 #include <iostream>
 #include <cassert>
-#include "universe.h"
 using namespace std;
 
 /* object klass */
 ObjectKlass* ObjectKlass::instance = nullptr;
 
 ObjectKlass::ObjectKlass() {
-    set_name("Object");    
+    
 }
 
 ObjectKlass* ObjectKlass::get_instance() {
     if(instance == nullptr) 
         instance = new ObjectKlass();
     return instance;
+}
+
+void ObjectKlass::initialize() {
+    set_name(new StringObject("Object"));    
 }
 
 void ObjectKlass::print(Object* obj) {
@@ -130,7 +138,7 @@ Object* Object::getattr(Object* x) {
     */
     if(result->klass() == NativeFunctionKlass::get_instance() || result->klass() == FunctionKlass::get_instance()) {
         /* method and its owner */
-        result = new MethodObject((FunctionObject*)result, this);
+        result = (Object*)(new MethodObject((FunctionObject*)result, this));
     }
 
     return result;

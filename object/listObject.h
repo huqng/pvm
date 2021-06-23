@@ -1,9 +1,9 @@
 #ifndef _LIST_OBJECT_H
 #define _LIST_OBJECT_H
 
+#include "klass.h"
 #include "object.h"
 #include "arrayList.h"
-#include "universe.h"
 
 class ListKlass;
 class ListIteratorKlass;
@@ -22,6 +22,8 @@ private:
     static ListKlass* instance;
 public:
     static ListKlass* get_instance();
+    void initialize();
+
 
     virtual Object* add(Object* x, Object* y);
     virtual Object* eq(Object* x, Object* y);
@@ -44,6 +46,7 @@ private:
     ListIteratorKlass();
 public:
     static ListIteratorKlass* get_instance();
+    void initialize();
 };
 
 /* List Iterator Object */

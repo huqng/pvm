@@ -1,13 +1,16 @@
 #ifndef _FUNCTION_OBJECT_H
 #define _FUNCTION_OBJECT_H
 
-#include "codeObject.h"
-#include "universe.h"
+#include "arrayList.h"
+#include "klass.h"
+#include "object.h"
 
+class Object;
+class CodeObject;
 class ListObject;
 class DictObject;
 
-typedef Object* (*NativeFunction)(ObjList* args);
+typedef Object*(*NativeFunction)(ObjList* args);
 
 /* native functions */
 Object* len(ObjList* args);
@@ -20,6 +23,8 @@ private:
     static FunctionKlass* instance;
 public:
     static FunctionKlass* get_instance();
+    void initialize();
+
     virtual void print(Object* x);
 };
 
@@ -29,6 +34,8 @@ private:
     static NativeFunctionKlass* instance;
 public:
     static NativeFunctionKlass* get_instance();
+    void initialize();
+
     virtual void print(Object* x);
 };
 
@@ -38,6 +45,8 @@ private:
     static MethodKlass* instance;
 public:
     static MethodKlass* get_instance();
+    void initialize();
+    
     virtual void print(Object* x);
 };
 

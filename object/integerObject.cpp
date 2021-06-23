@@ -1,5 +1,6 @@
-#include "universe.h"
 #include "integerObject.h"
+#include "universe.h"
+#include "stringObject.h"
 
 #include <iostream>
 #include <cassert>
@@ -8,13 +9,17 @@ using namespace std;
 IntegerKlass* IntegerKlass::instance = nullptr;
 
 IntegerKlass::IntegerKlass() {
-    set_name("Integer");
+    
 }
 
 IntegerKlass* IntegerKlass::get_instance() {
     if(instance == nullptr)
         instance = new IntegerKlass();
     return instance;
+}
+
+void IntegerKlass::initialize() {
+    set_name(new StringObject("Integer"));
 }
 
 void IntegerKlass::print(Object* x) {

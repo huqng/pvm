@@ -1,4 +1,17 @@
 #include "interpreter.h"
+#include "frame.h"
+#include "codeObject.h"
+#include "stringObject.h"
+#include "listObject.h"
+#include "dictObject.h"
+#include "cellObject.h"
+#include "functionObject.h"
+#include "universe.h"
+
+#include <cassert>
+#include <iostream>
+#include <iomanip>
+using namespace std;
 
 /* String Table */
 

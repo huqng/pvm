@@ -1,4 +1,12 @@
 #include "dictObject.h"
+#include "universe.h"
+#include "listObject.h"
+#include "stringObject.h"
+#include "functionObject.h"
+
+#include <cassert>
+#include <iostream>
+using namespace std;
 
 /* native methods */
 
@@ -87,9 +95,19 @@ Object* dictiterator_next(ObjList* args) {
 DictKlass* DictKlass::instance = nullptr;
 
 DictKlass::DictKlass() {
-    set_name("Dict");
 
-    ObjMap* klass_dict = new ObjMap(equal2obj);
+}
+
+DictKlass* DictKlass::get_instance() {
+    if(instance == nullptr)
+        instance = new DictKlass();
+    return instance;
+}
+
+void DictKlass::initialize() {
+    set_name(new StringObject("Dict"));
+
+    DictObject* klass_dict = new DictObject();
     /* add builtin methods to klass_dict */
     klass_dict->put(new StringObject("setdefault"), new FunctionObject(dict_set_default));
     klass_dict->put(new StringObject("remove"), new FunctionObject(dict_remove));
@@ -98,12 +116,7 @@ DictKlass::DictKlass() {
     klass_dict->put(new StringObject("items"), new FunctionObject(dict_items));
     //klass_dict->put(new StringObject("METHOD_NAME"), new FunctionObject(METHOD_FUNCTION_POINTER));
     set_klass_dict(klass_dict);
-}
 
-DictKlass* DictKlass::get_instance() {
-    if(instance == nullptr)
-        instance = new DictKlass();
-    return instance;
 }
 
 void DictKlass::print(Object* obj) {
@@ -169,16 +182,21 @@ Object* DictKlass::iter(Object* obj) {
 DictIteratorKlass* DictIteratorKlass::instance = nullptr;
 
 DictIteratorKlass::DictIteratorKlass() {
-    ObjMap* klass_dict = new ObjMap(equal2obj);
-    klass_dict->put(new StringObject("next"), new FunctionObject(dictiterator_next));
-    set_klass_dict(klass_dict);
-    set_name("DictIterator");
+
 }
 
 DictIteratorKlass* DictIteratorKlass::get_instance() {
     if(instance == nullptr)
         instance = new DictIteratorKlass();
     return instance;
+}
+
+void DictIteratorKlass::initialize() {
+    DictObject* klass_dict = new DictObject();
+    klass_dict->put(new StringObject("next"), new FunctionObject(dictiterator_next));
+    set_klass_dict(klass_dict);
+    set_name(new StringObject("DictIterator"));
+
 }
 
 /* dict iterator object */

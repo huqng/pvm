@@ -1,5 +1,12 @@
 #include "universe.h"
 
+#include "cellObject.h"
+#include "codeObject.h"
+#include "dictObject.h"
+#include "functionObject.h"
+#include "listObject.h"
+#include "stringObject.h"
+
 IntegerObject* Universe::False = nullptr;
 IntegerObject* Universe::True = nullptr;
 Object* Universe::None = nullptr;
@@ -9,9 +16,19 @@ void Universe::genesis() {
     False = new IntegerObject(0);
     None = new Object();
 
-    ObjMap* klass_dict = new ObjMap(equal2obj);
-    StringKlass::get_instance()->set_klass_dict(klass_dict);
-    klass_dict->put(new StringObject("upper"), new FunctionObject(string_upper));
+    CellKlass::get_instance()->initialize();
+    CodeKlass::get_instance()->initialize();
+    DictKlass::get_instance()->initialize();
+    DictIteratorKlass::get_instance()->initialize();
+    FunctionKlass::get_instance()->initialize();
+    NativeFunctionKlass::get_instance()->initialize();
+    MethodKlass::get_instance()->initialize();
+    IntegerKlass::get_instance()->initialize();
+    ListKlass::get_instance()->initialize();
+    ListIteratorKlass::get_instance()->initialize();
+    StringKlass::get_instance()->initialize();
+    ObjectKlass::get_instance()->initialize();
+
 }
 
 void Universe::destory() {

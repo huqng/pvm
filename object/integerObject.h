@@ -10,6 +10,7 @@ private:
     static IntegerKlass* instance;
 public:
     static IntegerKlass* get_instance();
+    void initialize();
 
     virtual void print(Object* x);
 

@@ -1,8 +1,13 @@
 #ifndef _CODE_OBJECT_H
 #define _CODE_OBJECT_H
 
-#include "stringObject.h"
 #include "arrayList.h"
+#include "klass.h"
+#include "object.h"
+
+class StringObject;
+class Frame;
+class FunctionObject;
 
 /* copy from python2.7.7/include/code.h */
 /* Masks for co_flags above */
@@ -30,30 +35,31 @@
 #define CO_FUTURE_UNICODE_LITERALS 0x20000
 
 
-class CodeObjectKlass: public Klass {
+class CodeKlass: public Klass {
 private:
-    CodeObjectKlass();
-    static CodeObjectKlass* instance;
+    CodeKlass();
+    static CodeKlass* instance;
 public:
-    static CodeObjectKlass* get_instance();
+    static CodeKlass* get_instance();
+    void initialize();
 };
 
 class CodeObject: public Object {
 protected:
-    int                     _argcount;
-    int                     _nlocals;
-    int                     _stacksize;
-    int                     _flag;
-    StringObject*           _bytecodes;
-    ArrayList<Object*>*    _consts;
-    ArrayList<Object*>*    _names;
-    ArrayList<Object*>*    _varnames;
-    ArrayList<Object*>*    _freevars;
-    ArrayList<Object*>*    _cellvars;
-    StringObject*           _file_name;
-    StringObject*           _co_name;
-    int                     _lineno;
-    StringObject*           _notable;
+    int _argcount;
+    int _nlocals;
+    int _stacksize;
+    int _flag;
+    StringObject*   _bytecodes;
+    ObjList*        _consts;
+    ObjList*        _names;
+    ObjList*        _varnames;
+    ObjList*        _freevars;
+    ObjList*        _cellvars;
+    StringObject*   _file_name;
+    StringObject*   _co_name;
+    int             _lineno;
+    StringObject*   _notable;
 public:
     CodeObject(
         int argcount,
@@ -61,11 +67,11 @@ public:
         int stacksize,
         int flag,
         StringObject* bytecodes,
-        ArrayList<Object*>* consts,
-        ArrayList<Object*>* names,
-        ArrayList<Object*>* varnames,
-        ArrayList<Object*>* freevars,
-        ArrayList<Object*>* cellvars,
+        ObjList* consts,
+        ObjList* names,
+        ObjList* varnames,
+        ObjList* freevars,
+        ObjList* cellvars,
         StringObject* file_name,
         StringObject* co_name,
         int lineno,
