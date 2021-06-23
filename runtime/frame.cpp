@@ -11,8 +11,8 @@ Frame::Frame(CodeObject* co) {
     _stack = new ListObject();
     _loop_stack = new ArrayList<LoopBlock*>(nullptr);
 
-    _consts = new ListObject(co->_consts);
-    _names = new ListObject(co->_names);
+    _consts = co->_consts;
+    _names = co->_names;
     _locals = new DictObject();
     _globals = _locals;
     _fast_locals = nullptr;
@@ -33,8 +33,8 @@ Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
     _co = fo->_func_code;
     _pc = 0;
 
-    _consts = new ListObject(_co->_consts);
-    _names = new ListObject(_co->_names);
+    _consts = _co->_consts;
+    _names = _co->_names;
 
     /* args */
     _locals = new DictObject();

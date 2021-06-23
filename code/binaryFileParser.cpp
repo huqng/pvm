@@ -1,6 +1,7 @@
 #include "binaryFileParser.h"
 #include "codeObject.h"
 #include "stringObject.h"
+#include "listObject.h"
 #include "universe.h"
 
 #include <iomanip>
@@ -8,7 +9,7 @@
 using namespace std;
 
 BinaryFileParser::BinaryFileParser(BufferedInputStream* s): is(s) {
-    _string_table = new ArrayList<Object*>(equal2obj);
+    _string_table = new ListObject();
 }
 
 CodeObject* BinaryFileParser::parse() {
@@ -43,11 +44,11 @@ CodeObject* BinaryFileParser::get_code_object() {
     int flags = is->read_int();
 
     StringObject* bytecode = get_byte_code();
-    ArrayList<Object*>*consts = get_consts();
-    ArrayList<Object*>*names = get_names();
-    ArrayList<Object*>*var_names = get_var_names();
-    ArrayList<Object*>*free_vars = get_free_vars();
-    ArrayList<Object*>*cell_vars = get_cell_vars();
+    ListObject*consts = get_consts();
+    ListObject*names = get_names();
+    ListObject*var_names = get_var_names();
+    ListObject*free_vars = get_free_vars();
+    ListObject*cell_vars = get_cell_vars();
 
     StringObject* file_name = get_file_name();
     StringObject* module_name = get_module_name();
@@ -90,26 +91,26 @@ StringObject* BinaryFileParser::get_byte_code() {
     }
 }
 
-ArrayList<Object*>* BinaryFileParser::get_consts() {
+ListObject* BinaryFileParser::get_consts() {
     if(is->read() == '(')
         return get_tuple();
     is->unread();
     return NULL;
 }
 
-ArrayList<Object*>* BinaryFileParser::get_names() {
+ListObject* BinaryFileParser::get_names() {
     return get_consts();
 }
 
-ArrayList<Object*>* BinaryFileParser::get_var_names() {
+ListObject* BinaryFileParser::get_var_names() {
     return get_consts();
 }
 
-ArrayList<Object*>* BinaryFileParser::get_free_vars() {
+ListObject* BinaryFileParser::get_free_vars() {
     return get_consts();
 }
 
-ArrayList<Object*>* BinaryFileParser::get_cell_vars() {
+ListObject* BinaryFileParser::get_cell_vars() {
     return get_consts();
 }
 
@@ -135,10 +136,10 @@ StringObject* BinaryFileParser::get_string() {
     return s;
 }
 
-ArrayList<Object*>* BinaryFileParser::get_tuple() {
+ListObject* BinaryFileParser::get_tuple() {
     int length = is->read_int();
     StringObject* str;
-    ArrayList<Object*>* tuple = new ArrayList<Object*>(equal2obj);
+    ListObject* tuple = new ListObject();
     for(int i = 0; i < length; i++) {
         char obj_type = is->read();
         switch (obj_type) {
@@ -162,8 +163,11 @@ ArrayList<Object*>* BinaryFileParser::get_tuple() {
         case 'R':
             tuple->append(_string_table->get(is->read_int()));
             break;
+        case '(':
+            tuple->append(get_tuple());
+            break;
         default:
-            cerr << "parse error: obj_type" << obj_type << endl;
+            cerr << "parse error: obj_type " << obj_type << endl;
             exit(-1);
         }
     }

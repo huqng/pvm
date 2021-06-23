@@ -1,6 +1,7 @@
 #include "codeObject.h"
 #include "stringObject.h"
 #include "typeObject.h"
+#include "listObject.h"
 
 #include <cassert>
 #include <iostream>
@@ -41,11 +42,11 @@ CodeObject::CodeObject(
         int stacksize,
         int flag,
         StringObject* bytecodes,
-        ObjList* consts,
-        ObjList* names,
-        ObjList* varnames,
-        ObjList* freevars,
-        ObjList* cellvars,
+        ListObject* consts,
+        ListObject* names,
+        ListObject* varnames,
+        ListObject* freevars,
+        ListObject* cellvars,
         StringObject* file_name,
         StringObject* co_name,
         int lineno,

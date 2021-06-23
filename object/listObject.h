@@ -77,6 +77,7 @@ public:
     Object* get(int index);
     void set(int i, Object* obj);
     Object* top();
+    int index(Object* t);
 };
 
 /* built in methods of class list, should add to klass_dict 

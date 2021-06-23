@@ -239,6 +239,11 @@ Object* ListObject::top() {
     return this->get(this->size());
 }
 
+int ListObject::index(Object* t) {
+    return _inner_list->index(t);
+}
+
+
 /* built in methods */
 
 Object* list_append(ObjList* args) {

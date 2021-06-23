@@ -1,13 +1,13 @@
 #ifndef _CODE_OBJECT_H
 #define _CODE_OBJECT_H
 
-#include "arrayList.h"
 #include "klass.h"
 #include "object.h"
 
 class StringObject;
 class Frame;
 class FunctionObject;
+class ListObject;
 
 /* copy from python2.7.7/include/code.h */
 /* Masks for co_flags above */
@@ -53,11 +53,11 @@ protected:
     int _stacksize;
     int _flag;
     StringObject*   _bytecodes;
-    ObjList*        _consts;
-    ObjList*        _names;
-    ObjList*        _varnames;
-    ObjList*        _freevars;
-    ObjList*        _cellvars;
+    ListObject*        _consts;
+    ListObject*        _names;
+    ListObject*        _varnames;
+    ListObject*        _freevars;
+    ListObject*        _cellvars;
     StringObject*   _file_name;
     StringObject*   _co_name;
     int             _lineno;
@@ -69,11 +69,11 @@ public:
         int stacksize,
         int flag,
         StringObject* bytecodes,
-        ObjList* consts,
-        ObjList* names,
-        ObjList* varnames,
-        ObjList* freevars,
-        ObjList* cellvars,
+        ListObject* consts,
+        ListObject* names,
+        ListObject* varnames,
+        ListObject* freevars,
+        ListObject* cellvars,
         StringObject* file_name,
         StringObject* co_name,
         int lineno,
