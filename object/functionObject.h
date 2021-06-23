@@ -4,6 +4,7 @@
 #include "codeObject.h"
 #include "universe.h"
 
+class ListObject;
 class DictObject;
 
 typedef Object* (*NativeFunction)(ObjList* args);
@@ -49,8 +50,9 @@ private:
 
     DictObject*     _globals; 
     ObjList*        _defaults;
+    ListObject*     _closure;       /* closure variables */
 
-    NativeFunction             _native_func;
+    NativeFunction  _native_func;
 
 public: 
     FunctionObject(Object* co);
@@ -62,6 +64,7 @@ public:
     DictObject* globals() { return _globals; }
     void set_globals(DictObject* x) { _globals = x; }
     void set_defaults(ObjList* x);
+    void set_closure(ListObject* lst) { _closure = lst; }
 
     Object* call(ObjList* args);
 

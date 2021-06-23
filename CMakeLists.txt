@@ -16,6 +16,7 @@ add_executable(
     object/functionObject.cpp
     object/listObject.cpp
     object/dictObject.cpp
+    object/cellObject.cpp
     utils/bufferedInputStream.cpp
     runtime/frame.cpp
     runtime/interpreter.cpp

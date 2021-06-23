@@ -106,12 +106,12 @@ FunctionObject::FunctionObject(NativeFunction nfp) {
     set_klass(NativeFunctionKlass::get_instance());
 }
 
-void FunctionObject::set_defaults(ArrayList<Object*>* x) {
+void FunctionObject::set_defaults(ObjList* x) {
     if(x == nullptr) {
-        _defaults = nullptr;
+        _defaults = new ObjList(equal2obj);
         return;
     }
-    _defaults = new ArrayList<Object*>(x->length());
+    _defaults = new ObjList(x->length(), equal2obj);
     for(int i = 0; i < x->length(); i++) {
         _defaults->set(i, x->get(i));
     }

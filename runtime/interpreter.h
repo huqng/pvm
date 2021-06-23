@@ -8,6 +8,7 @@
 #include "listObject.h"
 #include "dictObject.h"
 #include "universe.h"
+#include "cellObject.h"
 
 #include <iostream>
 #include <iomanip>
@@ -43,7 +44,7 @@ class Interpreter {
 private:
     DictObject* _builtins;
     Frame*      _frame;
-    bool        dbg;
+    bool        _debug;
 
     /* stack op */
     void    push(Object* p);
@@ -82,6 +83,7 @@ private:
     void    store_global(int);          // 97
     void    load_const(int);            // 100
     void    load_name(int);             // 101
+    void    build_tuple(int);           // 102
     void    build_list(int);            // 103
     void    build_map(int);             // 105
     void    load_attr(int);             // 106
@@ -92,8 +94,13 @@ private:
     void    load_global(int);           // 116 
     void    setup_loop(int);            // 120
     void    load_fast(int);             // 124
+    void    store_fast(int);            // 125
     void    call_function(int);         // 131
     void    make_function(int);         // 132
+    void    make_closure(int);          // 134
+    void    load_closure(int);          // 135
+    void    load_deref(int);            // 136
+    void    store_deref(int);           // 137
 
 public:
     Interpreter(int debug);

@@ -10,13 +10,16 @@ using namespace std;
 template<typename T>
 class ArrayList {
 private:
+    typedef bool(*eq_t)(T, T);
+    eq_t _eq;
+
     int _max_size; /* max size of array */
     T* array;
     int _size; 
     void expand(); /* used size of array */
 public:
-    ArrayList(int n);
-    ArrayList();
+    ArrayList(int n, eq_t eq);
+    ArrayList(eq_t eq);
     ~ArrayList();
 
     void append(T t);
@@ -27,21 +30,24 @@ public:
     int length();
     T pop();
     void delete_index(int index);
+    int index(T t);
 };
 
 
 
 template<typename T>
-ArrayList<T>::ArrayList(int n) {
+ArrayList<T>::ArrayList(int n, eq_t eq) {
     _max_size = n;
     _size = n;
+    _eq = eq;
     array = new T[n];
 }
 
 template<typename T>
-ArrayList<T>::ArrayList() {
+ArrayList<T>::ArrayList(eq_t eq) {
     _max_size = 8;
     _size = 0;
+    _eq = eq;
     array = new T[8];
 }
 
@@ -134,6 +140,18 @@ void ArrayList<T>::delete_index(int index) {
     }
     _size -= 1;
 }
+
+template<typename T>
+int ArrayList<T>::index(T t) {
+    for(int i = 0; i < _size; i++) {
+        if(_eq(array[i], t)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+
 
 class Object;
 typedef ArrayList<Object*> ObjList;

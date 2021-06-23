@@ -3,7 +3,7 @@
 #include <iomanip>
 
 BinaryFileParser::BinaryFileParser(BufferedInputStream* s): is(s) {
-    _string_table = new ArrayList<Object*>();
+    _string_table = new ArrayList<Object*>(equal2obj);
 }
 
 CodeObject* BinaryFileParser::parse() {
@@ -133,7 +133,7 @@ StringObject* BinaryFileParser::get_string() {
 ArrayList<Object*>* BinaryFileParser::get_tuple() {
     int length = is->read_int();
     StringObject* str;
-    ArrayList<Object*>* tuple = new ArrayList<Object*>();
+    ArrayList<Object*>* tuple = new ArrayList<Object*>(equal2obj);
     for(int i = 0; i < length; i++) {
         char obj_type = is->read();
         switch (obj_type) {

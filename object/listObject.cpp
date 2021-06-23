@@ -185,7 +185,7 @@ void ListIteratorObject::inc_cnt() {
 /* list object */
 
 ListObject::ListObject() {
-    _inner_list = new ObjList();
+    _inner_list = new ObjList(equal2obj);
     set_klass(ListKlass::get_instance());
 }
 

@@ -2,7 +2,7 @@
 
 Frame::Frame(CodeObject* co) {
     _stack = new ListObject();
-    _loop_stack = new ArrayList<LoopBlock*>();
+    _loop_stack = new ArrayList<LoopBlock*>(nullptr);
 
     _consts = new ListObject(co->_consts);
     _names = new ListObject(co->_names);
@@ -18,7 +18,7 @@ Frame::Frame(CodeObject* co) {
 Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
     /* stack */
     _stack = new ListObject();
-    _loop_stack = new ArrayList<LoopBlock*>();
+    _loop_stack = new ArrayList<LoopBlock*>(nullptr);
 
     /* code */
     _co = fo->_func_code;
@@ -31,8 +31,19 @@ Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
     _locals = new DictObject();
     _globals = fo->globals();
     _fast_locals = new ListObject();
+    _closure = new ListObject();
 
     _sender = nullptr;
+
+    /* closure */
+    if(_co->_cellvars != nullptr) {
+        for(int i = 0; i < _co->_cellvars->size(); i++) {
+            _closure->append(nullptr);
+        }
+    }
+    if(fo->_closure != nullptr) {
+        _closure = (ListObject*)(_closure->add(fo->_closure));
+    }  
 
     const int nadef = _co->_argcount; /* number of args defined */
     const int nagiven = op_arg & 0xFF; /* number of args given*/
@@ -40,7 +51,7 @@ Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
     int kw_pos = nadef; /* args[argcnt] is */
 
     /* put default args into fast_locals*/
-    int ndft = fo->_defaults->length();
+    int ndft = fo->_defaults->size();
     if(nagiven + ndft < nadef) {
         cerr << "error: too few arguments to call a function" << endl;
         exit(-1);
@@ -50,7 +61,6 @@ Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
         /* default args are from right to left */
         _fast_locals->set(nadef - 1 - i, fo->_defaults->get(ndft - 1 - i));
     }
-
     /* if given more args than defined, put them into a list */
     ListObject* alist = new ListObject();
     if(nagiven > nadef) {
@@ -95,6 +105,8 @@ Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
 }
 
 Frame::Frame() {
+    cerr << "error building frame" << endl;
+    exit(-1);
 
 }
 
@@ -110,4 +122,12 @@ int Frame::get_op_arg() {
     int byte1 = _co->_bytecodes->value()[_pc++] & 0xFF;
     int byte2 = _co->_bytecodes->value()[_pc++] & 0xFF;
     return byte2 << 8 | byte1;
+}
+
+Object* Frame::get_cell_from_parameter(int index) {
+    Object* name = _co->_cellvars->get(index);
+    index = _co->_varnames->index((name));
+    assert(index >= 0);
+    assert(_fast_locals != nullptr);
+    return _fast_locals->get(index);
 }

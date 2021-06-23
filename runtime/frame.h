@@ -17,10 +17,11 @@ private:
 
     DictObject* _locals;
     DictObject* _globals;
-    ListObject*    _fast_locals;
+    ListObject* _fast_locals;
+    ListObject* _closure; 
 
-    CodeObject*     _co;
-    int             _pc;
+    CodeObject* _co;
+    int         _pc;
 
     Frame*    _sender;
 public:
@@ -31,6 +32,7 @@ public:
     
     void    set_pc(int x) { _pc = x; }
     int     get_pc() { return _pc; }
+    Object* get_cell_from_parameter(int index);
 
     ListObject* stack() {
         return _stack;
@@ -53,6 +55,9 @@ public:
     }
     ListObject* fast_locals() {
         return _fast_locals;
+    }
+    ListObject* closure() {
+        return _closure;
     }
 
     bool            has_more_codes();
