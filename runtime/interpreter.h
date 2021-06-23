@@ -12,7 +12,6 @@ class DictObject;
 
 class LoopBlock;
 class Interpreter;
-class StringTable;
 
 typedef void(Interpreter::*op_t)(int);
 
@@ -97,16 +96,6 @@ private:
 public:
     Interpreter(int debug);
     void run(CodeObject* co);
-};
-
-class StringTable {
-private:
-    static StringTable* instance;
-    StringTable();
-public:
-    static StringTable* get_instance();
-
-    StringObject* str_next;
 };
 
 #endif

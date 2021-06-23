@@ -1,4 +1,4 @@
-#cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.18)
 
 project(pvm)
 
@@ -17,6 +17,7 @@ add_executable(
     object/listObject.cpp
     object/dictObject.cpp
     object/cellObject.cpp
+    object/typeObject.cpp
     utils/bufferedInputStream.cpp
     runtime/frame.cpp
     runtime/interpreter.cpp

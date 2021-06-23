@@ -3,6 +3,7 @@
 #include "listObject.h"
 #include "stringObject.h"
 #include "functionObject.h"
+#include "typeObject.h"
 
 #include <cassert>
 #include <iostream>
@@ -117,6 +118,11 @@ void DictKlass::initialize() {
     //klass_dict->put(new StringObject("METHOD_NAME"), new FunctionObject(METHOD_FUNCTION_POINTER));
     set_klass_dict(klass_dict);
 
+    /* set type_object */
+    TypeObject* obj = new TypeObject(this);
+    set_type_object(obj);
+
+    set_super(ObjectKlass::get_instance());
 }
 
 void DictKlass::print(Object* obj) {
@@ -197,6 +203,9 @@ void DictIteratorKlass::initialize() {
     set_klass_dict(klass_dict);
     set_name(new StringObject("DictIterator"));
 
+    /* set type_object */
+    TypeObject* obj = new TypeObject(this);
+    set_type_object(obj);
 }
 
 /* dict iterator object */
@@ -239,10 +248,12 @@ void DictObject::put(Object* k, Object* v) {
 }
 
 Object* DictObject::get(Object* k) {
-    if(_map->has_key(k))
+    if(_map->has_key(k)) {
         return _map->get(k);
-    else
+    }
+    else {
         return Universe::None;
+    }
 }
 
 bool DictObject::has_key(Object* k) {

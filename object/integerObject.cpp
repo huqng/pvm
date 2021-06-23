@@ -1,6 +1,7 @@
 #include "integerObject.h"
 #include "universe.h"
 #include "stringObject.h"
+#include "typeObject.h"
 
 #include <iostream>
 #include <cassert>
@@ -19,7 +20,12 @@ IntegerKlass* IntegerKlass::get_instance() {
 }
 
 void IntegerKlass::initialize() {
-    set_name(new StringObject("Integer"));
+    set_name(new StringObject("int"));
+    /* set type_object */
+    TypeObject* obj = new TypeObject(this);
+    set_type_object(obj);
+
+    set_super(ObjectKlass::get_instance());
 }
 
 void IntegerKlass::print(Object* x) {

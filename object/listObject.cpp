@@ -3,6 +3,7 @@
 #include "dictObject.h"
 #include "universe.h"
 #include "functionObject.h"
+#include "typeObject.h"
 
 #include <iostream>
 #include <cassert>
@@ -22,9 +23,10 @@ ListKlass* ListKlass::get_instance() {
 }
 
 void ListKlass::initialize() {
-    set_name(new StringObject("List"));
-    DictObject* klass_dict = new DictObject();
+    set_name(new StringObject("list"));
+
     /* add builtin methods to klass_dict */
+    DictObject* klass_dict = new DictObject();
     klass_dict->put(new StringObject("append"), new FunctionObject(list_append));
     klass_dict->put(new StringObject("insert"), new FunctionObject(list_insert));
     klass_dict->put(new StringObject("index"), new FunctionObject(list_index));
@@ -33,6 +35,12 @@ void ListKlass::initialize() {
     klass_dict->put(new StringObject("reverse"), new FunctionObject(list_reverse));
     klass_dict->put(new StringObject("sort"), new FunctionObject(list_sort));
     set_klass_dict(klass_dict);
+
+    /* set type_object */
+    TypeObject* obj = new TypeObject(this);
+    set_type_object(obj);
+
+    set_super(ObjectKlass::get_instance());    
 }
 
 Object* ListKlass::add(Object* x, Object* y) {

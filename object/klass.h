@@ -4,15 +4,18 @@
 class StringObject;
 class DictObject;
 class Object;
+class TypeObject;
 
 class Klass {
 private:
     StringObject*   _name;
     DictObject*     _klass_dict;
+    TypeObject*     _type_obj;
+    Klass*          _super;
 public:
     Klass() {}
     ~Klass() {
-        delete _name;
+        //delete _name;
         // TODO - delete obj_dict
     }
 
@@ -22,7 +25,11 @@ public:
     void            set_klass_dict(DictObject* dict) { _klass_dict = dict; }
     DictObject*     klass_dict() { return _klass_dict; }
 
+    void            set_type_object(TypeObject* type_obj) { _type_obj = type_obj; }
+    TypeObject*     type_object() { return _type_obj; }
 
+    void            set_super(Klass* super_klass) { _super = super_klass; }
+    Klass*          super() { return _super; }
 
     virtual Object* greater(Object* x, Object* y) { return nullptr; }
     virtual Object* less   (Object* x, Object* y) { return nullptr; }

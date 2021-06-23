@@ -1,31 +1,18 @@
 #include "interpreter.h"
 #include "frame.h"
+#include "universe.h"
 #include "codeObject.h"
 #include "stringObject.h"
 #include "listObject.h"
 #include "dictObject.h"
 #include "cellObject.h"
 #include "functionObject.h"
-#include "universe.h"
+#include "typeObject.h"
 
 #include <cassert>
 #include <iostream>
 #include <iomanip>
 using namespace std;
-
-/* String Table */
-
-StringTable* StringTable::instance = nullptr;
-
-StringTable::StringTable() {
-    str_next = new StringObject("next");
-}
-
-StringTable* StringTable::get_instance() {
-    if(instance == nullptr)
-        instance = new StringTable();
-    return instance;
-}
 
 /* Interpreter */
 
@@ -82,7 +69,14 @@ Interpreter::Interpreter(int debug) {
     _builtins->put(new StringObject("True"), Universe::True);
     _builtins->put(new StringObject("False"), Universe::False);
     _builtins->put(new StringObject("None"), Universe::None);
+    _builtins->put(new StringObject("int"), IntegerKlass::get_instance()->type_object());
+    _builtins->put(new StringObject("object"), ObjectKlass::get_instance()->type_object());
+    _builtins->put(new StringObject("str"), StringKlass::get_instance()->type_object());
+    _builtins->put(new StringObject("list"), ListKlass::get_instance()->type_object());
+    _builtins->put(new StringObject("dict"), DictKlass::get_instance()->type_object());
     _builtins->put(new StringObject("len"), new FunctionObject(len));
+    _builtins->put(new StringObject("isinstance"), new FunctionObject(isinstance));
+    _builtins->put(new StringObject("type"), new FunctionObject(type_of));
 }
 
 void Interpreter::run(CodeObject* co) {
@@ -139,12 +133,9 @@ void Interpreter::build_frame(Object* callable, ObjList* args, int oparg) {
         build_frame(method->func(), args, oparg);
     }
     else {
-        cerr << "Error build_frame, unrecognized klass = " << callable->klass()->name() << endl;
-        cerr << "\tinteger klass = " << IntegerKlass::get_instance() << endl;
-        cerr << "\tstring klass = " << StringKlass::get_instance() << endl;
-        cerr << "\tfunction klass = " << FunctionKlass::get_instance() << endl;
-        cerr << "\tnative function klass = " << NativeFunctionKlass::get_instance() << endl;
-        cerr << "\tmethod klass = " << MethodKlass::get_instance() << endl;
+        cerr << "Error build_frame, unrecognized klass = ";
+        callable->klass()->name()->print(); 
+        cout << endl;
         assert(0);
     }
 }
@@ -425,7 +416,8 @@ void Interpreter::load_const(int arg) /* 100 */ {
     if(v == nullptr)
         v = Universe::None;
     if(_debug) {
-        cout << v->klass()->name() << " ";
+        v->klass()->name()->print();
+        cout << ": ";
         v->print();
         cout << endl;
     }
@@ -434,23 +426,47 @@ void Interpreter::load_const(int arg) /* 100 */ {
 
 void Interpreter::load_name(int arg) /* 101 */ {
     if(_debug) {
-        cerr << "LOAD_NAME | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
+        cerr << "LOAD_NAME | " << ((StringObject*)_frame->names()->get(arg))->value();
     }
     Object* name = _frame->names()->get(arg);
     Object* obj = _frame->locals()->get(name);
-    if(obj != nullptr) {
+    if(obj != Universe::None) {
+        if(_debug) {
+            cout << " | ";
+            obj->klass()->name()->print();
+            cout << " ";
+            obj->print();
+            cout << endl;
+        }
         push(obj);
         return;
     }
     obj = _frame->globals()->get(name);
-    if(obj != nullptr) {
+    if(obj != Universe::None) {
+        if(_debug) {
+            cout << " | ";
+            obj->klass()->name()->print();
+            cout << " ";
+            obj->print();
+            cout << endl;
+        }
         push(obj);
         return;
     }
     obj = _builtins->get(name);
-    if(obj != nullptr) {
+    if(obj != Universe::None) {
+        if(_debug) {
+            cout << " | ";
+            obj->klass()->name()->print();
+            cout << " ";
+            obj->print();
+            cout << endl;
+        }
         push(obj);
         return;
+    }
+    if(_debug) {
+        cout << " | None\n";
     }
     push(Universe::None);
 }

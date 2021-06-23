@@ -2,11 +2,38 @@
 #include "stringObject.h"
 #include "dictObject.h"
 #include "functionObject.h"
+#include "typeObject.h"
 
 #include <cstring>
 #include <iostream>
 #include <cassert>
 using namespace std;
+
+/* native methods of str */
+Object* string_upper(ObjList* args) {
+    /* a method in class <str> */
+    /* built to functionObject in Universe::genesis() */
+    Object* arg = args->get(0);
+    assert(arg->klass() == StringKlass::get_instance());
+    StringObject* str_obj = (StringObject*)arg;
+    int length = str_obj->length();
+    if(length < 0)
+        return Universe::None;
+    
+    char* new_str = new char[length];
+    char c;
+    for(int i = 0; i < length; i++) {
+        c = str_obj->value()[i];
+        if(c >= 'a' && c <= 'z')
+            c += ('A' - 'a');
+        new_str[i] = c;
+    }
+    StringObject* s = new StringObject(new_str);
+    delete[] new_str;
+    return s;
+}
+
+/* klass */
 
 StringKlass* StringKlass::instance = nullptr;
 
@@ -25,10 +52,14 @@ void StringKlass::initialize() {
     DictObject* klass_dict = new DictObject();
     klass_dict->put(new StringObject("upper"), new FunctionObject(string_upper));
     set_klass_dict(klass_dict);
+    /* set type_object */
+    TypeObject* obj = new TypeObject(this);
+    set_type_object(obj);
+
+    set_super(ObjectKlass::get_instance());
 }
 
 void StringKlass::print(Object* x) {
-    assert(x->klass() == (Klass*)this);
     for(int i = 0; i < ((StringObject*)x)->length(); i++) {
         cout << ((StringObject*)x)->value()[i];
     }

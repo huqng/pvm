@@ -3,6 +3,7 @@
 #include "stringObject.h"
 #include "dictObject.h"
 #include "functionObject.h"
+#include "typeObject.h"
 
 #include <iostream>
 #include <cassert>
@@ -23,6 +24,11 @@ ObjectKlass* ObjectKlass::get_instance() {
 
 void ObjectKlass::initialize() {
     set_name(new StringObject("Object"));    
+    /* set type_object */
+    TypeObject* obj = new TypeObject(this);
+    set_type_object(obj);
+
+    set_super(nullptr); /* object has no super class */
 }
 
 void ObjectKlass::print(Object* obj) {

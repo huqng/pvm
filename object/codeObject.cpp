@@ -1,6 +1,6 @@
 #include "codeObject.h"
 #include "stringObject.h"
-
+#include "typeObject.h"
 
 #include <iostream>
 #include <iomanip>
@@ -21,6 +21,11 @@ CodeKlass* CodeKlass::get_instance() {
 void CodeKlass::initialize() {
     set_name(new StringObject("CodeObject"));
 
+    /* set type_object */
+    TypeObject* obj = new TypeObject(this);
+    set_type_object(obj);
+
+    set_super(ObjectKlass::get_instance());
 }
 
 /* code object initialize */

@@ -2,6 +2,7 @@
 #include "universe.h"
 #include "stringObject.h"
 #include "codeObject.h"
+#include "typeObject.h"
 
 #include <cassert>
 #include <iostream>
@@ -14,30 +15,29 @@ MethodKlass* MethodKlass::instance = nullptr;
 
 /* native functions */
 Object* len(ObjList* args) {
+    assert(args != nullptr && args->size() == 1);
     return args->get(0)->len();
 }
 
-Object* string_upper(ObjList* args) {
-    /* a method in class <str> */
-    /* built to functionObject in Universe::genesis() */
-    Object* arg = args->get(0);
-    assert(arg->klass() == StringKlass::get_instance());
-    StringObject* str_obj = (StringObject*)arg;
-    int length = str_obj->length();
-    if(length < 0)
-        return Universe::None;
-    
-    char* new_str = new char[length];
-    char c;
-    for(int i = 0; i < length; i++) {
-        c = str_obj->value()[i];
-        if(c >= 'a' && c <= 'z')
-            c += ('A' - 'a');
-        new_str[i] = c;
+Object* isinstance(ObjList* args) {
+    assert(args != nullptr && args->size() == 2);
+    assert(args->get(1)->klass() == TypeKlass::get_instance());
+    Klass* t = ((TypeObject*)(args->get(1)))->own_klass();
+    Klass* k = args->get(0)->klass();
+    while(k != nullptr) {
+        if(k == t)
+            return Universe::True;
+        else
+            k = k->super();
     }
-    StringObject* s = new StringObject(new_str);
-    delete[] new_str;
-    return s;
+    return Universe::False;
+}
+
+Object* type_of(ObjList* args) {
+    assert(args != nullptr && args->size() == 1);
+    Object* obj = args->get(0);
+    obj = obj->klass()->type_object();
+    return obj;
 }
 
 /* klasses */
@@ -53,6 +53,9 @@ FunctionKlass* FunctionKlass::get_instance() {
 
 void FunctionKlass::initialize() {
     set_name(new StringObject("Function"));
+    /* set type_object */
+    TypeObject* obj = new TypeObject(this);
+    set_type_object(obj);
 }
 
 void FunctionKlass::print(Object* x) {
@@ -72,6 +75,9 @@ NativeFunctionKlass* NativeFunctionKlass::get_instance() {
 
 void NativeFunctionKlass::initialize() {
     set_name(new StringObject("NativeFunction"));
+    /* set type_object */
+    TypeObject* obj = new TypeObject(this);
+    set_type_object(obj);
 }
 
 void NativeFunctionKlass::print(Object* x) {
@@ -91,6 +97,9 @@ MethodKlass* MethodKlass::get_instance() {
 
 void MethodKlass::initialize() {
     set_name(new StringObject("Method"));
+    /* set type_object */
+    TypeObject* obj = new TypeObject(this);
+    set_type_object(obj);
 }
 
 void MethodKlass::print(Object* x) {
@@ -118,7 +127,6 @@ FunctionObject::FunctionObject(NativeFunction nfp) {
     _flags      =   0;
     _globals    =   nullptr;
     _native_func    =   nfp;
-
     set_klass(NativeFunctionKlass::get_instance());
 }
 

@@ -14,7 +14,8 @@ typedef Object*(*NativeFunction)(ObjList* args);
 
 /* native functions */
 Object* len(ObjList* args);
-Object* string_upper(ObjList* args);
+Object* isinstance(ObjList* args);
+Object* type_of(ObjList* args);
 
 /* klasses */
 class FunctionKlass: public Klass {

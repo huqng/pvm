@@ -2,6 +2,11 @@
 #define _STRING_OBJECT_H
 
 #include "object.h"
+#include "klass.h"
+#include "arrayList.h"
+
+/* native methods*/
+Object* string_upper(ObjList* args);
 
 /* klass */
 class StringKlass: public Klass {
