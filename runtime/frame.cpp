@@ -55,7 +55,7 @@ Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
     }  
 
     const int nadef = _co->_argcount; /* number of args defined */
-    const int nagiven = op_arg & 0xFF; /* number of args given*/
+    const int nagiven = args->size(); /* number of args given*/
     const int nkw = op_arg >> 8; /* number of kwargs given */
     int kw_pos = nadef; /* args[argcnt] is */
 

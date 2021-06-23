@@ -704,19 +704,17 @@ void Interpreter::call_function(int op_arg) /* 131 */{
     if(_debug) {
         cerr << "CALL_FUNCTION";
     }
-    ObjList* args = nullptr;
-    if(op_arg > 0) {
-        int nargs = op_arg & 0xFF;
-        int nkwargs = op_arg >> 8;
-        int nagiven = nargs + nkwargs * 2;
-        if(_debug) {
-            cout << "| given " << nagiven << " args, " << nkwargs << " of which are kwargs" << endl;
-        }
-        args = new ObjList(nagiven, equal2obj);
-        while(nagiven--) {
-            args->set(nagiven, pop());
-        }
+    int nargs = op_arg & 0xFF;
+    int nkwargs = op_arg >> 8;
+    int nagiven = nargs + nkwargs * 2;
+    if(_debug) {
+        cout << "| given " << nagiven << " args, " << nkwargs << " of which are kwargs" << endl;
     }
+    ObjList* args = new ObjList(nagiven, equal2obj);
+    while(nagiven--) {
+        args->set(nagiven, pop());
+    }
+    
     build_frame(pop(), args, op_arg);
     if(args != nullptr) {
         delete args;
