@@ -48,7 +48,8 @@ StringKlass* StringKlass::get_instance() {
 }
 
 void StringKlass::initialize() {
-    set_name(new StringObject("String"));
+    set_name(new StringObject("str"));
+    
     DictObject* klass_dict = new DictObject();
     klass_dict->put(new StringObject("upper"), new FunctionObject(string_upper));
     set_klass_dict(klass_dict);
@@ -57,6 +58,10 @@ void StringKlass::initialize() {
     set_type_object(obj);
 
     set_super(ObjectKlass::get_instance());
+}
+
+Object* StringKlass::allocate_instance(ObjList* args) {
+    return new StringObject("");
 }
 
 void StringKlass::print(Object* x) {

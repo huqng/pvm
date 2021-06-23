@@ -3,6 +3,7 @@
 
 #include "object.h"
 #include "klass.h"
+#include "arrayList.h"
 
 class TypeKlass;
 class TypeObject;

@@ -24,6 +24,7 @@ public:
     static ListKlass* get_instance();
     void initialize();
 
+    virtual Object* allocate_instance(ObjList* args);
 
     virtual Object* add(Object* x, Object* y);
     virtual Object* eq(Object* x, Object* y);

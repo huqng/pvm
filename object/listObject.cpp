@@ -43,6 +43,10 @@ void ListKlass::initialize() {
     set_super(ObjectKlass::get_instance());    
 }
 
+Object* ListKlass::allocate_instance(ObjList* args) {
+    return new ListObject();
+}
+
 Object* ListKlass::add(Object* x, Object* y) {
     assert(x != nullptr && x->klass() == this);
     assert(y != nullptr && y->klass() == this);

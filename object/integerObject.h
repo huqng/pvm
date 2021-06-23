@@ -2,6 +2,8 @@
 #define _INTEGER_OBJECT_H
 
 #include "object.h"
+#include "klass.h"
+#include "arrayList.h"
 
 class IntegerKlass: public Klass {
 private:
@@ -12,6 +14,7 @@ public:
     static IntegerKlass* get_instance();
     void initialize();
 
+    virtual Object* allocate_instance(ObjList* args);
     virtual void print(Object* x);
 
     virtual Object* greater(Object* x, Object* y);

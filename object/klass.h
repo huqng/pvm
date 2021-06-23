@@ -1,6 +1,8 @@
 #ifndef _CLASS_H
 #define _CLASS_H
 
+#include "arrayList.h"
+
 class StringObject;
 class DictObject;
 class Object;
@@ -31,13 +33,14 @@ public:
     void            set_super(Klass* super_klass) { _super = super_klass; }
     Klass*          super() { return _super; }
 
+    virtual Object* allocate_instance(ObjList* args) { return nullptr; }
+
     virtual Object* greater(Object* x, Object* y) { return nullptr; }
     virtual Object* less   (Object* x, Object* y) { return nullptr; }
     virtual Object* eq     (Object* x, Object* y) { return nullptr; }
     virtual Object* ne     (Object* x, Object* y) { return nullptr; }
     virtual Object* ge     (Object* x, Object* y) { return nullptr; }
     virtual Object* le     (Object* x, Object* y) { return nullptr; }
-
     virtual Object* add(Object* x, Object* y) { return nullptr; }
     virtual Object* sub(Object* x, Object* y) { return nullptr; }
     virtual Object* mul(Object* x, Object* y) { return nullptr; }

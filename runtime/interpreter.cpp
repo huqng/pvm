@@ -132,6 +132,13 @@ void Interpreter::build_frame(Object* callable, ObjList* args, int oparg) {
         args->insert(0, method->owner());
         build_frame(method->func(), args, oparg);
     }
+    else if(callable->klass() == TypeKlass::get_instance()) {
+        if(_debug) {
+            cerr << "\t<type>" << endl;
+        }
+        Object* instance = ((TypeObject*)callable)->own_klass()->allocate_instance(args);
+        push(instance);
+    }
     else {
         cerr << "Error build_frame, unrecognized klass = ";
         callable->klass()->name()->print(); 

@@ -125,6 +125,10 @@ void DictKlass::initialize() {
     set_super(ObjectKlass::get_instance());
 }
 
+Object* DictKlass::allocate_instance(ObjList* args) {
+    return new DictObject();
+}
+
 void DictKlass::print(Object* obj) {
     assert(obj->klass() == (Klass*)this);
     DictObject* d = (DictObject*)obj;

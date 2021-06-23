@@ -28,6 +28,16 @@ void IntegerKlass::initialize() {
     set_super(ObjectKlass::get_instance());
 }
 
+Object* IntegerKlass::allocate_instance(ObjList* args) {
+    if(args != nullptr) {
+        if(args->size() == 0)
+            return new IntegerObject(0);
+        else if(args->size() == 1 && args->get(0)->klass() == this)
+            return new IntegerObject(((IntegerObject*)(args->get(0)))->value());
+    }
+    return nullptr;
+}
+
 void IntegerKlass::print(Object* x) {
     assert(x->klass() == (Klass*)this);
     cout << ((IntegerObject*)x)->value();    

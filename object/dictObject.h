@@ -32,7 +32,8 @@ private:
 public:
     static DictKlass* get_instance();
     void initialize();
-
+    
+    virtual Object* allocate_instance(ObjList* args);
     virtual void print(Object* obj);
     virtual Object* subscr(Object* obj, Object* key);
     virtual Object* contains(Object* obj, Object* key);

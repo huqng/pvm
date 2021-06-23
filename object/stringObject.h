@@ -17,6 +17,7 @@ public:
     static StringKlass* get_instance();
     void initialize(); /* called manually to avoid use objects in constructor of Klass */
 
+    virtual Object* allocate_instance(ObjList* args);
     virtual void print(Object* x);
 
     virtual Object* greater(Object* x, Object* y);
