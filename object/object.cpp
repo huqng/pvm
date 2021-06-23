@@ -40,10 +40,19 @@ void ObjectKlass::print(Object* obj) {
 
 Object::Object() {
     set_klass(ObjectKlass::get_instance());
+    _obj_dict = nullptr;
 }
 
 Object::~Object() {
     
+}
+
+void Object::init_dict() {
+    _obj_dict = new DictObject();
+}
+
+DictObject* Object::obj_dict() {
+    return _obj_dict;
 }
 
 Klass* Object::klass() {
@@ -134,21 +143,17 @@ bool equal2obj(Object* a, Object* b) {
     return a->eq(b) == Universe::True;
 }
 
-Object* Object::getattr(Object* x) {
+Object* Object::getattr(Object* name) {
     Object* result = Universe::None;
-    result = this->_klass->klass_dict()->get(x);
-    /* 
-        if attr is function, make a method, 
-        else return the attr itself. 
-        native function attr is put into klass_dict in Universe::genesis()
-    */
-    if(result->klass() == NativeFunctionKlass::get_instance() || result->klass() == FunctionKlass::get_instance()) {
-        /* method and its owner */
-        result = (Object*)(new MethodObject((FunctionObject*)result, this));
-    }
-
+    result = _klass->getattr(this, name);
     return result;
 }
+
+Object* Object::setattr(Object* name, Object* value) {
+    return _klass->setattr(this, name, value);
+}
+
+
 
 Object* Object::iter() {
     return _klass->iter(this);

@@ -18,12 +18,12 @@ Object* isinstance(ObjList* args);
 Object* type_of(ObjList* args);
 
 /* klasses */
-class FunctionKlass: public Klass {
+class NonNativeFunctionKlass: public Klass {
 private:
-    FunctionKlass();
-    static FunctionKlass* instance;
+    NonNativeFunctionKlass();
+    static NonNativeFunctionKlass* instance;
 public:
-    static FunctionKlass* get_instance();
+    static NonNativeFunctionKlass* get_instance();
     void initialize();
 
     virtual void print(Object* x);

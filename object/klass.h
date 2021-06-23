@@ -33,6 +33,9 @@ public:
     void            set_super(Klass* super_klass) { _super = super_klass; }
     Klass*          super() { return _super; }
 
+    Object*         setattr(Object* obj, Object* name, Object* value);
+    Object*         getattr(Object* obj, Object* name);
+
     static TypeObject* create_klass(Object* locals_dict, Object* supers_tuple, Object* name_str);
     static Object* allocate_instance(Object* type_obj, ObjList* args);
 

@@ -9,7 +9,7 @@
 using namespace std;
 
 /* init static klass instance */
-FunctionKlass* FunctionKlass::instance = nullptr;
+NonNativeFunctionKlass* NonNativeFunctionKlass::instance = nullptr;
 NativeFunctionKlass* NativeFunctionKlass::instance = nullptr;
 MethodKlass* MethodKlass::instance = nullptr;
 
@@ -41,24 +41,24 @@ Object* type_of(ObjList* args) {
 }
 
 /* klasses */
-FunctionKlass::FunctionKlass() {
+NonNativeFunctionKlass::NonNativeFunctionKlass() {
 
 }
 
-FunctionKlass* FunctionKlass::get_instance() {
+NonNativeFunctionKlass* NonNativeFunctionKlass::get_instance() {
     if(instance == nullptr)
-        instance = new FunctionKlass();
+        instance = new NonNativeFunctionKlass();
     return instance;
 }
 
-void FunctionKlass::initialize() {
+void NonNativeFunctionKlass::initialize() {
     set_name(new StringObject("Function"));
     /* set type_object */
     TypeObject* obj = new TypeObject(this);
     set_type_object(obj);
 }
 
-void FunctionKlass::print(Object* x) {
+void NonNativeFunctionKlass::print(Object* x) {
     assert(x->klass() == this);
     cout << "function object at " << x;
 }
@@ -118,7 +118,7 @@ FunctionObject::FunctionObject(Object* x) {
     _func_name = co->_co_name;
     _flags = co->_flag;
     _native_func = nullptr;
-    set_klass(FunctionKlass::get_instance());
+    set_klass(NonNativeFunctionKlass::get_instance());
 }
 
 FunctionObject::FunctionObject(NativeFunction nfp) {

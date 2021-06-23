@@ -37,7 +37,7 @@ void Universe::genesis() {
     CodeKlass::get_instance()->initialize();
     DictKlass::get_instance()->initialize();
     DictIteratorKlass::get_instance()->initialize();
-    FunctionKlass::get_instance()->initialize();
+    NonNativeFunctionKlass::get_instance()->initialize();
     NativeFunctionKlass::get_instance()->initialize();
     MethodKlass::get_instance()->initialize();
     IntegerKlass::get_instance()->initialize();

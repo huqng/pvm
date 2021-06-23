@@ -44,6 +44,7 @@ Interpreter::Interpreter(int debug) {
     op[90]  = &Interpreter::store_name;
     op[92]  = &Interpreter::unpack_sequence;
     op[93]  = &Interpreter::for_iter;
+    op[95]  = &Interpreter::store_attr;
     op[97]  = &Interpreter::store_global;
     op[100] = &Interpreter::load_const;
     op[101] = &Interpreter::load_name;
@@ -115,7 +116,7 @@ void Interpreter::build_frame(Object* callable, ObjList* args, int oparg) {
         }
         push(((FunctionObject*)callable)->call(args));
     }
-    else if(callable->klass() == FunctionKlass::get_instance()) {
+    else if(callable->klass() == NonNativeFunctionKlass::get_instance()) {
         if(_debug) {
             cerr << "\t<Non-Native Function>" << endl;
         }
@@ -436,6 +437,21 @@ void Interpreter::for_iter(int arg) /* 93 */ {
     }
 }
 
+void Interpreter::store_attr(int arg) /* 95 */ {
+    if(_debug) {
+        cerr << "STORE_ATTR | " << arg;
+    }
+    Object* obj = pop();
+    Object* value = pop();
+    Object* attr_name = _frame->names()->get(arg);
+    if(_debug) {
+        cout << " | name = \"";
+        attr_name->print();
+        cout << "\"" << endl;
+    }
+    obj->setattr(attr_name, value);
+}
+
 void Interpreter::store_global(int arg) /* 97 */ {
     if(_debug) {
         cerr << "STORE_GLOBAL" << endl;
@@ -543,9 +559,9 @@ void Interpreter::load_attr(int arg) /* 106 */ {
     if(_debug) {
         cerr << "LOAD_ATTR | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
     }
-    Object* v = pop();
-    Object* w = _frame->names()->get(arg);
-    Object* attr = v->getattr(w);
+    Object* obj = pop();
+    Object* name = _frame->names()->get(arg);
+    Object* attr = obj->getattr(name);
     /* load from klass_dict to stack */
     push(attr);
 }

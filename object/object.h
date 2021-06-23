@@ -17,11 +17,14 @@ public:
 class Object {
 private:
     Klass* _klass;
-protected:
-    void    set_klass(Klass* x);
+    DictObject* _obj_dict;
 public:
     Object();
     virtual ~Object();
+
+    void    set_klass(Klass* x);
+    void    init_dict();
+    DictObject* obj_dict();
 
     Klass*  klass();
     
@@ -49,6 +52,7 @@ public:
     void store_subscr(Object* index, Object* x);
     void del_subscr(Object* index);
     Object* getattr(Object* x);
+    Object* setattr(Object* name, Object* value);
     Object* iter();
 
     friend class Klass;

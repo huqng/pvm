@@ -3,6 +3,9 @@
 #include "listObject.h"
 #include "stringObject.h"
 #include "typeObject.h"
+#include "functionObject.h"
+#include "universe.h"
+
 #include <cassert>
 
 TypeObject* Klass::create_klass(Object* locals_dict, Object* supers_tuple, Object* name_str) {
@@ -32,6 +35,26 @@ Object* Klass::allocate_instance(Object* type_obj, ObjList* args) {
 }
 
 Object* Klass::allocate_instance(ObjList* args) {
+    /* if this virtual function is not rewritten in XKlass */
     return allocate_instance(_type_obj, args);
 }
 
+Object* Klass::setattr(Object* obj, Object* name, Object* value) {
+    if(obj->obj_dict() == nullptr)
+        obj->init_dict();
+    obj->obj_dict()->put(name, value);
+    return Universe::None;
+}
+
+Object* Klass::getattr(Object* obj, Object* name) {
+    Object* result = Universe::None;
+    if(obj->obj_dict() != nullptr) {
+        result = obj->obj_dict()->get(name);
+        if(result != Universe::None)
+            return result;
+    }
+    result = this->_klass_dict->get(name);
+    if(result->klass() == NonNativeFunctionKlass::get_instance() || result->klass() == NativeFunctionKlass::get_instance()) 
+        result = new MethodObject((FunctionObject*)result, obj);
+    return result;
+}
