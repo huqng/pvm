@@ -593,9 +593,15 @@ void Interpreter::build_map(int arg) /* 105 */ {
 
 void Interpreter::load_attr(int arg) /* 106 */ {
     if(_debug) {
-        cerr << "LOAD_ATTR | " << ((StringObject*)_frame->names()->get(arg))->value() << endl;
+        cerr << "LOAD_ATTR | name = \"";
+        _frame->names()->get(arg)->print();
+        cout << "\" | object = ";
     }
     Object* obj = pop();
+    if(_debug) {
+        obj->print();
+        cout << endl;
+    }
     Object* name = _frame->names()->get(arg);
     Object* attr = obj->getattr(name);
     /* load from klass_dict to stack */

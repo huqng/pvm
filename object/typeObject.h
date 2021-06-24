@@ -17,7 +17,9 @@ public:
     static TypeKlass* get_instance();
     void initialize();
 
-    virtual void print(Object* obj);
+    virtual void print(Object* obj);    
+    virtual Object* setattr(Object* obj, Object* name, Object* value);
+
 };
 
 /* object */

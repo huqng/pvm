@@ -53,6 +53,8 @@ Object* Klass::allocate_instance(ObjList* args) {
 }
 
 Object* Klass::setattr(Object* obj, Object* name, Object* value) {
+    /* add an attr to object, not Klass */
+    /* not in TypeKlass */
     if(obj->obj_dict() == nullptr)
         obj->init_dict();
     obj->obj_dict()->put(name, value);
@@ -60,6 +62,7 @@ Object* Klass::setattr(Object* obj, Object* name, Object* value) {
 }
 
 Object* Klass::getattr(Object* obj, Object* name) {
+    /* if not in object, look for from klass */
     Object* result = Universe::None;
     if(obj->obj_dict() != nullptr) {
         result = obj->obj_dict()->get(name);

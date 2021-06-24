@@ -22,6 +22,10 @@ TypeKlass* TypeKlass::get_instance() {
 
 void TypeKlass::initialize() {
     set_name(new StringObject("type"));
+
+    DictObject* klass_dict = new DictObject();
+    set_klass_dict(klass_dict);
+
     /* set type_object */
     TypeObject* obj = new TypeObject(this);
     set_type_object(obj);
@@ -46,6 +50,13 @@ void TypeKlass::print(Object* obj) {
     cout << ">";
 
     set_super(ObjectKlass::get_instance());
+}
+
+Object* TypeKlass::setattr(Object* obj, Object* name, Object* value) {
+    assert(obj != nullptr && obj->klass() == this);
+    TypeObject* t = (TypeObject*)obj;
+    t->own_klass()->klass_dict()->put(name, value);
+    return Universe::None;
 }
 
 /* object */
