@@ -5,8 +5,16 @@
 #include "typeObject.h"
 #include "functionObject.h"
 #include "universe.h"
+#include "interpreter.h"
 
 #include <cassert>
+
+void Klass::print(Object* obj) {
+    cout << "<";
+    _name->print();
+    cout << " at " << obj << ">";
+}
+
 
 TypeObject* Klass::create_klass(Object* locals_dict, Object* supers_tuple, Object* name_str) {
     assert(locals_dict->klass() == DictKlass::get_instance());
@@ -30,12 +38,17 @@ TypeObject* Klass::create_klass(Object* locals_dict, Object* supers_tuple, Objec
 
 Object* Klass::allocate_instance(Object* type_obj, ObjList* args) {
     Object* inst = new Object();
-    inst->set_klass(((TypeObject*)type_obj)->own_klass());
+    inst->set_klass(this);
+    Object* init = inst->getattr(StringTable::get_instance()->str_init);
+    if(init != Universe::None) {
+        Interpreter::get_instance()->call_virtual(init, args);
+    }
     return inst;
 }
 
 Object* Klass::allocate_instance(ObjList* args) {
     /* if this virtual function is not rewritten in XKlass */
+    /* _type_obj should have been set*/
     return allocate_instance(_type_obj, args);
 }
 

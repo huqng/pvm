@@ -33,8 +33,14 @@ public:
 
 class Interpreter {
 private:
+    static Interpreter* instance;
+    Interpreter();
+
+
     DictObject* _builtins;
     Frame*      _frame;
+    Object*     _ret_value;
+
     bool        _debug;
 
     /* stack op */
@@ -47,6 +53,7 @@ private:
     void    eval_frame();
     void    leave_frame(Object* retv);
     void    destroy_frame();
+
 
     /* instructions */
     op_t*   op;
@@ -97,7 +104,9 @@ private:
     void    store_deref(int);           // 137
 
 public:
-    Interpreter(int debug);
+    static Interpreter* get_instance();
+    void set_debug(bool debug);
+    Object* call_virtual(Object* func, ObjList* args);
     void run(CodeObject* co);
 };
 

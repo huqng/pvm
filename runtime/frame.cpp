@@ -8,6 +8,8 @@
 #include <cassert>
 
 Frame::Frame(CodeObject* co) {
+    _entry_frame = false;
+
     _stack = new ListObject();
     _loop_stack = new ArrayList<LoopBlock*>(nullptr);
 
@@ -25,6 +27,8 @@ Frame::Frame(CodeObject* co) {
 }
 
 Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
+    _entry_frame = false;
+
     /* stack */
     _stack = new ListObject();
     _loop_stack = new ArrayList<LoopBlock*>(nullptr);

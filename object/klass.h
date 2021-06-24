@@ -37,7 +37,7 @@ public:
     Object*         getattr(Object* obj, Object* name);
 
     static TypeObject* create_klass(Object* locals_dict, Object* supers_tuple, Object* name_str);
-    static Object* allocate_instance(Object* type_obj, ObjList* args);
+    Object* allocate_instance(Object* type_obj, ObjList* args);
 
     virtual Object* allocate_instance(ObjList* args);
 
@@ -53,7 +53,7 @@ public:
     virtual Object* div(Object* x, Object* y) { return nullptr; }
     virtual Object* mod(Object* x, Object* y) { return nullptr; }
 
-    virtual void print(Object* obj) {}
+    virtual void print(Object* obj);
     virtual Object* len(Object* x) { return nullptr; }
     
     virtual Object* subscr(Object* obj, Object* index) { return nullptr; }

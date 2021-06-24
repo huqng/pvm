@@ -15,6 +15,7 @@ StringTable* StringTable::instance = nullptr;
 StringTable::StringTable() {
     str_next = new StringObject("next");
     str_mod = new StringObject("__module__");
+    str_init = new StringObject("__init__");
 }
 
 StringTable* StringTable::get_instance() {

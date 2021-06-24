@@ -35,7 +35,8 @@ int main(int argc, char** argv) {
     Universe::genesis();
 
     /* run interpreter */
-    Interpreter* interpreter = new Interpreter(debug);
+    Interpreter* interpreter = Interpreter::get_instance();
+    interpreter->set_debug(debug);
     interpreter->run(co);
 
 

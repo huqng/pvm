@@ -16,8 +16,11 @@ using namespace std;
 
 /* Interpreter */
 
-Interpreter::Interpreter(int debug) {
-    this->_debug = debug;
+Interpreter* Interpreter::instance = nullptr;
+
+Interpreter::Interpreter() {
+    this->_debug = false;
+    this->_ret_value = nullptr;
 
     op = new op_t[256];
     for(int i = 0; i < 256; i++)
@@ -88,6 +91,16 @@ void Interpreter::run(CodeObject* co) {
     destroy_frame();
 }
 
+Interpreter* Interpreter::get_instance() {
+    if(instance == nullptr)
+        instance = new Interpreter();
+    return instance;
+}
+
+void Interpreter::set_debug(bool debug) {
+    _debug = debug;
+}
+
 void Interpreter::push(Object* p) {
     _frame->stack()->append(p);
 }
@@ -140,7 +153,6 @@ void Interpreter::build_frame(Object* callable, ObjList* args, int oparg) {
             cerr << "\t<type>" << endl;
         }
         Object* instance = ((TypeObject*)callable)->own_klass()->allocate_instance(args);
-        //Object* instance = Klass::allocate_instance(callable, args);
         push(instance);
     }
     else {
@@ -187,6 +199,30 @@ void Interpreter::destroy_frame() {
     Frame* tmp = _frame;
     _frame = _frame->sender();
     delete tmp;
+}
+
+Object* Interpreter::call_virtual(Object* func, ObjList* args) {
+    if(func->klass() == MethodKlass::get_instance()) {
+        MethodObject* method = (MethodObject*)func;
+        if(args == nullptr)
+            args = new ObjList(equal2obj);
+        args->insert(0, method->owner());
+        return call_virtual(method->func(), args);
+    }
+    else if(
+        func->klass() == NativeFunctionKlass::get_instance() ||
+        func->klass() == NonNativeFunctionKlass::get_instance()
+    ) {
+        // TODO - oparg is not args size
+        Frame* frame = new Frame((FunctionObject*)func, args, args->size());
+        frame->set_entry_frame(true);
+        frame->set_sender(_frame);
+        _frame = frame;
+        eval_frame();
+        destroy_frame();
+        return _ret_value;
+    }
+    return Universe::None;
 }
 
 /* instructions */
@@ -363,7 +399,7 @@ void Interpreter::return_value(int arg) /* 83 */ {
         retv->print();
         cout << endl;
     }
-    if(_frame->is_first_frame())
+    if(_frame->is_first_frame() || _frame->is_entry_frame())
         return;
     leave_frame(retv);
 }
@@ -648,16 +684,34 @@ void Interpreter::pop_jump_if_false(int arg) /* 114 */ {
 
 void Interpreter::load_global(int arg) /* 116 */ {
     if(_debug) {
-        cerr << "LOAD_GLOBAL" << endl;
+        cerr << "LOAD_GLOBAL | " << arg;
     }
     Object* name = _frame->names()->get(arg);
+    if(_debug) {
+        cout << " | name = \"";
+        name->print();
+        cout << "\" | ";
+    }
+
     Object* obj = _frame->globals()->get(name);
-    if(obj != nullptr) {
+    if(obj != Universe::None) {
+        if(_debug) {
+            obj->klass()->name()->print();
+            cout << ": ";
+            obj->print();
+            cout << endl;
+        }
         push(obj);
         return;
     }
     obj = _builtins->get(name);
-    if(obj != nullptr) {
+    if(obj != Universe::None) {
+        if(_debug) {
+            obj->klass()->name()->print();
+            cout << ": ";
+            obj->print();
+            cout << endl;
+        }
         push(obj);
         return;
     }
@@ -678,7 +732,9 @@ void Interpreter::setup_loop(int arg) /* 120 */ {
 
 void Interpreter::load_fast(int arg) /* 124 */ {
     if(_debug) {
-        cerr << "LOAD_FAST | " << arg << endl;
+        cerr << "LOAD_FAST | " << arg << " | ";
+        _frame->fast_locals()->get(arg)->print();
+        cout << endl;
     }
     push(_frame->fast_locals()->get(arg));
 }

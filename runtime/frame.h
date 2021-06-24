@@ -12,6 +12,7 @@ class LoopBlock;
 
 class Frame {
 private:
+    bool _entry_frame;
 
     ListObject*    _stack;
     ArrayList<LoopBlock*>*  _loop_stack;
@@ -79,6 +80,15 @@ public:
     bool is_first_frame() {
         return _sender == nullptr;
     }
+
+    void set_entry_frame(bool b) {
+        _entry_frame = b;
+    }
+
+    bool is_entry_frame() {
+        return _entry_frame;
+    }
+
 };
 
 #endif

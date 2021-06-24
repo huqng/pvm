@@ -12,6 +12,7 @@ public:
 
     StringObject* str_next;
     StringObject* str_mod;
+    StringObject* str_init;
 };
 
 class Universe {
