@@ -122,7 +122,7 @@ void DictKlass::initialize() {
     TypeObject* obj = new TypeObject(this);
     set_type_object(obj);
 
-    set_super(ObjectKlass::get_instance());
+    add_super(ObjectKlass::get_instance());
 }
 
 Object* DictKlass::allocate_instance(ObjList* args) {
@@ -210,6 +210,8 @@ void DictIteratorKlass::initialize() {
     /* set type_object */
     TypeObject* obj = new TypeObject(this);
     set_type_object(obj);
+
+    add_super(ObjectKlass::get_instance());
 }
 
 /* dict iterator object */

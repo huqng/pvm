@@ -57,7 +57,7 @@ void StringKlass::initialize() {
     TypeObject* obj = new TypeObject(this);
     set_type_object(obj);
 
-    set_super(ObjectKlass::get_instance());
+    add_super(ObjectKlass::get_instance());
 }
 
 Object* StringKlass::allocate_instance(ObjList* args) {

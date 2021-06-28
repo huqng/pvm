@@ -11,6 +11,45 @@
 #include <iostream>
 using namespace std;
 
+Klass::Klass() {
+    _super = nullptr;
+    _mro = nullptr;
+}
+
+void Klass::add_super(Klass* klass)  {
+    if(_super == nullptr)
+        _super = new ListObject();
+    _super->append(klass->type_object()); 
+}
+
+void Klass::order_supers() {
+    if(_super == nullptr)
+        return;
+    if(_mro == nullptr) 
+        _mro = new ListObject();
+    
+    int cur = -1;
+    for(int i = 0; i < _super->size(); i++) {
+        TypeObject* s = (TypeObject*)_super->get(i);
+        Klass* k = s->klass();
+        _mro->append(s);
+        if(k->mro() == nullptr)
+            continue;
+        for(int j = 0; j < k->mro()->size(); j++) {
+            TypeObject* ss = (TypeObject*)(k->mro()->get(i));
+            int index = _mro->index(ss);
+            if(index < cur) {
+                cerr << "Error method resolution" << endl;
+                assert(0);
+            }
+            cur = index;
+            if(index >= 0)
+                _mro->inner_list()->delete_index(index);
+            _mro->append(ss);
+        }
+    }
+}
+
 TypeObject* Klass::create_klass(Object* locals_dict, Object* supers_tuple, Object* name_str) {
     assert(locals_dict->klass() == DictKlass::get_instance());
     assert(supers_tuple->klass() == TupleKlass::get_instance());
@@ -23,8 +62,8 @@ TypeObject* Klass::create_klass(Object* locals_dict, Object* supers_tuple, Objec
     new_klass->set_klass_dict(locals);
     new_klass->set_name(name);
     if(supers->size() > 0) {
-        TypeObject* super = (TypeObject*)supers->get(0);
-        new_klass->set_super(super->own_klass());
+        new_klass->set_super_list(supers);
+        new_klass->order_supers();
     }
     TypeObject* type_obj = new TypeObject(new_klass);
     new_klass->set_type_object(type_obj);
@@ -58,7 +97,7 @@ Object* Klass::setattr(Object* obj, Object* name, Object* value) {
 
 Object* Klass::getattr(Object* obj, Object* name) {
     /* if __getattr__ overload */
-    Object* func = this->klass_dict()->get(StringTable::get_instance()->str_getattr);
+    Object* func = find_in_parents(obj, StringTable::get_instance()->str_getattr);
     if(func->klass() == NonNativeFunctionKlass::get_instance()) {
         func = new MethodObject((FunctionObject*)func, obj);
         ObjList* args = new ObjList(equal2obj);
@@ -66,15 +105,34 @@ Object* Klass::getattr(Object* obj, Object* name) {
         return Interpreter::get_instance()->call_virtual(func, args);
     }
 
+    /* try to get from attr of object */
     Object* result = Universe::None;
     if(obj->obj_dict() != nullptr) {
         result = obj->obj_dict()->get(name);
         if(result != Universe::None)
             return result;
     }
-    result = this->_klass_dict->get(name);
+
+    /* not found in attr of object, try to get from attr of class */    
+    result = find_in_parents(obj, name);
     if(result->klass() == NonNativeFunctionKlass::get_instance() || result->klass() == NativeFunctionKlass::get_instance()) 
         result = new MethodObject((FunctionObject*)result, obj);
+    return result;
+}
+
+Object* Klass::find_in_parents(Object* obj, Object* name) {
+    Object* result = Universe::None;
+    result = obj->klass()->klass_dict()->get(name);
+    if(result != Universe::None)
+        return result;
+    /* has no super classes */
+    if(_mro == nullptr)
+        return result;
+    for(int i = 0; i < _mro->size(); i++) {
+        result = ((TypeObject*)(_mro->get(i)))->own_klass()->klass_dict()->get(name);
+        if(result != Universe::None)
+            return result;
+    }
     return result;
 }
 
@@ -120,7 +178,9 @@ Object* Klass::div(Object* x, Object* y) {
     return find_and_call(x, args, StringTable::get_instance()->str_div);
 }
 
-Object* Klass::mod(Object* x, Object* y) { return nullptr; }
+Object* Klass::mod(Object* x, Object* y) {
+    return Universe::None; 
+}
 
 Object* Klass::neg(Object* x) {
     ObjList* args = new ObjList(equal2obj);
@@ -193,7 +253,7 @@ Object* Klass::subscr(Object* obj, Object* index) {
     return find_and_call(obj, args, StringTable::get_instance()->str_getitem);
 }
 
-/* built-in methods */
+/* native functions */
 void Klass::print(Object* obj) {
     cout << "<";
     _name->print();

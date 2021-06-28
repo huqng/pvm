@@ -54,6 +54,8 @@ void Universe::genesis() {
     False = new IntegerObject(0);
     None = new Object();
 
+    ObjectKlass::get_instance()->initialize();
+    TypeKlass::get_instance()->initialize();
     CellKlass::get_instance()->initialize();
     CodeKlass::get_instance()->initialize();
     DictKlass::get_instance()->initialize();
@@ -64,9 +66,21 @@ void Universe::genesis() {
     IntegerKlass::get_instance()->initialize();
     ListKlass::get_instance()->initialize();
     ListIteratorKlass::get_instance()->initialize();
-    ObjectKlass::get_instance()->initialize();
     StringKlass::get_instance()->initialize();
-    TypeKlass::get_instance()->initialize();
+
+    CellKlass::get_instance()->order_supers();
+    CodeKlass::get_instance()->order_supers();
+    DictKlass::get_instance()->order_supers();
+    DictIteratorKlass::get_instance()->order_supers();
+    NonNativeFunctionKlass::get_instance()->order_supers();
+    NativeFunctionKlass::get_instance()->order_supers();
+    MethodKlass::get_instance()->order_supers();
+    IntegerKlass::get_instance()->order_supers();
+    ListKlass::get_instance()->order_supers();
+    ListIteratorKlass::get_instance()->order_supers();
+    ObjectKlass::get_instance()->order_supers();
+    StringKlass::get_instance()->order_supers();
+    TypeKlass::get_instance()->order_supers();
 
 }
 

@@ -108,6 +108,12 @@ Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
     }
     else if(alist->size() > 0) {
         cerr << "error given more args than need" << endl;
+        cerr << "error: too few arguments to call a function" << endl;
+        cerr << "ngiven = " << nagiven << endl;
+        cerr << "ndft = " << ndft << endl;
+        cerr << "ndef = " << nadef << endl;
+        args->get(0)->print();
+        args->get(1)->print();
         assert(0);
     }
 

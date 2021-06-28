@@ -40,7 +40,7 @@ void ListKlass::initialize() {
     TypeObject* obj = new TypeObject(this);
     set_type_object(obj);
 
-    set_super(ObjectKlass::get_instance());    
+    add_super(ObjectKlass::get_instance());
 }
 
 Object* ListKlass::allocate_instance(ObjList* args) {
@@ -184,6 +184,7 @@ void ListIteratorKlass::initialize() {
     klass_dict->put(new StringObject("next"), new FunctionObject(listiterator_next));
     set_klass_dict(klass_dict);
     set_name(new StringObject("ListIterator"));
+    add_super(ObjectKlass::get_instance());
 }
 
 /* list iterator object */

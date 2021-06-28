@@ -3,6 +3,7 @@
 #include "stringObject.h"
 #include "codeObject.h"
 #include "typeObject.h"
+#include "listObject.h"
 
 #include <cassert>
 #include <iostream>
@@ -22,13 +23,12 @@ Object* len(ObjList* args) {
 Object* isinstance(ObjList* args) {
     assert(args != nullptr && args->size() == 2);
     assert(args->get(1)->klass() == TypeKlass::get_instance());
-    Klass* t = ((TypeObject*)(args->get(1)))->own_klass();
-    Klass* k = args->get(0)->klass();
-    while(k != nullptr) {
-        if(k == t)
+    Klass* type_klass = ((TypeObject*)(args->get(1)))->own_klass();
+    Klass* inst_klass = args->get(0)->klass();
+    ListObject* super_types = inst_klass->mro();
+    for(int i = 0; i < super_types->size(); i++) {
+        if(((TypeObject*)super_types->get(i))->own_klass() == inst_klass)
             return Universe::True;
-        else
-            k = k->super();
     }
     return Universe::False;
 }
@@ -56,6 +56,7 @@ void NonNativeFunctionKlass::initialize() {
     /* set type_object */
     TypeObject* obj = new TypeObject(this);
     set_type_object(obj);
+    add_super(ObjectKlass::get_instance());
 }
 
 void NonNativeFunctionKlass::print(Object* x) {
@@ -78,6 +79,7 @@ void NativeFunctionKlass::initialize() {
     /* set type_object */
     TypeObject* obj = new TypeObject(this);
     set_type_object(obj);
+    add_super(ObjectKlass::get_instance());
 }
 
 void NativeFunctionKlass::print(Object* x) {
@@ -100,6 +102,7 @@ void MethodKlass::initialize() {
     /* set type_object */
     TypeObject* obj = new TypeObject(this);
     set_type_object(obj);
+    add_super(ObjectKlass::get_instance());
 }
 
 void MethodKlass::print(Object* x) {

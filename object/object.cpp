@@ -28,7 +28,8 @@ void ObjectKlass::initialize() {
     TypeObject* obj = new TypeObject(this);
     set_type_object(obj);
 
-    set_super(nullptr); /* object has no super class */
+    set_klass_dict(new DictObject());
+    //set_super(nullptr); /* object has no super class */
 }
 
 void ObjectKlass::print(Object* obj) {

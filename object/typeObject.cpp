@@ -29,6 +29,18 @@ void TypeKlass::initialize() {
     /* set type_object */
     TypeObject* obj = new TypeObject(this);
     set_type_object(obj);
+    add_super(ObjectKlass::get_instance());
+}
+
+Object* TypeKlass::eq(Object* x, Object* y) {
+    if(x->klass() != y->klass())
+        return Universe::False;
+    TypeKlass* tx = (TypeKlass*)x;
+    TypeKlass* ty = (TypeKlass*)y;
+    if(tx == ty)    
+        return Universe::True;
+    else
+        return Universe::False;
 }
 
 void TypeKlass::print(Object* obj) {
@@ -48,8 +60,6 @@ void TypeKlass::print(Object* obj) {
     }
     tp->own_klass()->name()->print();
     cout << ">";
-
-    set_super(ObjectKlass::get_instance());
 }
 
 Object* TypeKlass::setattr(Object* obj, Object* name, Object* value) {

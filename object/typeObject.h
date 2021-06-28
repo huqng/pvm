@@ -18,6 +18,7 @@ public:
     void initialize();
 
     virtual void print(Object* obj);    
+    virtual Object* eq(Object* x, Object* y);
     virtual Object* setattr(Object* obj, Object* name, Object* value);
 
 };

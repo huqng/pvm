@@ -86,6 +86,7 @@ Interpreter::Interpreter() {
 }
 
 void Interpreter::run(CodeObject* co) {
+    cout << "Running interpreter" << endl;
     _frame = new Frame(co);
     eval_frame();
     destroy_frame();
@@ -448,7 +449,8 @@ void Interpreter::store_name(int arg) /* 90 */ {
     if(_debug) {
         name->print();
         cout << "\" | value = ";
-        cout.flush();
+        value->klass()->name()->print();
+        cout << " ";
         value->print();
         cout << endl;
     }
