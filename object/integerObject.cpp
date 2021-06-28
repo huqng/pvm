@@ -93,7 +93,7 @@ Object* IntegerKlass::mod(Object* x, Object* y) {
     return new IntegerObject(ix->value() % iy->value());
 }
 
-Object* IntegerKlass::greater(Object* x, Object* y) {
+Object* IntegerKlass::gt(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::False;
     assert(x->klass() == (Klass*)this);
@@ -103,7 +103,7 @@ Object* IntegerKlass::greater(Object* x, Object* y) {
     return ix->value() > iy->value() ? Universe::True : Universe::False;
 }
 
-Object* IntegerKlass::less(Object* x, Object* y) {
+Object* IntegerKlass::lt(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::False;
     assert(x->klass() == (Klass*)this);

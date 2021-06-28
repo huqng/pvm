@@ -35,8 +35,8 @@ public:
     Object* div(Object* x);
     Object* mod(Object* x);
 
-    Object* greater(Object* x);
-    Object* less(Object* x);
+    Object* gt(Object* x);
+    Object* lt(Object* x);
     Object* eq(Object* x);
     Object* ne(Object* x);
     Object* ge(Object* x);

@@ -38,25 +38,32 @@ public:
 
     static TypeObject* create_klass(Object* locals_dict, Object* supers_tuple, Object* name_str);
     Object* allocate_instance(Object* type_obj, ObjList* args);
-
     virtual Object* allocate_instance(ObjList* args);
 
-    virtual Object* greater(Object* x, Object* y) { return nullptr; }
-    virtual Object* less   (Object* x, Object* y) { return nullptr; }
-    virtual Object* eq     (Object* x, Object* y) { return nullptr; }
-    virtual Object* ne     (Object* x, Object* y) { return nullptr; }
-    virtual Object* ge     (Object* x, Object* y) { return nullptr; }
-    virtual Object* le     (Object* x, Object* y) { return nullptr; }
-    virtual Object* add(Object* x, Object* y) { return nullptr; }
-    virtual Object* sub(Object* x, Object* y) { return nullptr; }
-    virtual Object* mul(Object* x, Object* y) { return nullptr; }
-    virtual Object* div(Object* x, Object* y) { return nullptr; }
-    virtual Object* mod(Object* x, Object* y) { return nullptr; }
+    Object* find_and_call(Object* lhs, ObjList* args, Object* func_name);
+
+
+    virtual Object* add(Object* x, Object* y);
+    virtual Object* sub(Object* x, Object* y);
+    virtual Object* mul(Object* x, Object* y);
+    virtual Object* div(Object* x, Object* y);
+    virtual Object* mod(Object* x, Object* y);
+    virtual Object* neg(Object* x);
+    virtual Object* lt  (Object* x, Object* y);
+    virtual Object* gt  (Object* x, Object* y);
+    virtual Object* le  (Object* x, Object* y);
+    virtual Object* ge  (Object* x, Object* y);
+    virtual Object* eq  (Object* x, Object* y);
+    virtual Object* ne  (Object* x, Object* y);
+    virtual Object* _and    (Object* x, Object* y);
+    virtual Object* _or     (Object* x, Object* y);
+    virtual Object* _invert (Object* x, Object* y);
+    virtual Object* _xor    (Object* x, Object* y);
 
     virtual void print(Object* obj);
-    virtual Object* len(Object* x) { return nullptr; }
+    virtual Object* len(Object* x);
     
-    virtual Object* subscr(Object* obj, Object* index) { return nullptr; }
+    virtual Object* subscr(Object* obj, Object* index);
     virtual Object* contains(Object* obj, Object* x) { return nullptr; }
     virtual void store_subscr(Object* obj, Object* index, Object* x) { }
     virtual void del_subscr(Object* obj, Object* index) { }

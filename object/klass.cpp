@@ -8,13 +8,8 @@
 #include "interpreter.h"
 
 #include <cassert>
-
-void Klass::print(Object* obj) {
-    cout << "<";
-    _name->print();
-    cout << " at " << obj << ">";
-}
-
+#include <iostream>
+using namespace std;
 
 TypeObject* Klass::create_klass(Object* locals_dict, Object* supers_tuple, Object* name_str) {
     assert(locals_dict->klass() == DictKlass::get_instance());
@@ -62,7 +57,15 @@ Object* Klass::setattr(Object* obj, Object* name, Object* value) {
 }
 
 Object* Klass::getattr(Object* obj, Object* name) {
-    /* if not in object, look for from klass */
+    /* if __getattr__ overload */
+    Object* func = this->klass_dict()->get(StringTable::get_instance()->str_getattr);
+    if(func->klass() == NonNativeFunctionKlass::get_instance()) {
+        func = new MethodObject((FunctionObject*)func, obj);
+        ObjList* args = new ObjList(equal2obj);
+        args->append(name);
+        return Interpreter::get_instance()->call_virtual(func, args);
+    }
+
     Object* result = Universe::None;
     if(obj->obj_dict() != nullptr) {
         result = obj->obj_dict()->get(name);
@@ -73,4 +76,130 @@ Object* Klass::getattr(Object* obj, Object* name) {
     if(result->klass() == NonNativeFunctionKlass::get_instance() || result->klass() == NativeFunctionKlass::get_instance()) 
         result = new MethodObject((FunctionObject*)result, obj);
     return result;
+}
+
+Object* Klass::find_and_call(Object* lhs, ObjList* args, Object* func_name) {
+    Object* func = lhs->getattr(func_name);
+    if(func != Universe::None) {
+        return Interpreter::get_instance()->call_virtual(func, args);
+    }
+
+    cout << "Error find_and_call" << endl;
+    cout << "class = ";
+    lhs->klass()->name()->print();
+    cout << endl << "objecct = ";
+    lhs->print();
+    cout << endl << "func_name = ";
+    func_name->print();
+    cout << endl;
+    assert(0);
+}
+
+/* operator overload */
+Object* Klass::add(Object* lhs, Object* rhs) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(rhs);
+    return find_and_call(lhs, args, StringTable::get_instance()->str_add);
+}
+
+Object* Klass::sub(Object* x, Object* y) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(y);
+    return find_and_call(x, args, StringTable::get_instance()->str_sub);
+}
+    
+Object* Klass::mul(Object* x, Object* y) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(y);
+    return find_and_call(x, args, StringTable::get_instance()->str_mul);
+}
+
+Object* Klass::div(Object* x, Object* y) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(y);
+    return find_and_call(x, args, StringTable::get_instance()->str_div);
+}
+
+Object* Klass::mod(Object* x, Object* y) { return nullptr; }
+
+Object* Klass::neg(Object* x) {
+    ObjList* args = new ObjList(equal2obj);
+    return find_and_call(x, args, StringTable::get_instance()->str_neg);
+}
+
+Object* Klass::lt(Object* x, Object* y) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(y);
+    return find_and_call(x, args, StringTable::get_instance()->str_lt);
+}
+
+Object* Klass::gt(Object* x, Object* y) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(y);
+    return find_and_call(x, args, StringTable::get_instance()->str_gt);
+}
+
+Object* Klass::le(Object* x, Object* y) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(y);
+    return find_and_call(x, args, StringTable::get_instance()->str_le);
+}
+
+Object* Klass::ge(Object* x, Object* y) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(y);
+    return find_and_call(x, args, StringTable::get_instance()->str_ge);
+}
+
+Object* Klass::eq(Object* x, Object* y) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(y);
+    return find_and_call(x, args, StringTable::get_instance()->str_eq);
+}
+
+Object* Klass::ne(Object* x, Object* y) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(y);
+    return find_and_call(x, args, StringTable::get_instance()->str_ne);
+}
+
+Object* Klass::_and(Object* x, Object* y) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(y);
+    return find_and_call(x, args, StringTable::get_instance()->str_and);
+}
+
+Object* Klass::_or(Object* x, Object* y) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(y);
+    return find_and_call(x, args, StringTable::get_instance()->str_or);
+}
+
+Object* Klass::_invert(Object* x, Object* y) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(y);
+    return find_and_call(x, args, StringTable::get_instance()->str_invert);
+}
+
+Object* Klass::_xor(Object* x, Object* y) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(y);
+    return find_and_call(x, args, StringTable::get_instance()->str_xor);
+}
+
+Object* Klass::subscr(Object* obj, Object* index) {
+    ObjList* args = new ObjList(equal2obj);
+    args->append(index);
+    return find_and_call(obj, args, StringTable::get_instance()->str_getitem);
+}
+
+/* built-in methods */
+void Klass::print(Object* obj) {
+    cout << "<";
+    _name->print();
+    cout << " at " << obj << ">";
+}
+
+Object* Klass::len(Object* x) {
+    return find_and_call(x, nullptr, StringTable::get_instance()->str_len);
 }

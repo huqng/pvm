@@ -95,12 +95,12 @@ Object* Object::mod(Object* x) {
     return _klass->mod(this, x);
 }
 
-Object* Object::greater(Object* x) {
-    return _klass->greater(this, x);
+Object* Object::gt(Object* x) {
+    return _klass->gt(this, x);
 }
 
-Object* Object::less(Object* x) {
-    return _klass->less(this, x);
+Object* Object::lt(Object* x) {
+    return _klass->lt(this, x);
 }
 
 Object* Object::eq(Object* x) {

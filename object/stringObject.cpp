@@ -70,11 +70,11 @@ void StringKlass::print(Object* x) {
     }
 }
 
-Object* StringKlass::greater(Object* x, Object* y) {
+Object* StringKlass::gt(Object* x, Object* y) {
     return 0;    
 }
 
-Object* StringKlass::less(Object* x, Object* y) {
+Object* StringKlass::lt(Object* x, Object* y) {
     return 0;
 }
 

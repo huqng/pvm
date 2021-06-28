@@ -16,6 +16,26 @@ StringTable::StringTable() {
     str_next = new StringObject("next");
     str_mod = new StringObject("__module__");
     str_init = new StringObject("__init__");
+    str_add = new StringObject("__add__");
+    str_sub = new StringObject("__sub__");
+    str_mul = new StringObject("__mul__");
+    str_div = new StringObject("__div__");
+    str_neg = new StringObject("__neg__");
+    str_lt = new StringObject("__lt__");
+    str_gt = new StringObject("__gt__");
+    str_le = new StringObject("__le__");
+    str_ge = new StringObject("__ge__");
+    str_eq = new StringObject("__eq__");
+    str_ne = new StringObject("__ne__");
+    str_and = new StringObject("__and__");
+    str_or = new StringObject("__or__");
+    str_invert = new StringObject("__invert__");
+    str_xor = new StringObject("__xor__");
+
+    str_len = new StringObject("__len__");
+    str_call = new StringObject("__call__");
+    str_getattr = new StringObject("__getattr__");
+    str_getitem = new StringObject("__getitem__");
 }
 
 StringTable* StringTable::get_instance() {

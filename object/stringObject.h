@@ -20,8 +20,8 @@ public:
     virtual Object* allocate_instance(ObjList* args);
     virtual void print(Object* x);
 
-    virtual Object* greater(Object* x, Object* y);
-    virtual Object* less   (Object* x, Object* y);
+    virtual Object* gt(Object* x, Object* y);
+    virtual Object* lt   (Object* x, Object* y);
     virtual Object* eq     (Object* x, Object* y);
     virtual Object* ne     (Object* x, Object* y);
     virtual Object* ge     (Object* x, Object* y);

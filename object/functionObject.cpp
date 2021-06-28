@@ -52,7 +52,7 @@ NonNativeFunctionKlass* NonNativeFunctionKlass::get_instance() {
 }
 
 void NonNativeFunctionKlass::initialize() {
-    set_name(new StringObject("Function"));
+    set_name(new StringObject("NoneNativeFunction"));
     /* set type_object */
     TypeObject* obj = new TypeObject(this);
     set_type_object(obj);

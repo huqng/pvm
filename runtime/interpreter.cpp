@@ -156,10 +156,21 @@ void Interpreter::build_frame(Object* callable, ObjList* args, int oparg) {
         push(instance);
     }
     else {
-        cerr << "Error build_frame, unrecognized klass = ";
-        callable->klass()->name()->print(); 
-        cout << endl;
-        assert(0);
+        if(_debug) {
+            cerr << "\t<other-type object (should define __call__)>" << endl;
+        }
+        Object* m = callable->getattr(StringTable::get_instance()->str_call);
+        if(m != Universe::None) {
+            build_frame(m, args, oparg);
+        }
+        else {
+            cerr << "error build frame" << endl;
+            callable->klass()->name()->print();
+            cout << ": ";
+            callable->print();
+            cout << "is not allable" << endl;
+            assert(0);
+        }
     }
 }
 
@@ -188,10 +199,10 @@ void Interpreter::eval_frame() {
     }
 }
 
-void Interpreter::leave_frame(Object* retv) {
+void Interpreter::leave_frame() {
     /* a frame has a return value */
     destroy_frame();
-    push(retv);
+    push(_ret_value);
 }
 
 void Interpreter::destroy_frame() {
@@ -392,16 +403,17 @@ void Interpreter::return_value(int arg) /* 83 */ {
     if(_debug) {
         cerr << "RETURN_VALUE | ";
     }
-    Object* retv = pop();
+    _ret_value = pop();
     if(_debug) {
-        retv->klass()->name()->print();
+        _ret_value->klass()->name()->print();
         cout << " ";
-        retv->print();
+        _ret_value->print();
         cout << endl;
     }
-    if(_frame->is_first_frame() || _frame->is_entry_frame())
+    if(_frame->is_first_frame() || _frame->is_entry_frame()) {
         return;
-    leave_frame(retv);
+    }
+    leave_frame();
 }
 
 void Interpreter::pop_block(int arg) /* 87 */ {
@@ -430,10 +442,18 @@ void Interpreter::build_class(int arg) /* 89 */ {
 void Interpreter::store_name(int arg) /* 90 */ {
     if(_debug) {
         cerr << "STORE_NAME | index = [" << arg << "] | name = \"";
-        (_frame->names()->get(arg))->print();
-        cerr << "\"" << endl;
     }
-    _frame->locals()->put(_frame->names()->get(arg), pop());
+    Object* name = _frame->names()->get(arg);
+    Object* value = pop();
+    if(_debug) {
+        name->print();
+        cout << "\" | value = ";
+        cout.flush();
+        value->print();
+        cout << endl;
+    }
+
+    _frame->locals()->put(name, value);
 }
 
 void Interpreter::unpack_sequence(int arg) /* 92 */ {
@@ -617,7 +637,7 @@ void Interpreter::compare_op(int arg) /* 107 */ {
     v = pop();
     switch (arg) {
     case LESS:
-        push(v->less(u));
+        push(v->lt(u));
         break;
     case LESS_EQUAL:
         push(v->le(u));
@@ -632,7 +652,7 @@ void Interpreter::compare_op(int arg) /* 107 */ {
         push(v->ge(u));
         break;
     case GREATER:
-        push(v->greater(u));
+        push(v->gt(u));
         break;
     case IN:
         /* v in u */
@@ -770,7 +790,7 @@ void Interpreter::call_function(int op_arg) /* 131 */{
     int nkwargs = op_arg >> 8;
     int nagiven = nargs + nkwargs * 2;
     if(_debug) {
-        cout << "| given " << nagiven << " args, " << nkwargs << " of which are kwargs" << endl;
+        cout << "| given " << nagiven << " args, " << nkwargs << " are kwargs" << endl;
     }
     ObjList* args = new ObjList(nagiven, equal2obj);
     while(nagiven--) {

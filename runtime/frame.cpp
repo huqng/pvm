@@ -67,6 +67,9 @@ Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
     int ndft = fo->_defaults->size();
     if(nagiven + ndft < nadef) {
         cerr << "error: too few arguments to call a function" << endl;
+        cerr << "ngiven = " << nagiven << endl;
+        cerr << "ndft = " << ndft << endl;
+        cerr << "ndef = " << nadef << endl;
         exit(-1);
     }
     int n = (int)nadef;
@@ -74,6 +77,7 @@ Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
         /* default args are from right to left */
         _fast_locals->set(nadef - 1 - i, fo->_defaults->get(ndft - 1 - i));
     }
+
     /* if given more args than defined, put them into a list */
     ListObject* alist = new ListObject();
     if(nagiven > nadef) {

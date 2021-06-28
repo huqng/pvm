@@ -51,7 +51,7 @@ private:
     
     void    build_frame(Object* callable, ObjList* args, int oparg);
     void    eval_frame();
-    void    leave_frame(Object* retv);
+    void    leave_frame();
     void    destroy_frame();
 
 
