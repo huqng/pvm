@@ -1,8 +1,10 @@
 #include "universe.h"
+#include "integerObject.h"
 #include "stringObject.h"
 #include "dictObject.h"
 #include "functionObject.h"
 #include "typeObject.h"
+#include "heap.h"
 
 #include <cstring>
 #include <iostream>
@@ -157,14 +159,17 @@ Object* StringKlass::contains(Object* obj, Object* x) {
 /* string object */
 StringObject::StringObject(const char* x) {
     _max_size = strlen(x);
-    _value = new char[_max_size];
+    //_value = new char[_max_size];
+    _value = (char*)Universe::heap->allocate_meta(_max_size);
+    memcpy(_value, x, _max_size);
     strcpy(_value, x);
     this->set_klass(StringKlass::get_instance());
 }
 
 StringObject::StringObject(const char* x, const int length) {
     _max_size = length;
-    _value = new char[_max_size];
+    //_value = new char[_max_size];
+    _value = (char*)Universe::heap->allocate_meta(_max_size);
     memcpy(_value, x, _max_size);
     this->set_klass(StringKlass::get_instance());
 }

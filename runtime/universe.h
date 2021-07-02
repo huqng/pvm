@@ -1,7 +1,14 @@
 #ifndef _UNIVERSE_H
 #define _UNIVERSE_H
 
-#include "integerObject.h"
+#include "heap.h"
+
+template<typename T> class ArrayList;
+
+class StringObject;
+class IntegerObject;
+class Object;
+class Klass;
 
 class StringTable {
 private:
@@ -41,6 +48,8 @@ public:
     static IntegerObject* True;
     static IntegerObject* False;
     static Object* None;
+    static Heap* heap;
+    static ArrayList<Klass*>* klasses;
 
     static void genesis();
     static void destory();

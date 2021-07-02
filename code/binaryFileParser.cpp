@@ -1,5 +1,6 @@
 #include "binaryFileParser.h"
 #include "codeObject.h"
+#include "integerObject.h"
 #include "stringObject.h"
 #include "listObject.h"
 #include "universe.h"

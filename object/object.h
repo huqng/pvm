@@ -21,6 +21,7 @@ private:
 public:
     Object();
     virtual ~Object();
+    void* operator new(size_t size);
 
     void    set_klass(Klass* x);
     void    init_dict();

@@ -1,9 +1,11 @@
 #include "universe.h"
 #include "object.h"
+#include "integerObject.h"
 #include "stringObject.h"
 #include "dictObject.h"
 #include "functionObject.h"
 #include "typeObject.h"
+#include "heap.h"
 
 #include <iostream>
 #include <cassert>
@@ -47,6 +49,11 @@ Object::Object() {
 Object::~Object() {
     
 }
+
+void* Object::operator new(size_t size) {
+    return Universe::heap->allocate(size);
+}
+
 
 void Object::init_dict() {
     _obj_dict = new DictObject();

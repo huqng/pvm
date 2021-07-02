@@ -33,7 +33,7 @@ private:
     /* tmp for array-based implementation */
     void            expand();
 public:
-    Map(eq_t eq);
+    Map(eq_t eq = [](K t1, K t2){ return t1 == t2; });
     ~Map();
 
     int     size() { return _size; }

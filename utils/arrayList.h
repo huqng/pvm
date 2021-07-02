@@ -1,6 +1,7 @@
 #ifndef _ARRAY_LIST_H
 #define _ARRAY_LIST_H
 
+#include "universe.h"
 
 #include <iostream>
 #include <cstring>
@@ -18,8 +19,8 @@ private:
     int _size; 
     void expand(); /* used size of array */
 public:
-    ArrayList(int n, eq_t eq);
-    ArrayList(eq_t eq);
+    ArrayList(int n, eq_t eq = [](T t1, T t2){ return t1 == t2; });
+    ArrayList(eq_t eq = [](T t1, T t2){ return t1 == t2; });
     ~ArrayList();
 
     void append(T t);
@@ -40,7 +41,8 @@ ArrayList<T>::ArrayList(int n, eq_t eq) {
     _max_size = n;
     _size = n;
     _eq = eq;
-    array = new T[n];
+    void* tmp = Universe::heap->allocate(sizeof(T) * (_max_size * 2));
+    array = new(tmp)T[_max_size * 2];
 }
 
 template<typename T>
@@ -48,12 +50,13 @@ ArrayList<T>::ArrayList(eq_t eq) {
     _max_size = 8;
     _size = 0;
     _eq = eq;
-    array = new T[8];
+    void* tmp = Universe::heap->allocate(sizeof(T) * (_max_size * 2));
+    array = new(tmp)T[_max_size * 2];
 }
 
 template<typename T>
 ArrayList<T>::~ArrayList() {
-    delete[] array;
+    //delete[] array;
 }
 
 template<typename T>
@@ -78,9 +81,10 @@ void ArrayList<T>::insert(int index, T t) {
 
 template<typename T>
 void ArrayList<T>::expand() {
-    T* newarray = new T[_max_size * 2];
+    void* tmp = Universe::heap->allocate(sizeof(T) * (_max_size * 2));
+    T* newarray = new(tmp)T[_max_size * 2];
     memcpy(newarray, array, sizeof(T) * _max_size);
-    delete[] array;
+    //delete[] array;
     array = newarray;
     _max_size *= 2;
 }

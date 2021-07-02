@@ -1,3 +1,4 @@
+#include "integerObject.h"
 #include "typeObject.h"
 #include "stringObject.h"
 #include "dictObject.h"

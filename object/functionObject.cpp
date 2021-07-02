@@ -1,4 +1,5 @@
 #include "functionObject.h"
+#include "integerObject.h"
 #include "universe.h"
 #include "stringObject.h"
 #include "codeObject.h"

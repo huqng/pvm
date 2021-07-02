@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 
 project(pvm)
 
-include_directories("./object" "./code" "./runtime" "./utils" ".")
+include_directories("./object" "./code" "./runtime" "./utils" "./memory")
 
 add_executable(
     pvm 
@@ -22,4 +22,6 @@ add_executable(
     runtime/frame.cpp
     runtime/interpreter.cpp
     runtime/universe.cpp
+    memory/heap.cpp
+    memory/space.cpp
 )

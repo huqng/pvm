@@ -1,4 +1,5 @@
 #include "listObject.h"
+#include "integerObject.h"
 #include "stringObject.h"
 #include "dictObject.h"
 #include "universe.h"

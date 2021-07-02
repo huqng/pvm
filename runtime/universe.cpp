@@ -1,5 +1,7 @@
 #include "universe.h"
 
+#include "arrayList.h"
+#include "integerObject.h"
 #include "cellObject.h"
 #include "codeObject.h"
 #include "dictObject.h"
@@ -48,8 +50,14 @@ StringTable* StringTable::get_instance() {
 IntegerObject* Universe::False = nullptr;
 IntegerObject* Universe::True = nullptr;
 Object* Universe::None = nullptr;
+Heap* Universe::heap = nullptr;
+ArrayList<Klass*>* Universe::klasses = nullptr;
 
 void Universe::genesis() {
+    /* initialize heap before everything */
+    heap = Heap::get_instance();
+    
+    klasses = new ArrayList<Klass*>();
     True = new IntegerObject(1);
     False = new IntegerObject(0);
     None = new Object();
@@ -85,7 +93,10 @@ void Universe::genesis() {
 }
 
 void Universe::destory() {
-    delete True;
-    delete False;
-    delete None;
+    //delete True;
+    //delete False;
+    //delete None;
+    //delete klasses;
+    //delete heap;
+    cout << "Universe destroyed" << endl;
 }

@@ -1,6 +1,7 @@
 #include "interpreter.h"
 #include "frame.h"
 #include "universe.h"
+#include "integerObject.h"
 #include "codeObject.h"
 #include "stringObject.h"
 #include "listObject.h"

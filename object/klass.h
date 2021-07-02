@@ -21,6 +21,7 @@ public:
     virtual ~Klass() {}
         //delete _name;
         // TODO - delete obj_dict
+    void* operator new(size_t size);
 
     /* name */
     void            set_name(StringObject* x) { _name = x; }

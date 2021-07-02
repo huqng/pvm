@@ -6,14 +6,23 @@
 #include "functionObject.h"
 #include "universe.h"
 #include "interpreter.h"
+#include "heap.h"
 
 #include <cassert>
 #include <iostream>
 using namespace std;
 
 Klass::Klass() {
+    Universe::klasses->append(this);
+    _name = nullptr;
+    _klass_dict = nullptr;
+    _type_obj = nullptr;
     _super = nullptr;
     _mro = nullptr;
+}
+
+void* Klass::operator new(size_t size) {
+    Universe::heap->allocate_meta(size);
 }
 
 void Klass::add_super(Klass* klass)  {

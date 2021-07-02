@@ -22,6 +22,9 @@ int main(int argc, char** argv) {
             break;
     }
 
+    /* init environment */
+    Universe::genesis();
+
     /* a file-read-util */
     BufferedInputStream* bis = new BufferedInputStream("../.pytest/hello.pyc");
 
@@ -31,14 +34,13 @@ int main(int argc, char** argv) {
     /* parse and get codeobject */
     CodeObject* co = bfp->parse();
 
-    /* init environment */
-    Universe::genesis();
 
     /* run interpreter */
     Interpreter* interpreter = Interpreter::get_instance();
     interpreter->set_debug(debug);
     interpreter->run(co);
 
+    Universe::destory();
 
     return 0;
 }
