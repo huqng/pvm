@@ -4,14 +4,17 @@
 #include "codeObject.h"
 #include "stringObject.h"
 #include "functionObject.h"
+#include "oopClosure.h"
 
 #include <cassert>
+#include <iostream>
+using namespace std;
 
 Frame::Frame(CodeObject* co) {
     _entry_frame = false;
 
     _stack = new ListObject();
-    _loop_stack = new ArrayList<LoopBlock*>(nullptr);
+    _loop_stack = new ArrayList<LoopBlock*>();
 
     _consts = co->_consts;
     _names = co->_names;
@@ -31,7 +34,7 @@ Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
 
     /* stack */
     _stack = new ListObject();
-    _loop_stack = new ArrayList<LoopBlock*>(nullptr);
+    _loop_stack = new ArrayList<LoopBlock*>();
 
     /* code */
     _co = fo->_func_code;
@@ -133,6 +136,10 @@ Frame::Frame() {
 
 }
 
+Frame::~Frame() {
+    
+}
+
 bool Frame::has_more_codes() {
     return _pc < _co->_bytecodes->length();
 }
@@ -153,4 +160,18 @@ Object* Frame::get_cell_from_parameter(int index) {
     assert(index >= 0);
     assert(_fast_locals != nullptr);
     return _fast_locals->get(index);
+}
+
+void Frame::oops_do(OopClosure* closure) {
+    closure->do_oop((Object**)&_consts);
+    closure->do_oop((Object**)&_names);
+    closure->do_oop((Object**)&_globals);
+    closure->do_oop((Object**)&_locals);
+    closure->do_oop((Object**)&_fast_locals);
+    closure->do_oop((Object**)&_stack);
+    closure->do_oop((Object**)&_co);
+    closure->do_oop((Object**)&_closure);
+    closure->do_array_list(&_loop_stack);
+    if(_sender != nullptr)
+        _sender->oops_do(closure);
 }

@@ -7,7 +7,7 @@ class ListObject;
 class DictObject;
 class CodeObject;
 class FunctionObject;
-
+class OopClosure;
 class LoopBlock;
 
 class Frame {
@@ -34,6 +34,7 @@ public:
     Frame(FunctionObject* fo, ObjList* args, int op_arg);
     Frame(CodeObject* co);
     Frame();
+    ~Frame();
     
     void    set_pc(int x) { _pc = x; }
     int     get_pc() { return _pc; }
@@ -88,6 +89,8 @@ public:
     bool is_entry_frame() {
         return _entry_frame;
     }
+
+    void oops_do(OopClosure* closure);
 
 };
 

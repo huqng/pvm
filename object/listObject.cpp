@@ -5,6 +5,9 @@
 #include "universe.h"
 #include "functionObject.h"
 #include "typeObject.h"
+#include "oopClosure.h"
+#include "object.h"
+#include "klass.h"
 
 #include <iostream>
 #include <cassert>
@@ -109,7 +112,10 @@ void ListKlass::print(Object* obj) {
         lst->get(0)->print();
     for(int i = 1; i < lst->size(); i++) {
         cout << ", ";
-        lst->get(i)->print();
+        if(lst->get(i) != nullptr)
+            lst->get(i)->print();
+        else
+            cout << "nullptr";
     }
 
     cout << "]";
@@ -165,6 +171,16 @@ Object* ListKlass::iter(Object* obj) {
     ListObject* lst = (ListObject*)obj;
     return new ListIteratorObject(lst);
 }
+   
+size_t ListKlass::size() {
+    return sizeof(ListObject);
+}
+
+void ListKlass::oops_do(OopClosure* closure, Object* obj) {
+    assert(obj->klass() == this);
+    ListObject* lo = (ListObject*)obj;
+    closure->do_array_list(lo->inner_list_address());
+}
 
 /* list iterator klass */
 
@@ -188,6 +204,16 @@ void ListIteratorKlass::initialize() {
     add_super(ObjectKlass::get_instance());
 }
 
+size_t ListIteratorKlass::size() {
+    return sizeof(ListIteratorObject);
+}
+
+void ListIteratorKlass::oops_do(OopClosure* closure, Object* obj) {
+    assert(obj->klass() == this);
+    ListIteratorObject* lit = (ListIteratorObject*)obj;
+    closure->do_oop(lit->owner_address());
+}
+
 /* list iterator object */
 
 ListIteratorObject::ListIteratorObject(ListObject* owner) {
@@ -198,6 +224,10 @@ ListIteratorObject::ListIteratorObject(ListObject* owner) {
 
 ListObject* ListIteratorObject::owner() {
     return _owner;
+}
+
+Object** ListIteratorObject::owner_address() {
+    return (Object**)&_owner;
 }
 
 int ListIteratorObject::iter_cnt() {
@@ -218,6 +248,14 @@ ListObject::ListObject() {
 ListObject::ListObject(ObjList* x) {
     this->_inner_list = x;
     set_klass(ListKlass::get_instance());
+}
+
+
+int ListObject::size() {
+    if(_inner_list != nullptr)
+        return _inner_list->size(); 
+    else
+        return 0;
 }
 
 Object* ListObject::get(int index) {

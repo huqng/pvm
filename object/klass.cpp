@@ -7,6 +7,7 @@
 #include "universe.h"
 #include "interpreter.h"
 #include "heap.h"
+#include "oopClosure.h"
 
 #include <cassert>
 #include <iostream>
@@ -22,7 +23,7 @@ Klass::Klass() {
 }
 
 void* Klass::operator new(size_t size) {
-    Universe::heap->allocate_meta(size);
+    return Universe::heap->allocate_meta(size);
 }
 
 void Klass::add_super(Klass* klass)  {
@@ -82,6 +83,7 @@ TypeObject* Klass::create_klass(Object* locals_dict, Object* supers_tuple, Objec
 Object* Klass::allocate_instance(Object* type_obj, ObjList* args) {
     Object* inst = new Object();
     inst->set_klass(this);
+    set_type_object((TypeObject*)type_obj);
     Object* init = inst->getattr(StringTable::get_instance()->str_init);
     if(init != Universe::None) {
         Interpreter::get_instance()->call_virtual(init, args);
@@ -162,7 +164,26 @@ Object* Klass::find_and_call(Object* lhs, ObjList* args, Object* func_name) {
     assert(0);
 }
 
+void Klass::oops_do(OopClosure* closure, Object* obj) {
+    /* Object and its obj_dict have been in oop_stack */
+    oops_do(closure);
+}
+
+void Klass::oops_do(OopClosure* closure) {
+    closure->do_oop((Object**)&_name);
+    closure->do_oop((Object**)&_klass_dict);
+    closure->do_oop((Object**)&_type_obj);
+    closure->do_oop((Object**)&_super);
+    closure->do_oop((Object**)&_mro);
+    
+}
+
+size_t Klass::size() {
+    return sizeof(Object);
+}
+
 /* operator overload */
+
 Object* Klass::add(Object* lhs, Object* rhs) {
     ObjList* args = new ObjList(equal2obj);
     args->append(rhs);

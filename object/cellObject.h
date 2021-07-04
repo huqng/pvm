@@ -3,7 +3,9 @@
 
 #include "klass.h"
 #include "object.h"
+
 class ListObject;
+class OopClosure;
 
 class CellKlass;
 class CellObject;
@@ -15,6 +17,8 @@ private:
 public:
     static CellKlass* get_instance();
     void initialize();
+    virtual size_t size();
+    virtual void oops_do(OopClosure* closure, Object* obj);
 };
 
 class CellObject: public Object {
@@ -24,6 +28,7 @@ private:
 public:
     CellObject(ListObject* table, int index);
     Object* value();
+    Object** table_address();
 };
 
 #endif

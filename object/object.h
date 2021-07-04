@@ -3,6 +3,8 @@
 
 #include "klass.h"
 
+class OopClosure;
+
 class ObjectKlass: public Klass {
 private:
     ObjectKlass();
@@ -16,11 +18,11 @@ public:
 
 class Object {
 private:
+    long int _mark_word;
     Klass* _klass;
     DictObject* _obj_dict;
 public:
     Object();
-    virtual ~Object();
     void* operator new(size_t size);
 
     void    set_klass(Klass* x);
@@ -55,6 +57,12 @@ public:
     Object* getattr(Object* x);
     Object* setattr(Object* name, Object* value);
     Object* iter();
+
+    /* interfaces for gc */
+    void oops_do(OopClosure* closure);
+    size_t size();
+    char* new_address();
+    void set_new_address(char* addr);
 
     friend class Klass;
 };

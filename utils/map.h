@@ -1,9 +1,16 @@
 #ifndef _PVM_MAP_H
 #define _PVM_MAP_H
 
+#include "universe.h"
+#include "oopClosure.h"
+#include "heap.h"
+
 #include <iostream>
 using namespace std;
 
+class OopClosure;
+
+/* Map Entry */
 
 template<typename K, typename V>
 class MapEntry {
@@ -16,9 +23,27 @@ public:
     MapEntry() {}
 
     K key() { return _k; }
+    K* key_addr() { return &_k; }
     V value() { return _v; }
-    void set(K k, V v) { _k = k; _v = v; }
+    V* value_addr() { return &_v; }
+    void set(K k, V v);
+    void* operator new(size_t size);
+
 };
+
+template<typename K, typename V>
+void MapEntry<K, V>::set(K k, V v) {
+    _k = k;
+    _v = v;
+}
+
+template<typename K, typename V>
+void* MapEntry<K, V>::operator new(size_t size) {
+    return Universe::heap->allocate(sizeof(MapEntry<K, V>));
+}
+
+
+/* Map */
 
 template<typename K, typename V>
 class Map {
@@ -33,21 +58,32 @@ private:
     /* tmp for array-based implementation */
     void            expand();
 public:
-    Map(eq_t eq = [](K t1, K t2){ return t1 == t2; });
+    Map(eq_t eq = [](K t1, K t2) { return t1 == t2; });
     ~Map();
 
-    int     size() { return _size; }
-    MapEntry<K, V>* entries() { return _entries; }
+    int             size()      { return _size; }
+    MapEntry<K, V>* entries()   { return _entries; }
 
-    void    put(K k, V v);
-    V       get(K k);
+    void            put(K k, V v);
+    V               get(K k);
 
-    K       get_key(int index);
-    int     index(K k);
+    K               get_key(int index);
+    int             index(K k);
     
-    bool    has_key(K k);
-    V       remove(K k);
+    bool            has_key(K k);
+    V               remove(K k);
+
+    void*           operator new(size_t size);
+    void            oops_do(OopClosure* closure);
 };
+
+class Object;
+typedef Map<Object*, Object*> ObjMap;
+
+template<typename K, typename V>
+void* Map<K, V>::operator new(size_t size) {
+    return Universe::heap->allocate(sizeof(Map<K, V>));
+}
 
 template<typename K, typename V>
 Map<K, V>::Map(eq_t eq) {
@@ -59,7 +95,7 @@ Map<K, V>::Map(eq_t eq) {
 
 template<typename K, typename V>
 Map<K, V>::~Map() {
-    delete[] _entries;
+    
 }
 
 template<typename K, typename V>
@@ -108,13 +144,12 @@ int Map<K, V>::index(K k) {
     return -1;
 }
 
-
 template<typename K, typename V>
 void Map<K, V>::expand() {
-    MapEntry<K, V>* p = new MapEntry<K, V>[_max_size * 2];
-    memcpy(p, _entries, sizeof(MapEntry<K, V>) * _max_size);
-    delete[] _entries;
-    _entries = p;
+    void* tmp = Universe::heap->allocate(sizeof(MapEntry<K, V>) * _max_size * 2);
+    MapEntry<K, V>* new_entries = new(tmp)MapEntry<K, V>[_max_size * 2];
+    memcpy(new_entries, _entries, sizeof(MapEntry<K, V>) * _max_size);
+    _entries = new_entries;
     _max_size *= 2;
 }
 
@@ -140,8 +175,15 @@ V Map<K, V>::remove(K k) {
     exit(-1);
 }
 
-class Object;
+template class Map<Object*, Object*>;
 
-typedef Map<Object*, Object*> ObjMap;
+template<>
+void Map<Object*, Object*>::oops_do(OopClosure* closure) {
+    closure->do_raw_mem((char**)&_entries, _max_size * sizeof(MapEntry<Object*, Object*>));
+    for(int i = 0; i < _size; i++) {
+        closure->do_oop(_entries[i].key_addr());
+        closure->do_oop(_entries[i].value_addr());
+    }
+}
 
 #endif

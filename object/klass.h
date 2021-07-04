@@ -1,6 +1,7 @@
 #ifndef _CLASS_H
 #define _CLASS_H
 
+#include "cstddef"
 #include "arrayList.h"
 
 class StringObject;
@@ -52,6 +53,12 @@ public:
     static TypeObject* create_klass(Object* locals_dict, Object* supers_tuple, Object* name_str);
     Object* allocate_instance(Object* type_obj, ObjList* args);
     virtual Object* allocate_instance(ObjList* args);
+
+    /* for gc */
+    virtual size_t size();
+    virtual void oops_do(OopClosure* closure, Object* obj);
+    virtual void oops_do(OopClosure* closure);
+
 
     /* operators */
     virtual Object* add(Object* x, Object* y);

@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
+set(CMAKE_CXX_COMPILER /usr/bin/g++)
+
 project(pvm)
 
 include_directories("./object" "./code" "./runtime" "./utils" "./memory")
@@ -24,4 +26,5 @@ add_executable(
     runtime/universe.cpp
     memory/heap.cpp
     memory/space.cpp
+    memory/oopClosure.cpp
 )

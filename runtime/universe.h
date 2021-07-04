@@ -1,14 +1,14 @@
 #ifndef _UNIVERSE_H
 #define _UNIVERSE_H
 
-#include "heap.h"
-
-template<typename T> class ArrayList;
-
 class StringObject;
 class IntegerObject;
 class Object;
 class Klass;
+class Heap;
+class OopClosure;
+class CodeObject;
+template<typename T>class ArrayList;
 
 class StringTable {
 private:
@@ -16,6 +16,7 @@ private:
     StringTable();
 public:
     static StringTable* get_instance();
+    void oops_do(OopClosure* closure);
 
     StringObject* str_next;
     StringObject* str_mod;
@@ -45,6 +46,8 @@ public:
 
 class Universe {
 public:
+    static CodeObject* main_code; /* initialize in main */
+
     static IntegerObject* True;
     static IntegerObject* False;
     static Object* None;
@@ -53,6 +56,8 @@ public:
 
     static void genesis();
     static void destory();
+    static void oops_do(OopClosure* closure);
+    static void gc();
 };
 
 #endif

@@ -5,6 +5,8 @@
 #include "object.h"
 #include "arrayList.h"
 
+class OopClosure;
+
 class ListKlass;
 class ListIteratorKlass;
 class ListIteratorObject;
@@ -38,6 +40,8 @@ public:
     virtual void store_subscr(Object* obj, Object* index, Object* x);
     virtual void del_subscr(Object* obj, Object* index);
     virtual Object* iter(Object* x);
+    virtual size_t size();
+    virtual void oops_do(OopClosure* closure, Object* obj);
 };
 
 /* List Iterator Klass */
@@ -48,6 +52,8 @@ private:
 public:
     static ListIteratorKlass* get_instance();
     void initialize();
+    virtual size_t size();
+    virtual void oops_do(OopClosure* closure, Object* obj);
 };
 
 /* List Iterator Object */
@@ -58,6 +64,7 @@ private:
 public:
     ListIteratorObject(ListObject* owner);
     ListObject* owner();
+    Object** owner_address();
     int iter_cnt();
     void inc_cnt();
 };
@@ -70,8 +77,9 @@ public:
     ListObject();
     ListObject(ObjList* x);
     ObjList* inner_list() { return _inner_list; }
+    ObjList** inner_list_address() { return &_inner_list; }
 
-    int size() { return _inner_list->size(); }
+    int size();
     void append(Object* obj) { _inner_list->append(obj); }
     Object* pop() { return _inner_list->pop(); }
     Object* get(int index);

@@ -2,11 +2,16 @@
 #define _ARRAY_LIST_H
 
 #include "universe.h"
-
+#include "oopClosure.h"
+#include "heap.h"
 #include <iostream>
 #include <cstring>
 using namespace std;
 
+class Object;
+class Klass;
+class OopClosure;
+class loopBlock;
 
 template<typename T>
 class ArrayList {
@@ -16,8 +21,8 @@ private:
 
     int _max_size; /* max size of array */
     T* array;
-    int _size; 
-    void expand(); /* used size of array */
+    int _size; /* used size of array */
+    void expand(); 
 public:
     ArrayList(int n, eq_t eq = [](T t1, T t2){ return t1 == t2; });
     ArrayList(eq_t eq = [](T t1, T t2){ return t1 == t2; });
@@ -32,9 +37,15 @@ public:
     T pop();
     void delete_index(int index);
     int index(T t);
+    void oops_do(OopClosure* closure);
+    void* operator new(size_t size);
 };
 
+template class ArrayList<Object*>;
+template class ArrayList<Klass*>;
+template class ArrayList<LoopBlock*>;
 
+typedef ArrayList<Object*> ObjList;
 
 template<typename T>
 ArrayList<T>::ArrayList(int n, eq_t eq) {
@@ -132,6 +143,8 @@ T ArrayList<T>::pop() {
     }
 }
 
+
+
 template<typename T>
 void ArrayList<T>::delete_index(int index) {
     if(index < 0 || index >= _size) {
@@ -155,9 +168,30 @@ int ArrayList<T>::index(T t) {
     return -1;
 }
 
+template<typename T>
+void* ArrayList<T>::operator new(size_t size) {
+    return Universe::heap->allocate(sizeof(ArrayList<T>));
+}
 
+template<>
+void ArrayList<Klass*>::oops_do(OopClosure* closure) {
+    closure->do_raw_mem((char**)&array, _max_size * sizeof(Klass*));
+    for(int i = 0; i < _size; i++)
+        closure->do_klass((Klass**)&array[i]);
+}
 
-class Object;
-typedef ArrayList<Object*> ObjList;
+template<>
+void ArrayList<Object*>::oops_do(OopClosure* closure) {
+    closure->do_raw_mem((char**)&array, _max_size * sizeof(Object*));
+    for(int i = 0; i < _size; i++)
+        closure->do_oop((Object**)&array[i]);
+}
+
+template<>
+void ArrayList<LoopBlock*>::oops_do(OopClosure* closure) {
+    closure->do_raw_mem((char**)&array, _max_size * sizeof(LoopBlock*));
+    for(int i = 0; i < _size; i++)
+        closure->do_loopblock((LoopBlock**)&array[i]);
+}
 
 #endif

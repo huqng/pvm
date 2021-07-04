@@ -2,6 +2,9 @@
 #include "listObject.h"
 #include "stringObject.h"
 #include "typeObject.h"
+#include "oopClosure.h"
+
+#include <cassert>
 
 CellKlass* CellKlass::instance = nullptr;
 
@@ -24,6 +27,16 @@ void CellKlass::initialize() {
     add_super(ObjectKlass::get_instance());
 }
 
+size_t CellKlass::size() {
+    return sizeof(CellObject);
+}
+
+void CellKlass::oops_do(OopClosure* closure, Object* obj) {
+    assert(obj->klass() == this);
+    CellObject* cobj = (CellObject*)obj;
+    closure->do_oop(cobj->table_address());
+}
+
 
 CellObject::CellObject(ListObject* table, int index) {
     _table = table;
@@ -33,4 +46,8 @@ CellObject::CellObject(ListObject* table, int index) {
 
 Object* CellObject::value() {
     return _table->get(_index);
+}
+
+Object** CellObject::table_address() {
+    return (Object**)&_table;
 }

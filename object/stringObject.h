@@ -5,6 +5,8 @@
 #include "klass.h"
 #include "arrayList.h"
 
+class OopClosure;
+
 /* native methods*/
 Object* string_upper(ObjList* args);
 
@@ -32,6 +34,8 @@ public:
     virtual Object* len(Object* x);
     virtual Object* subscr(Object* obj, Object* x);
     virtual Object* contains(Object* obj, Object* x);
+    virtual size_t size();
+    virtual void oops_do(OopClosure* closure, Object* obj);
 };
 
 /* string object */
@@ -44,6 +48,7 @@ public:
     StringObject(const char* x, const int length);
 
     const char* value();
+    char** value_address();
     const int length();
 };
 

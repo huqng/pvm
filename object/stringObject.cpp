@@ -5,6 +5,7 @@
 #include "functionObject.h"
 #include "typeObject.h"
 #include "heap.h"
+#include "oopClosure.h"
 
 #include <cstring>
 #include <iostream>
@@ -152,30 +153,42 @@ Object* StringKlass::contains(Object* obj, Object* x) {
         else
             return Universe::False;
     }
-    
 }
 
+size_t StringKlass::size() {
+    return sizeof(StringObject);
+}
+
+void StringKlass::oops_do(OopClosure* closure, Object* obj) {
+    assert(obj->klass() == this);
+    StringObject* so = (StringObject*)obj;
+    closure->do_raw_mem(so->value_address(), so->length());
+}
 
 /* string object */
 StringObject::StringObject(const char* x) {
-    _max_size = strlen(x);
+    _max_size = strlen(x) + 1;
     //_value = new char[_max_size];
-    _value = (char*)Universe::heap->allocate_meta(_max_size);
+    _value = (char*)Universe::heap->allocate(_max_size);
     memcpy(_value, x, _max_size);
-    strcpy(_value, x);
+    
     this->set_klass(StringKlass::get_instance());
 }
 
 StringObject::StringObject(const char* x, const int length) {
     _max_size = length;
     //_value = new char[_max_size];
-    _value = (char*)Universe::heap->allocate_meta(_max_size);
+    _value = (char*)Universe::heap->allocate(_max_size);
     memcpy(_value, x, _max_size);
     this->set_klass(StringKlass::get_instance());
 }
 
 const char* StringObject::value() {
     return _value;
+}
+
+char** StringObject::value_address() {
+    return &_value;
 }
 
 const int StringObject::length() {

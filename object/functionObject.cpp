@@ -5,6 +5,7 @@
 #include "codeObject.h"
 #include "typeObject.h"
 #include "listObject.h"
+#include "oopClosure.h"
 
 #include <cassert>
 #include <iostream>
@@ -60,9 +61,23 @@ void NonNativeFunctionKlass::initialize() {
     add_super(ObjectKlass::get_instance());
 }
 
+size_t NonNativeFunctionKlass::size() {
+    return sizeof(FunctionObject);
+}
+
 void NonNativeFunctionKlass::print(Object* x) {
     assert(x->klass() == this);
     cout << "function object at " << x;
+}
+
+void NonNativeFunctionKlass::oops_do(OopClosure* closure, Object* obj) {
+    assert(obj->klass() == this);
+    FunctionObject* fo = (FunctionObject*)obj;
+    closure->do_oop((Object**)&fo->_func_code);
+    closure->do_oop((Object**)&fo->_func_name);
+    closure->do_oop((Object**)&fo->_globals);
+    closure->do_oop((Object**)&fo->_defaults);
+    closure->do_oop((Object**)&fo->_closure);
 }
 
 NativeFunctionKlass::NativeFunctionKlass() {
@@ -83,9 +98,23 @@ void NativeFunctionKlass::initialize() {
     add_super(ObjectKlass::get_instance());
 }
 
+size_t NativeFunctionKlass::size() {
+    return sizeof(FunctionObject);
+}
+
 void NativeFunctionKlass::print(Object* x) {
     assert(x->klass() == this);
     cout << "native function object at" << x;
+}
+
+void NativeFunctionKlass::oops_do(OopClosure* closure, Object* obj) {
+    assert(obj->klass() == this);
+    FunctionObject* fo = (FunctionObject*)obj;
+    closure->do_oop((Object**)&fo->_func_code);
+    closure->do_oop((Object**)&fo->_func_name);
+    closure->do_oop((Object**)&fo->_globals);
+    closure->do_oop((Object**)&fo->_defaults);
+    closure->do_oop((Object**)&fo->_closure);
 }
 
 MethodKlass::MethodKlass() {
@@ -106,11 +135,21 @@ void MethodKlass::initialize() {
     add_super(ObjectKlass::get_instance());
 }
 
+size_t MethodKlass::size() {
+    return sizeof(FunctionObject);
+}
+
 void MethodKlass::print(Object* x) {
     assert(x->klass() == this);
     cout << "method object at " << x;
 }
 
+void MethodKlass::oops_do(OopClosure* closure, Object* obj) {
+    assert(obj->klass() == this);
+    MethodObject* mo = (MethodObject*)obj;
+    closure->do_oop(mo->func_address());
+    closure->do_oop(mo->owner_address());
+}
 /* function opject */ 
 
 FunctionObject::FunctionObject(Object* x) {
@@ -147,4 +186,12 @@ void FunctionObject::set_defaults(ObjList* x) {
 
 Object* FunctionObject::call(ObjList* args) {
     return (*_native_func)(args);
+}
+
+Object** MethodObject::owner_address() {
+    return &_owner;
+}
+
+Object** MethodObject::func_address() {
+    return (Object**)&_func;
 }

@@ -2,6 +2,7 @@
 #include "stringObject.h"
 #include "typeObject.h"
 #include "listObject.h"
+#include "oopClosure.h"
 
 #include <cassert>
 #include <iostream>
@@ -33,6 +34,31 @@ void CodeKlass::initialize() {
 void CodeKlass::print(Object* x) {
     assert(x != nullptr && x->klass() == this);
     cout << "CodeObject at " << x;
+}
+
+size_t CodeKlass::size() {
+    return sizeof(CodeObject);
+}
+
+void CodeKlass::oops_do(OopClosure* closure, Object* obj) {
+    assert(obj->klass() == this);
+    CodeObject* co = (CodeObject*)obj;
+    closure->do_oop((Object**)&co->_bytecodes);
+    closure->do_oop((Object**)&co->_consts);
+    closure->do_oop((Object**)&co->_names);
+    closure->do_oop((Object**)&co->_varnames);
+    closure->do_oop((Object**)&co->_freevars);
+    closure->do_oop((Object**)&co->_cellvars);
+    closure->do_oop((Object**)&co->_file_name);
+    closure->do_oop((Object**)&co->_co_name);
+    closure->do_oop((Object**)&co->_notable);
+    
+    cout << "After CodeObject::oops_do" << endl;
+    cout << "\tnames = ";
+    co->_names->print();
+    cout << "\n\tconsts = ";
+    co->_consts->print();
+    cout << endl;
 }
 
 /* code object initialize */

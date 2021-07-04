@@ -8,6 +8,7 @@
 
 class Object;
 class Klass;
+class OopClosure;
 
 class DictKlass;
 class DictObject;
@@ -35,6 +36,8 @@ public:
     
     virtual Object* allocate_instance(ObjList* args);
     virtual void print(Object* obj);
+    virtual size_t size();
+    virtual void oops_do(OopClosure* closure, Object* obj);
     virtual Object* subscr(Object* obj, Object* key);
     virtual Object* contains(Object* obj, Object* key);
     virtual void store_subscr(Object* obj, Object* key, Object* value);
@@ -51,6 +54,8 @@ private:
 public:
     static DictIteratorKlass* get_instance();
     void initialize();
+    virtual void oops_do(OopClosure* closure, Object* obj);
+    virtual size_t size();
 };
 
 /* dict iterator */
@@ -62,6 +67,7 @@ private:
 public:
     DictIteratorObject(DictObject* owner);
     DictObject* owner();
+    Object** owner_address();
     int iter_cnt();
     void inc_cnt();
 };
@@ -75,6 +81,7 @@ public:
     DictObject();
     DictObject(ObjMap* map);
     ObjMap* map();
+    ObjMap** map_address();
 
     void    put(Object* k, Object* v);
     Object* get(Object* k);

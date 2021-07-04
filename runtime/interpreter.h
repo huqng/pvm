@@ -9,6 +9,7 @@ class Frame;
 class CodeObject;
 class StringObject;
 class DictObject;
+class OopClosure;
 
 class LoopBlock;
 class Interpreter;
@@ -108,6 +109,7 @@ public:
     void set_debug(bool debug);
     Object* call_virtual(Object* func, ObjList* args);
     void run(CodeObject* co);
+    void oops_do(OopClosure* closure);
 };
 
 #endif

@@ -9,6 +9,11 @@
 #include "listObject.h"
 #include "stringObject.h"
 #include "typeObject.h"
+#include "oopClosure.h"
+#include "heap.h"
+
+#include <iostream>
+using namespace std;
 
 /* global string Table */
 
@@ -45,8 +50,36 @@ StringTable* StringTable::get_instance() {
         instance = new StringTable();
     return instance;
 }
+
+void StringTable::oops_do(OopClosure* closure) {
+    closure->do_oop((Object**)&str_next);
+    closure->do_oop((Object**)&str_mod);
+    closure->do_oop((Object**)&str_init);
+
+    closure->do_oop((Object**)&str_add);
+    closure->do_oop((Object**)&str_sub);
+    closure->do_oop((Object**)&str_mul);
+    closure->do_oop((Object**)&str_div);
+    closure->do_oop((Object**)&str_neg);
+    closure->do_oop((Object**)&str_lt);
+    closure->do_oop((Object**)&str_gt);
+    closure->do_oop((Object**)&str_le);
+    closure->do_oop((Object**)&str_ge);
+    closure->do_oop((Object**)&str_eq);
+    closure->do_oop((Object**)&str_ne);
+    closure->do_oop((Object**)&str_and);
+    closure->do_oop((Object**)&str_or);
+    closure->do_oop((Object**)&str_invert);
+    closure->do_oop((Object**)&str_xor);
+    closure->do_oop((Object**)&str_len);
+    closure->do_oop((Object**)&str_call);
+    closure->do_oop((Object**)&str_getattr);
+    closure->do_oop((Object**)&str_getitem);
+}
+
 /* Universe */
 
+CodeObject* Universe::main_code = nullptr;
 IntegerObject* Universe::False = nullptr;
 IntegerObject* Universe::True = nullptr;
 Object* Universe::None = nullptr;
@@ -97,6 +130,19 @@ void Universe::destory() {
     //delete False;
     //delete None;
     //delete klasses;
-    //delete heap;
+    delete heap;
     cout << "Universe destroyed" << endl;
+}
+
+void Universe::oops_do(OopClosure* closure) {
+    closure->do_oop((Object**)&True);
+    closure->do_oop((Object**)&False);
+    closure->do_oop((Object**)&None);
+
+    closure->do_oop((Object**)&main_code);
+    closure->do_array_list(&klasses);
+}
+
+void Universe::gc() {
+    heap->gc();
 }

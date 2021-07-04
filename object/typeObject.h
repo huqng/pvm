@@ -5,6 +5,8 @@
 #include "klass.h"
 #include "arrayList.h"
 
+class OopClosure;
+
 class TypeKlass;
 class TypeObject;
 
@@ -20,7 +22,8 @@ public:
     virtual void print(Object* obj);    
     virtual Object* eq(Object* x, Object* y);
     virtual Object* setattr(Object* obj, Object* name, Object* value);
-
+    virtual size_t size();
+    virtual void oops_do(OopClosure* closure, Object* obj);
 };
 
 /* object */
@@ -32,6 +35,7 @@ public:
     TypeObject(Klass* own_klass);
     //void set_own_klass(Klass* ok);
     Klass* own_klass();
+    Klass** own_klass_address();
 };
 
 #endif

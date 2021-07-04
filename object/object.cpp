@@ -6,6 +6,7 @@
 #include "functionObject.h"
 #include "typeObject.h"
 #include "heap.h"
+#include "oopClosure.h"
 
 #include <iostream>
 #include <cassert>
@@ -44,10 +45,6 @@ void ObjectKlass::print(Object* obj) {
 Object::Object() {
     set_klass(ObjectKlass::get_instance());
     _obj_dict = nullptr;
-}
-
-Object::~Object() {
-    
 }
 
 void* Object::operator new(size_t size) {
@@ -161,8 +158,31 @@ Object* Object::setattr(Object* name, Object* value) {
     return _klass->setattr(this, name, value);
 }
 
-
-
 Object* Object::iter() {
     return _klass->iter(this);
 }
+
+/* gc */
+
+void Object::oops_do(OopClosure* closure) {
+    closure->do_oop((Object**)&_obj_dict);
+    _klass->oops_do(closure, this);
+}
+
+size_t Object::size() {
+    return _klass->size();
+}
+
+char* Object::new_address() {
+    if((_mark_word & 0x2) == 0x2)
+        return (char*)(_mark_word & (long)-8);
+    return nullptr;
+}
+
+void Object::set_new_address(char* addr) {
+    if(addr == nullptr)
+        return;
+    _mark_word = (long)addr | 0x2;
+}
+
+

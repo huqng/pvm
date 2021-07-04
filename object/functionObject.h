@@ -6,6 +6,7 @@
 #include "object.h"
 
 class Object;
+class OopClosure;
 class CodeObject;
 class ListObject;
 class DictObject;
@@ -26,6 +27,8 @@ public:
     static NonNativeFunctionKlass* get_instance();
     void initialize();
 
+    virtual void oops_do(OopClosure* closure, Object* obj);
+    virtual size_t size();
     virtual void print(Object* x);
 };
 
@@ -38,6 +41,8 @@ public:
     void initialize();
 
     virtual void print(Object* x);
+    virtual void oops_do(OopClosure* closure, Object* obj);
+    virtual size_t size();
 };
 
 class MethodKlass: public Klass {
@@ -48,6 +53,8 @@ public:
     static MethodKlass* get_instance();
     void initialize();
     
+    virtual void oops_do(OopClosure* closure, Object* obj);
+    virtual size_t size();
     virtual void print(Object* x);
 };
 
@@ -79,6 +86,8 @@ public:
     Object* call(ObjList* args);
 
     friend class Frame;
+    friend class NativeFunctionKlass;
+    friend class NonNativeFunctionKlass;
 };
 
 /* method object */
@@ -99,6 +108,8 @@ public:
     void set_owner(Object* x)  { _owner = x; }
     Object* owner()            { return _owner; }
     FunctionObject* func()      { return _func; }
+    Object** owner_address();
+    Object** func_address();
 };
 
 #endif

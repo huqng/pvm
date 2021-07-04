@@ -3,6 +3,7 @@
 #include "stringObject.h"
 #include "dictObject.h"
 #include "universe.h"
+#include "oopClosure.h"
 
 #include <cassert>
 #include <iostream>
@@ -63,11 +64,21 @@ void TypeKlass::print(Object* obj) {
     cout << ">";
 }
 
+void TypeKlass::oops_do(OopClosure* closure, Object* obj) {
+    assert(obj->klass() == this);
+    TypeObject* t = (TypeObject*)obj;
+    closure->do_klass(t->own_klass_address());
+}
+
 Object* TypeKlass::setattr(Object* obj, Object* name, Object* value) {
     assert(obj != nullptr && obj->klass() == this);
     TypeObject* t = (TypeObject*)obj;
     t->own_klass()->klass_dict()->put(name, value);
     return Universe::None;
+}
+
+size_t TypeKlass::size() {
+    return sizeof(TypeObject);
 }
 
 /* object */
@@ -85,4 +96,8 @@ TypeObject::TypeObject(Klass* own_klass) {
 
 Klass* TypeObject::own_klass() {
     return _own_klass;
+}
+
+Klass** TypeObject::own_klass_address() {
+    return &_own_klass;
 }

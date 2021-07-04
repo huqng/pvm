@@ -16,6 +16,7 @@ public:
 
     virtual Object* allocate_instance(ObjList* args);
     virtual void print(Object* x);
+    virtual size_t size();
 
     virtual Object* gt(Object* x, Object* y);
     virtual Object* lt   (Object* x, Object* y);

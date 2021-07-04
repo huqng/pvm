@@ -9,6 +9,7 @@
 #include "cellObject.h"
 #include "functionObject.h"
 #include "typeObject.h"
+#include "oopClosure.h"
 
 #include <cassert>
 #include <iostream>
@@ -89,6 +90,11 @@ Interpreter::Interpreter() {
 void Interpreter::run(CodeObject* co) {
     cout << "Running interpreter" << endl;
     _frame = new Frame(co);
+
+    cout << "In run, frame.names = ";
+    _frame->names()->print();
+    cout << endl;
+
     eval_frame();
     destroy_frame();
 }
@@ -236,6 +242,13 @@ Object* Interpreter::call_virtual(Object* func, ObjList* args) {
         return _ret_value;
     }
     return Universe::None;
+}
+
+void Interpreter::oops_do(OopClosure* closure) {
+    closure->do_oop((Object**)&_builtins);
+    closure->do_oop(&_ret_value);
+    if(_frame != nullptr)
+        _frame->oops_do(closure);
 }
 
 /* instructions */
@@ -745,7 +758,6 @@ void Interpreter::load_global(int arg) /* 116 */ {
         return;
     }
     push(Universe::None);
-
 }
 
 /* 120 */
@@ -801,9 +813,6 @@ void Interpreter::call_function(int op_arg) /* 131 */{
     }
     
     build_frame(pop(), args, op_arg);
-    if(args != nullptr) {
-        delete args;
-    }
 }
 
 void Interpreter::make_function(int arg) /* 132 */ {
@@ -822,7 +831,6 @@ void Interpreter::make_function(int arg) /* 132 */ {
             defaults->set(arg, pop());
         }
         fo->set_defaults(defaults);
-        delete defaults;
     }
     else
         fo->set_defaults((nullptr));
@@ -849,7 +857,6 @@ void Interpreter::make_closure(int arg) /* 134 */ {
             defaults->set(arg, pop());
         }
         fo->set_defaults(defaults);
-        delete defaults;
     }
     else
         fo->set_defaults((nullptr));

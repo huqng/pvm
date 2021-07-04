@@ -1,5 +1,6 @@
 #include "heap.h"
 #include "space.h"
+#include "oopClosure.h"
 
 Heap* Heap::instance = nullptr;
 unsigned int Heap::MAX_CAP =  1 << 21; // 2MB
@@ -55,6 +56,8 @@ void* Heap::allocate_meta(unsigned int size) {
 
 void Heap::copy_live_objects() {
     // TODO - copy live object from eden to surviver, swap eden and surviver, and then clear surviver
+    ScavengeOopClosure closure(eden, surviver, metaspace);
+    closure.scavenge();
 }
 
 void Heap::gc() {

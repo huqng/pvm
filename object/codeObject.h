@@ -8,6 +8,7 @@ class StringObject;
 class Frame;
 class FunctionObject;
 class ListObject;
+class OopClosure;
 
 /* copy from python2.7.7/include/code.h */
 /* Masks for co_flags above */
@@ -44,6 +45,8 @@ public:
     void initialize();
 
     virtual void print(Object* x);
+    virtual size_t size();
+    virtual void oops_do(OopClosure* closure, Object* obj);
 };
 
 class CodeObject: public Object {
@@ -85,6 +88,7 @@ public:
     
     friend class Frame;
     friend class FunctionObject;
+    friend class CodeKlass;
 };
 
 #endif

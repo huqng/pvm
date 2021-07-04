@@ -42,6 +42,10 @@ void IntegerKlass::print(Object* x) {
     cout << ((IntegerObject*)x)->value();    
 }
 
+size_t IntegerKlass::size() {
+    return sizeof(IntegerObject);
+}
+
 Object* IntegerKlass::add(Object* x, Object* y) {
     if(x->klass() != y->klass())
         return Universe::None;

@@ -5,6 +5,7 @@
 #include "stringObject.h"
 #include "functionObject.h"
 #include "typeObject.h"
+#include "oopClosure.h"
 
 #include <cassert>
 #include <iostream>
@@ -130,6 +131,16 @@ Object* DictKlass::allocate_instance(ObjList* args) {
     return new DictObject();
 }
 
+size_t DictKlass::size() {
+    return sizeof(DictObject);
+}
+
+void DictKlass::oops_do(OopClosure* closure, Object* obj) {
+    assert(obj->klass() == this);
+    DictObject* d = (DictObject*)obj;
+    closure->do_map(d->map_address());
+}
+
 void DictKlass::print(Object* obj) {
     assert(obj->klass() == (Klass*)this);
     DictObject* d = (DictObject*)obj;
@@ -215,6 +226,17 @@ void DictIteratorKlass::initialize() {
     add_super(ObjectKlass::get_instance());
 }
 
+size_t DictIteratorKlass::size() {
+    return sizeof(DictIteratorKlass);
+}
+
+void DictIteratorKlass::oops_do(OopClosure* closure, Object* obj) {
+    assert(obj->klass() == this);
+    DictIteratorObject* dit = (DictIteratorObject*)obj;
+    closure->do_oop(dit->owner_address());
+}
+
+
 /* dict iterator object */
 DictIteratorObject::DictIteratorObject(DictObject* owner) {
     _owner = owner;
@@ -224,6 +246,10 @@ DictIteratorObject::DictIteratorObject(DictObject* owner) {
 
 DictObject* DictIteratorObject::owner() {
     return _owner;
+}
+
+Object** DictIteratorObject::owner_address() {
+    return (Object**)&_owner;
 }
 
 int DictIteratorObject::iter_cnt() {
@@ -248,6 +274,10 @@ DictObject::DictObject(ObjMap* map) {
 
 ObjMap* DictObject::map() {
     return _map;
+}
+
+ObjMap** DictObject::map_address() {
+    return &_map;
 }
 
 void DictObject::put(Object* k, Object* v) {
