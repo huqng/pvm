@@ -1,9 +1,12 @@
 #include "heap.h"
 #include "space.h"
 #include "oopClosure.h"
+#include <iostream>
+using namespace std;
 
 Heap* Heap::instance = nullptr;
-unsigned int Heap::MAX_CAP =  1 << 21; // 2MB
+//unsigned int Heap::MAX_CAP =  1 << 21; // 2MB
+unsigned int Heap::MAX_CAP =  1 << 17; // 128K
 
 Heap* Heap::get_instance() {
     if(instance == nullptr) {
@@ -66,4 +69,14 @@ void Heap::gc() {
     eden = surviver;
     surviver = t;
     surviver->clear();
+
+    cout << endl << "GC" << endl << endl;
+}
+
+void Heap::print_info() {
+    cout << endl;
+    cout << "HEAP: " << endl;
+    cout << "EDEN = " << (void*)eden->_base << "-" << (void*)eden->_end << endl;
+    cout << "SURV = " << (void*)surviver->_base << "-" << (void*)surviver->_end << endl;
+    cout << endl;
 }

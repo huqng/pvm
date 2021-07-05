@@ -131,7 +131,7 @@ void Universe::destory() {
     //delete None;
     //delete klasses;
     delete heap;
-    cout << "Universe destroyed" << endl;
+    cout << "============= Universe destroyed ==============" << endl;
 }
 
 void Universe::oops_do(OopClosure* closure) {

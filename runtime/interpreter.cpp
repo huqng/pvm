@@ -88,13 +88,16 @@ Interpreter::Interpreter() {
 }
 
 void Interpreter::run(CodeObject* co) {
-    cout << "Running interpreter" << endl;
-    _frame = new Frame(co);
-
-    cout << "In run, frame.names = ";
-    _frame->names()->print();
-    cout << endl;
-
+    cout << "============= Running interpreter =============" << endl;
+    /* TODO -
+     * If gc happend during constructing Frame, 
+     * then any object created inside will get lost.
+     * Interpreter::_frame has not been set
+     * before end of Frame().
+     */
+    //_frame = new Frame(co);
+    void* tmp = new char[sizeof(Frame)];
+    _frame = (Frame*)new(tmp)Frame(co);
     eval_frame();
     destroy_frame();
 }
@@ -232,11 +235,11 @@ Object* Interpreter::call_virtual(Object* func, ObjList* args) {
         func->klass() == NativeFunctionKlass::get_instance() ||
         func->klass() == NonNativeFunctionKlass::get_instance()
     ) {
-        // TODO - oparg is not args size
-        Frame* frame = new Frame((FunctionObject*)func, args, args->size());
-        frame->set_entry_frame(true);
-        frame->set_sender(_frame);
-        _frame = frame;
+        Frame* _old_frame = _frame;
+        void* tmp = new char[sizeof(Frame)];
+        _frame = (Frame*)new(tmp)Frame((FunctionObject*)func, args, args->size());
+        _frame->set_entry_frame(true);
+        _frame->set_sender(_old_frame);
         eval_frame();
         destroy_frame();
         return _ret_value;

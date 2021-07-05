@@ -21,6 +21,8 @@ public:
     void copy_live_objects();
 
     void gc();
+
+    void print_info();
 };
 
 #endif

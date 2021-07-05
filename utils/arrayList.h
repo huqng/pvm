@@ -183,8 +183,9 @@ void ArrayList<Klass*>::oops_do(OopClosure* closure) {
 template<>
 void ArrayList<Object*>::oops_do(OopClosure* closure) {
     closure->do_raw_mem((char**)&array, _max_size * sizeof(Object*));
-    for(int i = 0; i < _size; i++)
+    for(int i = 0; i < _size; i++) {
         closure->do_oop((Object**)&array[i]);
+    }
 }
 
 template<>

@@ -1,6 +1,8 @@
 #include "binaryFileParser.h"
 #include "interpreter.h"
 #include "universe.h"
+#include "listObject.h"
+#include "codeObject.h"
 #include <getopt.h>
 
 int main(int argc, char** argv) {
@@ -38,7 +40,7 @@ int main(int argc, char** argv) {
     /* parse and get codeobject */
     Universe::main_code = bfp->parse();
     Universe::gc();
-    
+
     interpreter->run(Universe::main_code);
 
     Universe::destory();

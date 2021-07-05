@@ -162,12 +162,13 @@ size_t StringKlass::size() {
 void StringKlass::oops_do(OopClosure* closure, Object* obj) {
     assert(obj->klass() == this);
     StringObject* so = (StringObject*)obj;
+
     closure->do_raw_mem(so->value_address(), so->length());
 }
 
 /* string object */
 StringObject::StringObject(const char* x) {
-    _max_size = strlen(x) + 1;
+    _max_size = strlen(x);
     //_value = new char[_max_size];
     _value = (char*)Universe::heap->allocate(_max_size);
     memcpy(_value, x, _max_size);

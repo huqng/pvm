@@ -6,6 +6,7 @@
 #include "universe.h"
 #include "interpreter.h"
 #include "space.h"
+#include "stringObject.h"
 
 #include <cassert>
 #include <cstring>
@@ -38,6 +39,13 @@ Object* ScavengeOopClosure::copy_and_push(Object* obj) {
     memcpy(target, obj, size);
     obj->set_new_address(target);
     _oop_stack->push((Object*)target);
+
+    //if(obj->klass() == StringKlass::get_instance()) {
+    //    cout << "PUSH ";
+    //    cout << _oop_stack->top() << ": ";
+    //    _oop_stack->top()->print();
+    //    cout << endl;
+    //}
     return (Object*)target;
 }
 
@@ -131,8 +139,17 @@ void ScavengeOopClosure::do_raw_mem(char** mem, int length) {
 void ScavengeOopClosure::scavenge() {
     process_roots();
     while(!_oop_stack->empty()) {
-        _oop_stack->top()->oops_do(this);
+        Object* top = _oop_stack->top();
         _oop_stack->pop();
+
+        //if((top)->klass() == StringKlass::get_instance()) {
+        //    cout << "POP  " << top << ": "; 
+        //    top->print();
+        //    cout << endl;
+        //    StringObject* so = (StringObject*)top;
+        //}
+
+        top->oops_do(this);
     }
 }
 

@@ -43,6 +43,7 @@ size_t CodeKlass::size() {
 void CodeKlass::oops_do(OopClosure* closure, Object* obj) {
     assert(obj->klass() == this);
     CodeObject* co = (CodeObject*)obj;
+
     closure->do_oop((Object**)&co->_bytecodes);
     closure->do_oop((Object**)&co->_consts);
     closure->do_oop((Object**)&co->_names);
@@ -52,13 +53,6 @@ void CodeKlass::oops_do(OopClosure* closure, Object* obj) {
     closure->do_oop((Object**)&co->_file_name);
     closure->do_oop((Object**)&co->_co_name);
     closure->do_oop((Object**)&co->_notable);
-    
-    cout << "After CodeObject::oops_do" << endl;
-    cout << "\tnames = ";
-    co->_names->print();
-    cout << "\n\tconsts = ";
-    co->_consts->print();
-    cout << endl;
 }
 
 /* code object initialize */
@@ -119,5 +113,5 @@ void CodeObject::print_details() {
     cout << "\t" << setw(12) << "lineno: " << _lineno << endl;
 
     cout << "\t" << setw(12) << "notable: " << "[length = " << _notable->length() << "]" << endl;
-    cout << "================= Parse succeed ===============" << endl;
+    cout << "================ Parse succeed ================" << endl;
 }

@@ -242,6 +242,10 @@ void ListIteratorObject::inc_cnt() {
 
 ListObject::ListObject() {
     _inner_list = new ObjList(equal2obj);
+    if(_inner_list == nullptr) {
+        cerr << "ListObject: error new ObjList" << endl;
+        exit(-1);
+    }
     set_klass(ListKlass::get_instance());
 }
 

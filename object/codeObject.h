@@ -50,7 +50,7 @@ public:
 };
 
 class CodeObject: public Object {
-protected:
+public:
     int _argcount;
     int _nlocals;
     int _stacksize;

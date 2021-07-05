@@ -5,6 +5,7 @@
 #include "stringObject.h"
 #include "functionObject.h"
 #include "oopClosure.h"
+#include "universe.h"
 
 #include <cassert>
 #include <iostream>
@@ -49,7 +50,12 @@ Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
     _fast_locals = new ListObject();
     _closure = new ListObject();
 
+    /* *args, **kwargs */
+    ListObject* alist = new ListObject();
+    DictObject* adict = new DictObject();
+
     _sender = nullptr;
+
 
     /* closure */
     if(_co->_cellvars != nullptr) {
@@ -81,8 +87,12 @@ Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
         _fast_locals->set(nadef - 1 - i, fo->_defaults->get(ndft - 1 - i));
     }
 
-    /* if given more args than defined, put them into a list */
-    ListObject* alist = new ListObject();
+    cout << "1: " << args->size() << endl;
+
+    /* if given more args than defined, put them into alist */
+    cout << "2: " << args->size() << endl;
+    Universe::heap->print_info();
+    
     if(nagiven > nadef) {
         for(int i = 0; i < nadef; i++) {
             _fast_locals->set(i, args->get(i));
@@ -97,7 +107,6 @@ Frame::Frame(FunctionObject* fo, ObjList* args, int op_arg) {
     }
 
     /* put all kwargs into adict */
-    DictObject* adict = new DictObject;
     for(int i = 0; i < nkw; i++) {
         Object* key = args->get(nagiven + i * 2);
         Object* value = args->get(nagiven + i * 2 + 1);

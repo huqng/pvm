@@ -76,7 +76,7 @@ void NonNativeFunctionKlass::oops_do(OopClosure* closure, Object* obj) {
     closure->do_oop((Object**)&fo->_func_code);
     closure->do_oop((Object**)&fo->_func_name);
     closure->do_oop((Object**)&fo->_globals);
-    closure->do_oop((Object**)&fo->_defaults);
+    closure->do_array_list((ObjList**)&fo->_defaults);
     closure->do_oop((Object**)&fo->_closure);
 }
 
